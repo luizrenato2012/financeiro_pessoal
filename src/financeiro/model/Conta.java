@@ -22,9 +22,13 @@ public class Conta implements Serializable {
 		this.valor=valor;
 		this.valorPendente=valor;
 		this.dataVencimento = data;
+		this.valorPago=0d;
 	}
 	
 	public Conta() {
+		valor=0d;
+		valorPago=0d;
+		valorPendente=0d;
 	}
 	
 	// ---------------metodos de negocio -------------------//
@@ -141,6 +145,13 @@ public class Conta implements Serializable {
 		} else if (!valor.equals(other.valor))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Conta [descricao=" + descricao + ", valor=" + valor
+				+ ", valorPago=" + valorPago + ", valorPendente="
+				+ valorPendente + "]";
 	}
 	
 	

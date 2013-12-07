@@ -175,6 +175,13 @@ public class Gasto extends Conta {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "Gasto [descricao=" + descricao + ", valor=" + valor
+				+ ", valorPago=" + valorPago + ", valorPendente="
+				+ valorPendente + "]";
+	}
 	
 	
 	

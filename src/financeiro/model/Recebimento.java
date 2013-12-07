@@ -12,6 +12,12 @@ public class Recebimento implements Serializable {
 	private Double valor;
 	private Date data;
 	
+	public Recebimento(String descricao, Double valor, Date data) {
+		this.descricao = descricao;
+		this.valor = valor;
+		this.data = data;
+	}
+
 	public Recebimento() {
 		id=null;
 	}

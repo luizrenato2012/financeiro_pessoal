@@ -7,24 +7,24 @@ import java.util.List;
 public class Orcamento {
 	
 	/** total de todos as conts do tipo gastos */
-	private Double valorTotalGastos;
+	private Double valorTotalGastos=0d;
 	
-	private Double valorTotalContas;
+	private Double valorTotalContas=0d;
 	
 	/** soma de todos as contas e gastos */
-	private Double valorTotalDevido;
+	private Double valorTotalDevido=0d;
 	
 	/** total pendentes de contas e gastos*/
-	private Double valorTotalPendente;
+	private Double valorTotalPendente=0d;
 	
 	/** total pago de todas contas e gastos */
-	private Double valorTotalPago;
+	private Double valorTotalPago=0d;
 	
 	
-	private Double valorTotalRecebido;
+	private Double valorTotalRecebido=0d;
 	
 	/** diferentça entre todos o recebimentos e a soma do que foi pago e o que está pago */
-	private Double valorDisponivel;
+	private Double valorDisponivel=0d;
 	
 	private List<Gasto> gastos;
 	private List<Conta> contas;
@@ -118,6 +118,13 @@ public class Orcamento {
     	return this.valorDisponivel - this.valorTotalDevido;
     }
     
+    public void recebe (Recebimento recebimento) {
+    	this.recebimentos.add(recebimento);
+    	this.valorTotalRecebido+= recebimento.getValor();
+    	calculaTotalDisponivel();
+    	
+    }
+    
 	// -------------------------------------------------//
 	public Double getValorTotalPendente() {
 		return valorTotalPendente;
@@ -175,8 +182,50 @@ public class Orcamento {
 	public Double getValorTotalDevido() {
 		return valorTotalDevido;
 	}
+	
+	
 
 	
-	
+	@Override
+	public String toString() {
+		return "Orcamento [\nvalorTotalDevido=" + valorTotalDevido
+				+ ", \nvalorTotalPendente=" + valorTotalPendente
+				+ ", \nvalorTotalPago=" + valorTotalPago
+				+ ", \nvalorTotalRecebido=" + valorTotalRecebido
+				+ ", \nvalorDisponivel=" + valorDisponivel + "]";
+	}
+
+	public static void main(String[] args) {
+		Orcamento orcamento = new Orcamento();
+		
+		Recebimento recebimento = new Recebimento("Descricao "  , 1000d , new Date());
+		
+		orcamento.recebe(recebimento);
+		
+		Conta contaCdc = new Conta("CDC" , 250,new Date());
+		orcamento.adicionaConta(contaCdc);
+		
+		orcamento.pagaConta(contaCdc, 250, new Date());
+		
+		Gasto gastoPassagens = new Gasto();
+		gastoPassagens.setDescricao("Passagem");
+		gastoPassagens.setValor(50);
+		gastoPassagens.setDataInicial(new Date());
+		gastoPassagens.setDataFinal(new Date());
+		
+		orcamento.adicionaGasto(gastoPassagens);
+		
+		Gasto gastoAlmoco = new Gasto();
+		gastoAlmoco.setDescricao("Almoco");
+		gastoAlmoco.setValor(100);
+		gastoAlmoco.setDataFinal(new Date());
+		gastoAlmoco.setDataInicial(new Date());
+		
+		orcamento.adicionaGasto(gastoAlmoco);
+		orcamento.pagaGasto(gastoAlmoco, 50, new Date());
+		System.out.println(orcamento);
+		
+		
+	}
 	
 }
