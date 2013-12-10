@@ -2,35 +2,47 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package financeiro.model;
+package financeiro.model.bean;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 /**
  * Classe que representa um tipo de conta onde sao feito vários pagamento
- * p. ex refeição, passagens ,etc
+ * p. ex refeição, passagens ,etc<br>
+ * sao despesas que podenm continuar a receber pagamentos mesmo sem ter valores pendentes
  * @author Luiz Renato
  *
  */
+@Entity
 public class Gasto extends Conta {
 	
-	
-	private Integer id;
-//	private  String descricao;
 	/** valor do gasto pode ser diferente do valor pago quando o pago ultrapassa o previsto*/
-//	private double valor;
-//	private double valorPendente;
-//	private double valorPago;
+	@Column(name="data_inicial")
+	@Temporal(TemporalType.DATE)
 	private Date dataInicial;
+	
+	@Column(name="data_final")
+	@Temporal(TemporalType.DATE)
 	private Date dataFinal;
+	
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+	@JoinColumn(name="id_gasto")
 	private List<Pagamento> pagamentos;
-//	private SituacaoDespesa situacao;
 	
 	public Gasto() {
 		pagamentos = new ArrayList<Pagamento>();
-		id=null;
+		this.setId(null);
 	}
 	
 	public void paga(Date data,double valor,String observacao) {
@@ -41,6 +53,9 @@ public class Gasto extends Conta {
 		
 		this.valorPendente-= valor;
 		this.valorPago+=valor;
+		if (this.valorPendente==0d) {
+			this.situacao=SituacaoDespesa.PAGA;
+		}
 	}
 	
 	public void cancelaPagamento(Pagamento pagamento) {
@@ -49,13 +64,13 @@ public class Gasto extends Conta {
 		this.pagamentos.remove(pagamento);
 	}
 
-	public Integer getId() {
-		return id;
-	}
+//	public Integer getId() {
+//		return id;
+//	}
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+//	public void setId(Integer id) {
+//		this.id = id;
+//	}
 
 	public String getDescricao() {
 		return descricao;
@@ -97,9 +112,6 @@ public class Gasto extends Conta {
 		this.dataFinal = dataFinal;
 	}
 
-
-	
-
 	public List<Pagamento> getPagamentos() {
 		return pagamentos;
 	}
@@ -114,6 +126,7 @@ public class Gasto extends Conta {
 
 	public void setValor(double valor) {
 		this.valor = valor;
+		this.valorPendente = valor;
 	}
 
 	public SituacaoDespesa getSituacao() {
@@ -123,58 +136,7 @@ public class Gasto extends Conta {
 	public void setSituacao(SituacaoDespesa situacao) {
 		this.situacao = situacao;
 	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((dataFinal == null) ? 0 : dataFinal.hashCode());
-		result = prime * result
-				+ ((dataInicial == null) ? 0 : dataInicial.hashCode());
-		result = prime * result
-				+ ((descricao == null) ? 0 : descricao.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		long temp;
-		temp = Double.doubleToLongBits(valor);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Gasto other = (Gasto) obj;
-		if (dataFinal == null) {
-			if (other.dataFinal != null)
-				return false;
-		} else if (!dataFinal.equals(other.dataFinal))
-			return false;
-		if (dataInicial == null) {
-			if (other.dataInicial != null)
-				return false;
-		} else if (!dataInicial.equals(other.dataInicial))
-			return false;
-		if (descricao == null) {
-			if (other.descricao != null)
-				return false;
-		} else if (!descricao.equals(other.descricao))
-			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (Double.doubleToLongBits(valor) != Double
-				.doubleToLongBits(other.valor))
-			return false;
-		return true;
-	}
+	
 
 	@Override
 	public String toString() {
@@ -182,8 +144,6 @@ public class Gasto extends Conta {
 				+ ", valorPago=" + valorPago + ", valorPendente="
 				+ valorPendente + "]";
 	}
-	
-	
 	
 	
 }

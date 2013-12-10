@@ -1,15 +1,37 @@
-package financeiro.model;
+package financeiro.model.bean;
 
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+@Entity
+@Table(name="financ.recebimento")
+@SequenceGenerator(name="SEQ_ID_RECEBIMENTO", sequenceName="financ.seq_id_recebimento",
+		allocationSize=1)
 public class Recebimento implements Serializable {
 
 	private static final long serialVersionUID = -2052768367354551920L;
 
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="SEQ_ID_RECEBIMENTO")
 	private Integer id;
+	
+	@Column(length=35)
 	private String descricao;
+	
+	@Column(precision=2)
 	private Double valor;
+	
+	@Temporal(TemporalType.DATE)
 	private Date data;
 	
 	public Recebimento(String descricao, Double valor, Date data) {

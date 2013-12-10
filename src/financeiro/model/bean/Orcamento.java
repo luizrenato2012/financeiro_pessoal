@@ -1,38 +1,76 @@
-package financeiro.model;
+package financeiro.model.bean;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Orcamento {
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+@Entity
+@Table(name="financ.orcamento")
+@SequenceGenerator(name="SEQ_ID_ORCAMENTO",sequenceName="financ.seq_id_orcamento",
+	allocationSize=1)
+public class Orcamento implements Serializable {
 	
+	private static final long serialVersionUID = 4845673316790597578L;
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="SEQ_ID_ORCAMENTO")
+	private Integer id;
+
 	/** total de todos as conts do tipo gastos */
+	@Transient
 	private Double valorTotalGastos=0d;
 	
+	@Transient
 	private Double valorTotalContas=0d;
 	
 	/** soma de todos as contas e gastos */
+	@Column(name="valor_total_devido", precision=2)
 	private Double valorTotalDevido=0d;
 	
 	/** total pendentes de contas e gastos*/
+	@Column(name="valor_total_pendente", precision=2)
 	private Double valorTotalPendente=0d;
 	
 	/** total pago de todas contas e gastos */
+	@Column(name="valor_total_pago", precision=2)
 	private Double valorTotalPago=0d;
 	
-	
+	@Column(name="valor_total_recebido", precision=2)
 	private Double valorTotalRecebido=0d;
 	
 	/** diferentça entre todos o recebimentos e a soma do que foi pago e o que está pago */
+	@Column(name="valor_disponivel", precision=2)
 	private Double valorDisponivel=0d;
 	
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+	@JoinColumn(name="id_orcamento")
 	private List<Gasto> gastos;
+	
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+	@JoinColumn(name="id_orcamento")
 	private List<Conta> contas;
+	
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+	@JoinColumn(name="id_orcamento")
 	private List<Recebimento> recebimentos;
 	
 	/** */
-	private double totalPendenteGastos;
-	private double totalPendenteContas;
+	//private double totalPendenteGastos;
+	//private double totalPendenteContas;
 
     public Orcamento() {
         this.valorTotalPendente = 0d;
@@ -106,6 +144,35 @@ public class Orcamento {
     	calculaTotalDisponivel();
     }
     
+    public void cancelaConta(Conta conta) {
+    	this.contas.remove(conta);
+    	this.valorTotalDevido-= conta.getValor();
+    	
+    	if (conta.getValorPago()> 0 ) {
+    		this.valorTotalPago-=conta.getValorPago();
+    	}
+    	
+    	if (conta.getValorPendente() > 0 ) {
+    		this.valorTotalPendente-=conta.getValor();
+    	}
+    	calculaTotalDisponivel();
+    }
+    
+    /** deve-se cancelar os pagamentos feitos */
+    public void cancelaGasto(Gasto gasto) {
+    	this.gastos.remove(gasto);
+    	this.valorTotalDevido-=gasto.getValor();
+    	
+    	if (gasto.getValorPago() > 0) {
+    		this.valorTotalPago-=gasto.getValorPago();
+    	}
+    	
+    	if (gasto.getValorPendente()> 0 ) {
+    		this.valorTotalPendente-=gasto.getValorPendente();
+    	}
+    	calculaTotalDisponivel();
+    }
+    
     /** 
      * resultado entre tudo que foi recebido e o que foi pago 
      */
@@ -115,7 +182,7 @@ public class Orcamento {
     
     /** resultado final do que vai sobrar */
     public Double getValorResultado() {
-    	return this.valorDisponivel - this.valorTotalDevido;
+    	return this.valorDisponivel - this.valorTotalPendente;
     }
     
     public void recebe (Recebimento recebimento) {
@@ -125,10 +192,38 @@ public class Orcamento {
     	
     }
     
+    public void  cancelaPagamento(double valorPagamento) {
+    	this.valorTotalPago-=valorPagamento;
+    	this.valorTotalPendente+=valorPagamento;
+    	calculaTotalDisponivel();
+    }
+    
 	// -------------------------------------------------//
-	public Double getValorTotalPendente() {
+    
+    public Double getValorTotalPendente() {
 		return valorTotalPendente;
 	}
+    
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public List<Gasto> getGastos() {
+		return gastos;
+	}
+
+	public List<Conta> getContas() {
+		return contas;
+	}
+
+	public List<Recebimento> getRecebimentos() {
+		return recebimentos;
+	}
+
 	public void setValorTotalPendente(Double valorTotalPendente) {
 		this.valorTotalPendente = valorTotalPendente;
 	}
@@ -163,36 +258,18 @@ public class Orcamento {
 		this.valorTotalRecebido = valorTotalRecebido;
 	}
 
-	public double getTotalPendenteGastos() {
-		return totalPendenteGastos;
-	}
-
-	public void setTotalPendenteGastos(double totalPendenteGastos) {
-		this.totalPendenteGastos = totalPendenteGastos;
-	}
-
-	public double getTotalPendenteContas() {
-		return totalPendenteContas;
-	}
-
-	public void setTotalPendenteContas(double totalPendenteContas) {
-		this.totalPendenteContas = totalPendenteContas;
-	}
-
 	public Double getValorTotalDevido() {
 		return valorTotalDevido;
 	}
-	
-	
 
-	
 	@Override
 	public String toString() {
 		return "Orcamento [\nvalorTotalDevido=" + valorTotalDevido
 				+ ", \nvalorTotalPendente=" + valorTotalPendente
 				+ ", \nvalorTotalPago=" + valorTotalPago
 				+ ", \nvalorTotalRecebido=" + valorTotalRecebido
-				+ ", \nvalorDisponivel=" + valorDisponivel + "]";
+				+ ", \nvalorDisponivel=" + valorDisponivel
+				+ ", \ngetValorResultado()=" + getValorResultado() + "]";
 	}
 
 	public static void main(String[] args) {
@@ -214,6 +291,7 @@ public class Orcamento {
 		gastoPassagens.setDataFinal(new Date());
 		
 		orcamento.adicionaGasto(gastoPassagens);
+		orcamento.pagaGasto(gastoPassagens, 15, new Date());
 		
 		Gasto gastoAlmoco = new Gasto();
 		gastoAlmoco.setDescricao("Almoco");
@@ -224,7 +302,13 @@ public class Orcamento {
 		orcamento.adicionaGasto(gastoAlmoco);
 		orcamento.pagaGasto(gastoAlmoco, 50, new Date());
 		System.out.println(orcamento);
+		System.out.println("\n/---------Cancelando pagamento conta ---------/\n");
 		
+		
+		orcamento.cancelaPagamento(15);
+		System.out.println(orcamento);
+		gastoPassagens.cancelaPagamento(new Pagamento(new Date(),15d));
+		System.out.println(gastoPassagens);
 		
 	}
 	

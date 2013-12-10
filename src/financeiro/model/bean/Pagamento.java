@@ -1,19 +1,49 @@
-package financeiro.model;
+package financeiro.model.bean;
 
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+@Entity
+@Table(name="financ.pagamento")
+@SequenceGenerator(name="SEQ_ID_PAGAMENTO",sequenceName="financ.seq_id_pagamento",allocationSize=1)
 public class Pagamento implements Serializable {
 	
 	private static final long serialVersionUID = 3776154187787100909L;
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="SEQ_ID_PAGAMENTO")
 	private Integer id;
+	
+	@Temporal(TemporalType.DATE)
 	private Date data;
+	
+	@Column(precision=2)
 	private Double valor;
+	
+	@Column(length=200)
 	private String observacao;
 	
 	public Pagamento() {
 		id=null;
 	}
+	
+	public Pagamento(Date data, Double valor) {
+		super();
+		this.data = data;
+		this.valor = valor;
+	}
+
+
 	public int getId() {
 		return id;
 	}

@@ -1,20 +1,55 @@
-package financeiro.model;
+package financeiro.model.bean;
 
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+@Entity
+@Table(name="financ.conta")
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@SequenceGenerator(name="SEQ_ID_CONTA", sequenceName="financ.seq_id_conta",allocationSize=1)
 public class Conta implements Serializable {
 	
 	private static final long serialVersionUID = 8884725799844326520L;
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="SEQ_ID_CONTA")
 	private Integer id;
+	
 	protected String descricao;
+	
+	@Column(precision=2)
 	protected Double valor;
+	
+	@Column(name="valor_pago")
 	protected Double valorPago;
+	
+	@Column(name="valor_pendente",precision=2)
 	/** usado pra calcular total pendente do orcamento , atributo valor indica valor original da conta que nao muda */
 	protected Double valorPendente;
+	
+	@Column(name="data_vencimento")
+	@Temporal(TemporalType.DATE)
 	private Date dataVencimento;
+	
+	@Column(name="data_pagamento")
+	@Temporal(TemporalType.DATE)
 	private Date dataPagamento;
+	
+	@Enumerated(EnumType.STRING)
 	protected SituacaoDespesa situacao;
 	
 	public Conta(String descricao, double valor, Date data) {
@@ -23,12 +58,14 @@ public class Conta implements Serializable {
 		this.valorPendente=valor;
 		this.dataVencimento = data;
 		this.valorPago=0d;
+		this.situacao = SituacaoDespesa.PENDENTE;
 	}
 	
 	public Conta() {
 		valor=0d;
 		valorPago=0d;
 		valorPendente=0d;
+		this.situacao = SituacaoDespesa.PENDENTE;
 	}
 	
 	// ---------------metodos de negocio -------------------//
@@ -36,6 +73,7 @@ public class Conta implements Serializable {
 		this.valorPago+=valor;
 		this.valorPendente-=valor;
 		this.dataPagamento=dataPagamento;
+		this.situacao=SituacaoDespesa.PAGA;
 	}
 	
 	

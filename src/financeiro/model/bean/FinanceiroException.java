@@ -1,4 +1,4 @@
-package financeiro.model;
+package financeiro.model.bean;
 
 public class FinanceiroException extends RuntimeException {
 
