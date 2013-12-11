@@ -8,6 +8,7 @@
 		<class>financeiro.model.bean.Orcamento</class>
 		<class>financeiro.model.bean.Pagamento</class>
 		<class>financeiro.model.bean.Recebimento</class>
+		<class>financeiro.model.bean.Usuario</class>
 		<properties>
 				<property name="hibernate.hbm2ddl.auto" value="create" />
 		</properties>
