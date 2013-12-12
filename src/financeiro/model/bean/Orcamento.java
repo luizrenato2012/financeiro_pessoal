@@ -95,7 +95,7 @@ public class Orcamento implements Serializable {
     	}
     	this.valorTotalRecebido+=recebimento.getValor();
     	this.valorDisponivel+=recebimento.getValor();
-    	this.recebimentos.add(recebimento);
+    //	this.recebimentos.add(recebimento);
     	calculaTotalDisponivel();
     }
     
@@ -189,6 +189,7 @@ public class Orcamento implements Serializable {
     	this.recebimentos.add(recebimento);
     	this.valorTotalRecebido+= recebimento.getValor();
     	calculaTotalDisponivel();
+    	this.recebimentos.add(recebimento);
     	
     }
     

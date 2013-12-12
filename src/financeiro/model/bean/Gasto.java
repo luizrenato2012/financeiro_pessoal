@@ -13,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -36,9 +37,11 @@ public class Gasto extends Conta {
 	@Temporal(TemporalType.DATE)
 	private Date dataFinal;
 	
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
-	@JoinColumn(name="id_gasto")
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="gasto")
 	private List<Pagamento> pagamentos;
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	private Orcamento orcamento;
 	
 	public Gasto() {
 		pagamentos = new ArrayList<Pagamento>();
@@ -63,14 +66,6 @@ public class Gasto extends Conta {
 		this.valorPendente+=pagamento.getValor();
 		this.pagamentos.remove(pagamento);
 	}
-
-//	public Integer getId() {
-//		return id;
-//	}
-
-//	public void setId(Integer id) {
-//		this.id = id;
-//	}
 
 	public String getDescricao() {
 		return descricao;
@@ -137,6 +132,13 @@ public class Gasto extends Conta {
 		this.situacao = situacao;
 	}
 	
+	public Orcamento getOrcamento() {
+		return orcamento;
+	}
+
+	public void setOrcamento(Orcamento orcamento) {
+		this.orcamento = orcamento;
+	}
 
 	@Override
 	public String toString() {

@@ -43,7 +43,7 @@ public class UsuarioService {
 
 	private String getHash(String str) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		MessageDigest algorithm = MessageDigest.getInstance("MD5");
-		byte messageDigest[] = algorithm.digest("senha".getBytes("UTF-8"));
+		byte messageDigest[] = algorithm.digest(str.getBytes("UTF-8"));
 
 		//cria String com valores hex provenientes do byte[]
 		StringBuilder strbHex = new StringBuilder();
@@ -51,6 +51,10 @@ public class UsuarioService {
 			strbHex.append(String.format("%02X", 0xFF & b));
 		}
 		return strbHex.toString();
+	}
+	
+	public static void main(String[] args) throws Exception {
+		System.out.println(new UsuarioService().getHash("admin123"));
 	}
 
 
