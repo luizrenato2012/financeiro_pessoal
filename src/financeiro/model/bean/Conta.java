@@ -146,6 +146,15 @@ public class Conta implements Serializable {
 	public void setValorPendente(Double valorPendente) {
 		this.valorPendente = valorPendente;
 	}
+	
+	public Orcamento getOrcamento() {
+		return orcamento;
+	}
+
+	public void setOrcamento(Orcamento orcamento) {
+		this.orcamento = orcamento;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

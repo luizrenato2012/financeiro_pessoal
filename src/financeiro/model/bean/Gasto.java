@@ -41,6 +41,7 @@ public class Gasto extends Conta {
 	private List<Pagamento> pagamentos;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="id_orcamento")
 	private Orcamento orcamento;
 	
 	public Gasto() {
