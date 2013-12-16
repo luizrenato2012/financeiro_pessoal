@@ -16,6 +16,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 @Entity
@@ -56,6 +58,14 @@ public class Orcamento implements Serializable {
 	@Column(name="valor_disponivel", precision=2)
 	private Double valorDisponivel=0d;
 	
+	@Column(name="data_inicial")
+	@Temporal(TemporalType.DATE)
+	private Date dataInicial;
+	
+	@Column(name="data_final")
+	@Temporal(TemporalType.DATE)
+	private Date dataFinal;
+	
 	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	@JoinColumn(name="id_orcamento")
 	private List<Gasto> gastos;
@@ -84,10 +94,35 @@ public class Orcamento implements Serializable {
         contas = new ArrayList<Conta>();
         recebimentos = new ArrayList<Recebimento>();
     }
+    
         
     // -----------------  metodos de negocio	-------------	//
     
-    /** acrescenta recebimento , aumenta valor disponivel */
+    public Date getDataInicial() {
+		return dataInicial;
+	}
+
+
+
+	public void setDataInicial(Date dataInicial) {
+		this.dataInicial = dataInicial;
+	}
+
+
+
+	public Date getDataFinal() {
+		return dataFinal;
+	}
+
+
+
+	public void setDataFinal(Date dataFinal) {
+		this.dataFinal = dataFinal;
+	}
+
+
+
+	/** acrescenta recebimento , aumenta valor disponivel */
     public void efetuaRecebimento (Recebimento recebimento) {
     	if (recebimento.getValor()==0) {
     		throw new FinanceiroException("Recebimento valor invalido : " + 

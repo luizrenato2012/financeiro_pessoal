@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>	
+	<title>Orcamentos</title>
+</h:head>
+<h:body>
+	<h3>Cadastro de Or&ccedil;amentos</h3>
+	<h:messages showDetail="false"/>
+	<p:panelGrid columns="2">
+		<h:form id="frm_orcamento" prependId="false">
+			<p:outputLabel value="Data Inicial"/>
+			<p:inputText value="#{orcamentoBean.dataInicial}"/>
+		
+			<p:outputLabel value="Data Final"/>
+			<p:inputText value="#{orcamentoBean.dataFinal}"/>
+		
+			<p:commandButton value="Inclui" action="#{orcamentoBean.inclui}" process="frm_orcamento"
+				update="tab_orcamento"/>
+			
+			<p:dataTable id="tab_orcamento" value="{orcamentoBean.orcamentos}" var="orcamento" 
+					rowKey="#{orcamento.id}" selectionMode="single" selection="#{orcamentoBean.selecao}">
+				<p:column headerText="ID">
+					<h:outputText value="#{orcamento.id}" />
+				</p:column>
+				
+				<p:column headerText="Data Inicial">
+					<h:outputText value="#{orcamento.dataInicial}" />
+				</p:column>
+				
+				<p:column headerText="Data Final">
+					<h:outputText value="#{orcamento.dataFinal}" />
+				</p:column>
+				
+				<p:column headerText="Total Devido">
+					<h:outputText value="#{orcamento.valorTotalDevido}" />
+				</p:column>
+				
+				<p:column headerText="Total Recebido">
+					<h:outputText value="#{orcamento.valorTotalRecebio}" />
+				</p:column>
+				
+				<p:column headerText="Total Pendente">
+					<h:outputText value="#{orcamento.valorTotalPendente}" />
+				</p:column>
+				
+			</p:dataTable>
+			<p:commandButton value="Abre" action="#{orcamentoBean.abre}"/>
+			<p:commandButton value="Exclui" action="#{orcamentoBean.exclui}"/>
+		</h:form>
+	</p:panelGrid>
+</h:body>
+</html>

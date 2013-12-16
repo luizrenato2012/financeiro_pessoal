@@ -10,7 +10,7 @@ import financeiro.model.bean.Gasto;
 import financeiro.model.bean.Orcamento;
 import financeiro.model.bean.Recebimento;
 
-public class OrcamentoService extends ServiceGeneric<Orcamento, Integer>{
+public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 
 	@EJB
 	private ServiceGeneric<Recebimento, Integer> recebimentoService;

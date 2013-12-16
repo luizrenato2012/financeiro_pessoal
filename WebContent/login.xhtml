@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Login</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+</h:head>
+<h:body>
+	<h:form>
+		<h:outputLabel value="Login" />
+		<h:messages />
+		<p:panelGrid columns="2">
+			<p:outputLabel value="Login"/>
+			<p:inputText value="#{usuarioBean.login}"/>
+			
+			<p:outputLabel value="Senha"/>
+			<p:inputText value="#{usuarioBean.senha}"/>
+			
+			<p:commandButton value="Ok" action="#{usuarioBean.autentica}"/>
+		</p:panelGrid>
+	</h:form>
+</h:body>
+</html>
