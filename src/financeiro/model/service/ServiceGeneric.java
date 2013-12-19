@@ -20,34 +20,41 @@ import javax.persistence.criteria.CriteriaQuery;
  * @param <PK>
  */
 @Stateless
-public class ServiceGeneric <T,PK extends Serializable> {
+public class ServiceGeneric <T,PK> implements Service <T,Integer>{
 
 	@PersistenceContext(name="financPU")
 	private EntityManager entityManager;
-	
-	public void persist(T t) {
+
+	@Override
+	public void persiste(T t) {
 		entityManager.persist(t);
 	}
 	
-	public void merge(T t) {
+	@Override
+	public void atualiza(T t) {
 		entityManager.merge(t);
 	}
 	
+	@Override
 	public void remove(T t) {
 		entityManager.remove(t);
 	}
 	
-	public T find (PK pk, Class<T> classe) {
+	@Override
+	public T encontra (Integer pk, Class<T> classe) {
 		return entityManager.find(classe, pk);
 	}
 	
-	public List<T> listAll(Class<T> classe) {
+	@Override
+	public List<T> listaTodos (Class<T> classe) {
 		CriteriaQuery<T> criteria = entityManager.getCriteriaBuilder().createQuery(classe);
 		TypedQuery<T> typedQuery = entityManager.createQuery(criteria);
 		return typedQuery.getResultList();
 	}
 	
-	public List<T> list (String namedQuery, Map<String,Object> params) {
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<T> lista (String namedQuery, Map<String,Object> params) {
 		Query query = entityManager.createNamedQuery(namedQuery);
 		for (String key : params.keySet()) {
 			query.setParameter(key, params.get(key));
@@ -55,5 +62,8 @@ public class ServiceGeneric <T,PK extends Serializable> {
 		return query.getResultList();
 	}
 	
+	
+
+
 	
 }

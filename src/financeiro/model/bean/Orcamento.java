@@ -67,15 +67,12 @@ public class Orcamento implements Serializable {
 	private Date dataFinal;
 	
 	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
-	@JoinColumn(name="id_orcamento")
 	private List<Gasto> gastos;
 	
 	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
-	@JoinColumn(name="id_orcamento")
 	private List<Conta> contas;
 	
 	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
-	@JoinColumn(name="id_orcamento")
 	private List<Recebimento> recebimentos;
 	
 	/** */

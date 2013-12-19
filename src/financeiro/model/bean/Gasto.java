@@ -40,10 +40,6 @@ public class Gasto extends Conta {
 	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="gasto")
 	private List<Pagamento> pagamentos;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="id_orcamento")
-	private Orcamento orcamento;
-	
 	public Gasto() {
 		pagamentos = new ArrayList<Pagamento>();
 		this.setId(null);
@@ -133,14 +129,6 @@ public class Gasto extends Conta {
 		this.situacao = situacao;
 	}
 	
-	public Orcamento getOrcamento() {
-		return orcamento;
-	}
-
-	public void setOrcamento(Orcamento orcamento) {
-		this.orcamento = orcamento;
-	}
-
 	@Override
 	public String toString() {
 		return "Gasto [descricao=" + descricao + ", valor=" + valor

@@ -3,28 +3,26 @@ package financeiro.model.service;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import financeiro.model.bean.Usuario;
 
 @Stateless
-public class UsuarioService {
-
-	@PersistenceContext(name="financPU")
-	private EntityManager entityManager;
+public class UsuarioService extends ServiceGeneric<Usuario, Integer> {
 
 
 	public Usuario valida (String login,String senha) {
 		try {
-			Usuario usuario=null;
-			Query query = entityManager.createNamedQuery("Usuario.findByLoginSenha");
-			query.setParameter("login", login);
-			query.setParameter("senha", getHash(senha));
-			return usuario;
+			
+			Map<String,Object> parametros = new HashMap<String,Object>();
+			parametros.put("login", login);
+			parametros.put("senha", getHash(senha));
+			List<Usuario> usuarios = this.lista("Usuario.findByLoginSenha",parametros);
+			return usuarios!=null && usuarios.size()!=0 ? usuarios.get(0) : null;
 		} catch (Exception e ) {
 			throw new RuntimeException(e);
 		}
@@ -35,7 +33,7 @@ public class UsuarioService {
 			Usuario usuario = new Usuario();
 			usuario.setLogin(login);
 			usuario.setSenha(getHash(senha));
-			entityManager.persist(usuario);
+			this.persiste(usuario);
 		} catch (Exception e ) {
 			throw new RuntimeException(e);
 		}

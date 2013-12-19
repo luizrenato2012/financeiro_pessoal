@@ -13,20 +13,20 @@ import financeiro.model.bean.Recebimento;
 public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 
 	@EJB
-	private ServiceGeneric<Recebimento, Integer> recebimentoService;
+	private RecebimentoService recebimentoService;
 	
 	@EJB
-	private ServiceGeneric<Conta, Integer> contaService;
+	private ContaService contaService;
 	
 	@EJB
-	private ServiceGeneric<Gasto, Integer> gastoService;
+	private GastoService gastoService;
 
 	public void recebe(Recebimento recebimento, Orcamento orcamento) {
 		try {
 			recebimento.setOrcamento(orcamento);
 			orcamento.recebe(recebimento);
-			this.recebimentoService.persist(recebimento);
-			this.merge(orcamento);
+			this.recebimentoService.persiste(recebimento);
+			this.atualiza(orcamento);
 		} catch (Exception e ) {
 			throw new FinanceiroException(e);
 		}
@@ -36,8 +36,8 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 		try {
 			conta.setOrcamento(orcamento);
 			orcamento.adicionaConta(conta);
-			contaService.persist(conta);
-			this.merge(orcamento);
+			contaService.persiste(conta);
+			this.atualiza(orcamento);
 		} catch (Exception e) {
 			throw new FinanceiroException(e);
 		}
@@ -47,8 +47,8 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 	public void adicionaGasto(Gasto gasto, Orcamento orcamento) {
 		try {
 			orcamento.adicionaGasto(gasto);
-			gastoService.persist(gasto);
-			this.merge(orcamento);
+			gastoService.persiste(gasto);
+			this.atualiza(orcamento);
 		} catch (Exception e) {
 			throw new FinanceiroException(e);
 		}
@@ -58,8 +58,8 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 		try {
 			Orcamento orcamento = conta.getOrcamento();
 			orcamento.pagaConta(conta, valor, data);
-			contaService.merge(conta);
-			this.merge(orcamento);
+			contaService.atualiza(conta);
+			this.atualiza(orcamento);
 		} catch (Exception e) {
 			throw new FinanceiroException(e);
 		}
@@ -69,8 +69,8 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 		try {
 			Orcamento orcamento = gasto.getOrcamento();
 			orcamento.pagaGasto(gasto, valor, data);
-			gastoService.merge(gasto);
-			this.merge(orcamento);
+			gastoService.atualiza(gasto);
+			this.atualiza(orcamento);
 		} catch (Exception e) {
 			throw new FinanceiroException(e);
 		}

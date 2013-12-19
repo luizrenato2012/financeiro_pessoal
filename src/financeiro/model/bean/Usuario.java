@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name="financ.usuario")
 @SequenceGenerator(name="SEQ_ID_USUARIO", sequenceName="financ.seq_id_usuario")
-@NamedQuery(name="findByLoginSenha",query="select u from Usuario u where u.login=:login " +
+@NamedQuery(name="Usuario.findByLoginSenha",query="select u from Usuario u where u.login=:login " +
 				" and u.senha= :senha")	
 public class Usuario implements Serializable {
 

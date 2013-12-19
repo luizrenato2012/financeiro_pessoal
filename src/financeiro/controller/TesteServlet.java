@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import financeiro.model.service.Service;
 import financeiro.model.service.UsuarioService;
 
 /**
@@ -17,7 +18,7 @@ import financeiro.model.service.UsuarioService;
 @WebServlet("/teste")
 public class TesteServlet extends HttpServlet {
 	
-	@EJB
+	@EJB(beanInterface=Service.class)
 	private UsuarioService usuarioService;
 	private static final long serialVersionUID = 1L;
        
