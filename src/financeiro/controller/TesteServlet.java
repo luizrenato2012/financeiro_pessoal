@@ -18,7 +18,7 @@ import financeiro.model.service.UsuarioService;
 @WebServlet("/teste")
 public class TesteServlet extends HttpServlet {
 	
-	@EJB(beanInterface=Service.class)
+	@EJB
 	private UsuarioService usuarioService;
 	private static final long serialVersionUID = 1L;
        

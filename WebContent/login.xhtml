@@ -9,10 +9,11 @@
 
 <h:head>
 	<title>Login</title>
+	<h:outputStylesheet library="css" name="style.css" />
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
 </h:head>
 <h:body>
-	<h:outputLabel value="Login" />
+	<h3><p:outputLabel value="Login" /> </h3>
 	<h:form>
 		<h:messages />
 		<p:panelGrid columns="2">
@@ -22,7 +23,7 @@
 			<p:outputLabel value="Senha"/>
 			<p:inputText value="#{usuarioBean.senha}"/>
 			
-			<p:commandButton value="Ok" action="#{usuarioBean.autentica}"/>
+			<p:commandButton value="Ok" action="#{usuarioBean.autentica}" ajax="false"/>
 		</p:panelGrid>
 	</h:form>
 </h:body>

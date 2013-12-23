@@ -8,13 +8,14 @@
 	xmlns:p="http://primefaces.org/ui">
 <h:head>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>	
+	<h:outputStylesheet library="css" name="style.css" />
 	<title>Orcamentos</title>
 </h:head>
 <h:body>
 	<h3>Cadastro de Or&ccedil;amentos</h3>
 	<h:messages showDetail="false"/>
-	<p:panelGrid columns="2">
 		<h:form id="frm_orcamento" prependId="false">
+		<p:panelGrid columns="2">
 			<p:outputLabel value="Data Inicial"/>
 			<p:inputText value="#{orcamentoBean.dataInicial}"/>
 		
@@ -24,7 +25,9 @@
 			<p:commandButton value="Inclui" action="#{orcamentoBean.inclui}" process="frm_orcamento"
 				update="tab_orcamento"/>
 			
-			<p:dataTable id="tab_orcamento" value="{orcamentoBean.orcamentos}" var="orcamento" 
+			</p:panelGrid>
+			<br/> <br/>
+			<p:dataTable id="tab_orcamento" value="#{orcamentoBean.orcamentos}" var="orcamento" 
 					rowKey="#{orcamento.id}" selectionMode="single" selection="#{orcamentoBean.selecao}">
 				<p:column headerText="ID">
 					<h:outputText value="#{orcamento.id}" />
@@ -43,7 +46,7 @@
 				</p:column>
 				
 				<p:column headerText="Total Recebido">
-					<h:outputText value="#{orcamento.valorTotalRecebio}" />
+					<h:outputText value="#{orcamento.valorTotalRecebido}" />
 				</p:column>
 				
 				<p:column headerText="Total Pendente">
@@ -54,6 +57,6 @@
 			<p:commandButton value="Abre" action="#{orcamentoBean.abre}"/>
 			<p:commandButton value="Exclui" action="#{orcamentoBean.exclui}"/>
 		</h:form>
-	</p:panelGrid>
+	
 </h:body>
 </html>

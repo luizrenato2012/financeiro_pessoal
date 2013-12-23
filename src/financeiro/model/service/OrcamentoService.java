@@ -3,6 +3,7 @@ package financeiro.model.service;
 import java.util.Date;
 
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 
 import financeiro.model.bean.Conta;
 import financeiro.model.bean.FinanceiroException;
@@ -10,6 +11,7 @@ import financeiro.model.bean.Gasto;
 import financeiro.model.bean.Orcamento;
 import financeiro.model.bean.Recebimento;
 
+@Stateless
 public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 
 	@EJB
