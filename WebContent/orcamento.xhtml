@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<h:outputStylesheet library="css" name="style.css" />
+	<title>Detalhamento de Or&ccedil;amento</title>
+</h:head>
+
+<h:body>
+	<h:form id="frm_principal" prependId="false">
+		<h3><p:outputLabel> 
+		<h:outputFormat	value="Orçamento: {0}">
+			<f:param value="#{orcamentoBean.orcamentoEdicao.id}"/>
+		</h:outputFormat>
+		</p:outputLabel> </h3>
+		
+		<h3><p:outputLabel> 
+		<h:outputFormat value="Per&iacute;odo: {0} à {1}">
+			<f:param value="#{orcamentoBean.orcamentoEdicao.dataInicial}"/>
+			<f:param value="#{orcamentoBean.orcamentoEdicao.dataFinal}"/>
+		</h:outputFormat>
+		</p:outputLabel></h3>
+		
+		<p:tabView>
+			<p:tab title="Resumo">
+				<p:panelGrid columns="2">
+					<p:outputLabel value="Total Recebido" />
+					<h:outputText
+						value="#{orcamentoBean.orcamentoEdicao.valorTotalRecebido}">
+						<f:convertNumber minFractionDigits="2" />
+					</h:outputText>
+
+					<p:outputLabel value="Total Despesas" />
+					<h:outputText
+						value="#{orcamentoBean.orcamentoEdicao.valorTotalDevido}">
+						<f:convertNumber minFractionDigits="2" />
+					</h:outputText>
+
+					<p:outputLabel value="Total Pago" />
+					<h:outputText
+						value="#{orcamentoBean.orcamentoEdicao.valorTotalPago}">
+						<f:convertNumber minFractionDigits="2" />
+					</h:outputText>
+
+					<p:outputLabel value="Total Pendente" />
+					<h:outputText
+						value="#{orcamentoBean.orcamentoEdicao.valorTotalPendente}">
+						<f:convertNumber minFractionDigits="2" />
+					</h:outputText>
+
+					<p:outputLabel value="Disponivel na Conta" />
+					<h:outputText
+						value="#{orcamentoBean.orcamentoEdicao.valorDisponivel}">
+						<f:convertNumber minFractionDigits="2" />
+					</h:outputText>
+
+					<p:outputLabel value="Resultado" />
+					<h:outputText
+						value="#{orcamentoBean.orcamentoEdicao.valorResultado}">
+						<f:convertNumber minFractionDigits="2" />
+					</h:outputText>
+
+				</p:panelGrid>
+			</p:tab>
+
+			<p:tab title="Recebimentos">
+				<ui:include src="" />
+			</p:tab>
+
+			<p:tab title="Contas">
+				<ui:include src="conta.xhtml" />
+			</p:tab>
+
+			<p:tab title="Gastos">
+				<ui:include src="" />
+			</p:tab>
+		</p:tabView>
+		<br/><br/>
+		<p:commandButton value="Voltar" action="#{orcamentoBean.retornaMenuOrcamento}" ajax="false"/>
+	</h:form>
+</h:body>
+</html>

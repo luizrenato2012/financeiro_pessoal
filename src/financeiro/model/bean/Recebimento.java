@@ -3,7 +3,6 @@ package financeiro.model.bean;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,7 +17,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name="financ.recebimento")
+@Table(name="recebimento", schema="financ")
 @SequenceGenerator(name="SEQ_ID_RECEBIMENTO", sequenceName="financ.seq_id_recebimento",
 		allocationSize=1)
 public class Recebimento implements Serializable {

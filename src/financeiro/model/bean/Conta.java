@@ -15,15 +15,22 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @Entity
-@Table(name="financ.conta")
+@Table(name="conta",schema="financ")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @SequenceGenerator(name="SEQ_ID_CONTA", sequenceName="financ.seq_id_conta",allocationSize=1)
+@NamedQueries( {
+	@NamedQuery(name="Conta.findByOrcamento",query="select c from Conta c inner join c.orcamento o " +
+			" where o.id = :idOrcamento")
+})
 public class Conta implements Serializable {
 	
 	private static final long serialVersionUID = 8884725799844326520L;
@@ -58,6 +65,9 @@ public class Conta implements Serializable {
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="id_orcamento")
 	private Orcamento orcamento;
+	
+	@Transient
+	private Boolean isPendente;
 	
 	public Conta(String descricao, double valor, Date data) {
 		this.descricao=descricao;
@@ -153,6 +163,16 @@ public class Conta implements Serializable {
 
 	public void setOrcamento(Orcamento orcamento) {
 		this.orcamento = orcamento;
+	}
+	
+	
+
+	public Boolean getIsPendente() {
+		return isPendente;
+	}
+
+	public void setIsPendente(Boolean isPendente) {
+		this.isPendente = isPendente;
 	}
 
 	@Override

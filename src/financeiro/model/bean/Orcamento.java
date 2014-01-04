@@ -12,7 +12,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -21,7 +20,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 @Entity
-@Table(name="financ.orcamento")
+@Table(name="orcamento", schema="financ")
 @SequenceGenerator(name="SEQ_ID_ORCAMENTO",sequenceName="financ.seq_id_orcamento",
 	allocationSize=1)
 public class Orcamento implements Serializable {
@@ -75,6 +74,8 @@ public class Orcamento implements Serializable {
 	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
 	private List<Recebimento> recebimentos;
 	
+	@Column(length=100)
+	private String observacao;
 	/** */
 	//private double totalPendenteGastos;
 	//private double totalPendenteContas;
@@ -93,7 +94,15 @@ public class Orcamento implements Serializable {
     }
     
         
-    // -----------------  metodos de negocio	-------------	//
+    public Orcamento(Date dataInicial, Date dataFinal) {
+		this();
+		this.dataInicial = dataInicial;
+		this.dataFinal = dataFinal;
+	}
+
+
+
+	// -----------------  metodos de negocio	-------------	//
     
     public Date getDataInicial() {
 		return dataInicial;
@@ -117,6 +126,15 @@ public class Orcamento implements Serializable {
 		this.dataFinal = dataFinal;
 	}
 
+
+	public String getObservacao() {
+		return observacao;
+	}
+
+
+	public void setObservacao(String observacao) {
+		this.observacao = observacao;
+	}
 
 
 	/** acrescenta recebimento , aumenta valor disponivel */

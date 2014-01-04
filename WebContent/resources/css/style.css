@@ -2,3 +2,20 @@
 {
     border-style: none !important
 }
+
+/** usado no atributo icon do primefaces */
+.icone_exclusao {
+		background-image: url("../resources/image/Erase.png") !important;
+}
+
+.icone_inclusao {
+		background-image: url("../resources/image/Create.png") !important;
+}
+
+.icone_alteracao {
+		background-image: url("../resources/image/Modify.png") !important;
+}
+
+.icone_dinheiro {
+		background-image: url("../resources/image/Dollar.png") !important;
+}

@@ -9,8 +9,9 @@
 		<class>financeiro.model.bean.Pagamento</class>
 		<class>financeiro.model.bean.Recebimento</class>
 		<class>financeiro.model.bean.Usuario</class>
+		<class>financeiro.model.bean.RegistroLog</class>
 	<!-- <properties>
-				<property name="hibernate.hbm2ddl.auto" value="create" />
+				<property name="hibernate.hbm2ddl.auto" value="create"/>
 		</properties>  -->
 	</persistence-unit>
 </persistence>

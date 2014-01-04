@@ -7,56 +7,112 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui">
 <h:head>
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>	
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<h:outputStylesheet library="css" name="style.css" />
 	<title>Orcamentos</title>
 </h:head>
 <h:body>
-	<h3>Cadastro de Or&ccedil;amentos</h3>
-	<h:messages showDetail="false"/>
-		<h:form id="frm_orcamento" prependId="false">
-		<p:panelGrid columns="2">
-			<p:outputLabel value="Data Inicial"/>
-			<p:inputText value="#{orcamentoBean.dataInicial}"/>
-		
-			<p:outputLabel value="Data Final"/>
-			<p:inputText value="#{orcamentoBean.dataFinal}"/>
-		
-			<p:commandButton value="Inclui" action="#{orcamentoBean.inclui}" process="frm_orcamento"
-				update="tab_orcamento"/>
-			
-			</p:panelGrid>
-			<br/> <br/>
-			<p:dataTable id="tab_orcamento" value="#{orcamentoBean.orcamentos}" var="orcamento" 
-					rowKey="#{orcamento.id}" selectionMode="single" selection="#{orcamentoBean.selecao}">
-				<p:column headerText="ID">
-					<h:outputText value="#{orcamento.id}" />
-				</p:column>
+	<h2>
+		<p:outputLabel> Cadastro de Or&ccedil;amentos</p:outputLabel>
+	</h2>
+	<h:form id="frm_orcamento">
+		<p:messages id="msg_orcamento" showDetail="true" showSummary="false" />
+		<p:panelGrid columns="2" id="pnl_orcamento">
+			<p:outputLabel value="Data Inicial" />
+			<p:inputText id="data_inicial"
+				value="#{orcamentoBean.orcamentoEdicao.dataInicial}" required="true"
+				requiredMessage="Data Inicial &ecutte; obrigat&oacutte;ria">
+				<f:convertDateTime dateStyle="medium"/>
+			</p:inputText>
+
+			<p:outputLabel value="Data Final" />
+			<p:inputText id="data_final"
+				value="#{orcamentoBean.orcamentoEdicao.dataFinal}" required="true"
+				requiredMessage="Data final &eacutte; obrigat&oacute;ria">
+				<f:convertDateTime dateStyle="medium"/>
+			</p:inputText>
+
+			<p:outputLabel value="Observa&ccedil;&atilde;o" />
+			<p:inputText id="observacao"
+				value="#{orcamentoBean.orcamentoEdicao.observacao}" />
+
+			<p:commandButton value="Inclui" action="#{orcamentoBean.inclui}"
+				process="@form" update="@form :frm_tab_orcamento:tab_orcamento" />
+		</p:panelGrid>
+	</h:form>
+
+	<br />
+	<br />
+
+	<h:form id="frm_tab_orcamento">
+		<p:dataTable id="tab_orcamento" value="#{orcamentoBean.orcamentos}"
+			var="orcamento">
+			<!--  rowKey="#{orcamento.id}" selectionMode="single"  selection="#{orcamentoBean.selecao}" -->
+
+			<p:column headerText="ID">
+				<h:outputText value="#{orcamento.id}" />
+			</p:column>
+
+			<p:column headerText="Data Inicial">
+				<h:outputText value="#{orcamento.dataInicial}">
+					<f:convertDateTime dateStyle="medium" />
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Data Final">
+				<h:outputText value="#{orcamento.dataFinal}">
+					<f:convertDateTime dateStyle="medium" />
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Total Devido">
+				<h:outputText value="#{orcamento.valorTotalDevido}">
+					<f:convertNumber minFractionDigits="2" />
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Total Recebido">
+				<h:outputText value="#{orcamento.valorTotalRecebido}">
+					<f:convertNumber minFractionDigits="2" />
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Total Pendente">
+				<h:outputText value="#{orcamento.valorTotalPendente}">
+					<f:convertNumber minFractionDigits="2" />
+				</h:outputText>
+			</p:column>
+
+			<p:column>
+				<!-- exclusao de orcamento -->
+				<p:commandButton onclick="PF('conf_orcamento').show()" icon="icone_exclusao" title="exclui orçamento">
+					<f:setPropertyActionListener target="#{orcamentoBean.idExclusao}" value="#{orcamento.id}"/>  
+				</p:commandButton>
 				
-				<p:column headerText="Data Inicial">
-					<h:outputText value="#{orcamento.dataInicial}" />
-				</p:column>
-				
-				<p:column headerText="Data Final">
-					<h:outputText value="#{orcamento.dataFinal}" />
-				</p:column>
-				
-				<p:column headerText="Total Devido">
-					<h:outputText value="#{orcamento.valorTotalDevido}" />
-				</p:column>
-				
-				<p:column headerText="Total Recebido">
-					<h:outputText value="#{orcamento.valorTotalRecebido}" />
-				</p:column>
-				
-				<p:column headerText="Total Pendente">
-					<h:outputText value="#{orcamento.valorTotalPendente}" />
-				</p:column>
-				
-			</p:dataTable>
-			<p:commandButton value="Abre" action="#{orcamentoBean.abre}"/>
-			<p:commandButton value="Exclui" action="#{orcamentoBean.exclui}"/>
-		</h:form>
-	
+				<!-- abertura de orcamento -->
+				<p:commandButton  action="#{orcamentoBean.abre}" icon="icone_alteracao" title="Detalha valores"
+					ajax="false">
+					<f:setPropertyActionListener target="#{orcamentoBean.idEdicao}" 
+						value="#{orcamento.id}"/>
+				</p:commandButton>
+			</p:column>
+
+		</p:dataTable>
+
+		<p:confirmDialog message="Confirma a exclusao do orçamento ${orcamento.id}?"
+			widgetVar="conf_orcamento" header="Orçamentos" severity="alert">
+
+			<p:commandButton value="Sim"
+				action="#{orcamentoBean.exclui()}"
+				update="tab_orcamento :frm_orcamento:pnl_orcamento :frm_orcamento:msg_orcamento"
+				oncomplete="PF('conf_orcamento').hide()" />
+			<p:commandButton value="Não" onclick="PF('conf_orcamento').hide()" />
+
+		</p:confirmDialog>
+
+		<br/>
+		<br/>
+
+	</h:form>
 </h:body>
 </html>

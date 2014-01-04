@@ -1,6 +1,5 @@
 package financeiro.model.service;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -8,8 +7,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaQuery;
 
 /**
  * 
@@ -40,6 +37,15 @@ public class ServiceGeneric <T,PK> implements Service <T,Integer>{
 		entityManager.remove(t);
 	}
 	
+	public void remove(Integer pk, Class<T> classe) {
+		T t = entityManager.find(classe, pk);
+		if (t==null) {
+			throw new RuntimeException("Objeto class " + classe.getName() + " #" + pk +
+					 " nao encontrado");
+		}
+		entityManager.remove(t);
+	}
+	
 	@Override
 	public T encontra (Integer pk, Class<T> classe) {
 		return entityManager.find(classe, pk);
@@ -47,9 +53,8 @@ public class ServiceGeneric <T,PK> implements Service <T,Integer>{
 	
 	@Override
 	public List<T> listaTodos (Class<T> classe) {
-		CriteriaQuery<T> criteria = entityManager.getCriteriaBuilder().createQuery(classe);
-		TypedQuery<T> typedQuery = entityManager.createQuery(criteria);
-		return typedQuery.getResultList();
+		Query query = entityManager.createQuery("select f from "+ classe.getName()+ " f");
+		return query.getResultList();
 	}
 	
 	@SuppressWarnings("unchecked")

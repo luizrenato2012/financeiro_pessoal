@@ -17,7 +17,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name="financ.pagamento")
+@Table(name="pagamento", schema="financ")
 @SequenceGenerator(name="SEQ_ID_PAGAMENTO",sequenceName="financ.seq_id_pagamento",allocationSize=1)
 public class Pagamento implements Serializable {
 	
