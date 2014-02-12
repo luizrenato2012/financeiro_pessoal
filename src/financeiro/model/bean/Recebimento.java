@@ -11,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -20,6 +22,10 @@ import javax.persistence.TemporalType;
 @Table(name="recebimento", schema="financ")
 @SequenceGenerator(name="SEQ_ID_RECEBIMENTO", sequenceName="financ.seq_id_recebimento",
 		allocationSize=1)
+@NamedQueries({
+	@NamedQuery(name="Recebimento.findByOrcamento", query="select r from Recebimento r inner join r.orcamento o "+
+			" where o.id= :idOrcamento")
+})
 public class Recebimento implements Serializable {
 
 	private static final long serialVersionUID = -2052768367354551920L;
@@ -49,6 +55,8 @@ public class Recebimento implements Serializable {
 
 	public Recebimento() {
 		id=null;
+		data=null;
+		valor=0d;
 	}
 	
 	public Integer getId() {

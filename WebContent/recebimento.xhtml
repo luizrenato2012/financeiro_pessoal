@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<ui:composition template="template/cadastro.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">.:Cadastro de Recebimentos</ui:define>
+
+
+	<ui:define name="resumo_orcamento">
+		<h:form id="frm_resumo_recebimento">
+			<p:panelGrid id="pnl_resumo_recebimento" columns="2">
+				<p:outputLabel value="Orçamento Nº" />
+				<h:outputText value="#{sessaoBean.orcamentoAtual.id}">
+					<f:convertNumber minIntegerDigits="2" />
+				</h:outputText>
+
+				<p:outputLabel value="Data Inicial" />
+				<h:outputText value="#{sessaoBean.orcamentoAtual.dataInicial}">
+					<f:convertDateTime dateStyle="medium" />
+				</h:outputText>
+
+				<p:outputLabel value="Data Final" />
+				<h:outputText value="#{sessaoBean.orcamentoAtual.dataFinal}">
+					<f:convertDateTime dateStyle="medium" />
+				</h:outputText>
+
+				<p:outputLabel value="Total Recebido" />
+				<h:outputText
+					value="#{sessaoBean.orcamentoAtual.valorTotalRecebido}">
+					<f:convertNumber minFractionDigits="2" />
+				</h:outputText>
+
+				<p:outputLabel value="Disponivel na Conta" />
+				<h:outputText value="#{sessaoBean.orcamentoAtual.valorDisponivel}">
+					<f:convertNumber minFractionDigits="2" />
+				</h:outputText>
+
+				<p:outputLabel value="Resultado" />
+				<h:outputText value="#{sessaoBean.orcamentoAtual.valorResultado}">
+					<f:convertNumber minFractionDigits="2" />
+				</h:outputText>
+
+			</p:panelGrid>
+		</h:form>
+	</ui:define>
+
+	<ui:define name="header">
+		<h3>
+			<p:outputLabel>
+				<h:outputFormat value="Recebimentos" />
+			</p:outputLabel>
+		</h3>
+	</ui:define>
+
+	<ui:define name="barra_botoes">
+		<h:form>
+			<p:commandButton icon="icone_inclusao"
+				title="inclui recebimento selecionada"
+				onclick="PF('dlg_inclusao').show()" />
+			<p:commandButton icon="icone_saida" title="voltar ao orçamento"
+				action="#{recebimentoBean.voltaOrcamento()}" ajax="false"/>
+			<br />
+		</h:form>
+
+		<p:dialog id="dlg_inclusao_recebimento" widgetVar="dlg_inclusao"
+			modal="true" resizable="false" header="Inclusão de Recebimento">
+			<h:form id="frm_dlg_exclusao">
+				<p:panelGrid id="pnl_recebimento" columns="2">
+					<p:outputLabel value="Descrição" />
+					<p:inputText value="#{recebimentoBean.recebimento.descricao}"
+						required="true" requiredMessage="Descrição obrigatória" />
+
+					<p:outputLabel value="Valor" />
+					<p:inputText value="#{recebimentoBean.recebimento.valor}"
+						required="true" requiredMessage="Valor obrigatório" />
+
+					<p:outputLabel value="Data" />
+					<p:inputMask value="#{recebimentoBean.recebimento.data}"
+						mask="99/99/9999" required="true"
+						requiredMessage="Data obrigatória">
+						<f:convertDateTime dateStyle="medium" />
+					</p:inputMask>
+
+					<p:commandButton value="Grava"
+						actionListener="#{recebimentoBean.inclui}"
+						oncomplete="PF('dlg_inclusao').hide()"
+						update=":frm_tab_recebimento:tbl_recebimento :frm_tab_recebimento:msg_recebimento 
+								pnl_recebimento :frm_resumo_recebimento:pnl_resumo_recebimento" />
+					<p:commandButton value="Cancela"
+						onclick="PF('dlg_inclusao').hide()" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+
+	<ui:define name="tabela">
+		<h:form id="frm_tab_recebimento">
+			<p:messages id="msg_recebimento" showDetail="true" showSummary="false" />
+
+			<p:dataTable id="tbl_recebimento" value="#{recebimentoBean.recebimentos}" var="recebimento">
+				<p:column headerText="Id">
+					<p:columnGroup>
+						<h:outputText value="#{recebimento.id}" />
+					</p:columnGroup>
+				</p:column>
+
+				<p:column headerText="Descrição">
+					<h:outputText value="#{recebimento.descricao}" />
+				</p:column>
+
+				<p:column headerText="Valor">
+					<h:outputText value="#{recebimento.valor}">
+						<f:convertNumber minFractionDigits="2" />
+					</h:outputText>
+					<f:facet name="footer">
+						<p:outputLabel value="">
+							<f:convertNumber minFractionDigits="2" />
+						</p:outputLabel>
+					</f:facet>
+				</p:column>
+
+				<p:column headerText="Data">
+					<h:outputText value="#{recebimento.data}">
+						<f:convertDateTime dateStyle="medium" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Ações">
+					<p:commandButton icon="icone_exclusao"
+						title="exclui recebimento selecionada"
+						onclick="PF('conf_exclusao').show()">
+						<f:setPropertyActionListener target="#{recebimentoBean.idExclusao}"
+							value="#{recebimento.id}" />
+					</p:commandButton>
+				</p:column>
+
+			</p:dataTable>
+		</h:form>
+
+
+
+		<p:confirmDialog widgetVar="conf_exclusao" header="recebimento"
+			message="Confirma a exclusão desta recebimento?">
+			<h:form id="frm_exclusao">
+				<p:commandButton value="Confirma"
+					actionListener="#{recebimentoBean.exclui}"
+					oncomplete="PF('conf_exclusao').hide()"
+					update=":frm_tab_recebimento:tbl_recebimento :frm_resumo_recebimento:pnl_resumo_recebimento 
+							:frm_tab_recebimento:msg_recebimento" />
+				<p:commandButton value="Cancela"
+					onclick="PF('conf_exclusao').hide()" />
+			</h:form>
+		</p:confirmDialog>
+
+
+		<br />
+	</ui:define>
+
+</ui:composition>

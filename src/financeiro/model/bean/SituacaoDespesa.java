@@ -1,7 +1,7 @@
 package financeiro.model.bean;
 
 public enum SituacaoDespesa {
-	PENDENTE("Pendente"),PAGA("Paga");
+	PENDENTE("PENDENTE"),PAGA("PAGA");
 	
 	private String name;
 	
@@ -12,5 +12,11 @@ public enum SituacaoDespesa {
 	public String getName() {
 		return name;
 	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	
 	
 }

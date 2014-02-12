@@ -7,9 +7,9 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 
 import org.jboss.logging.Logger;
 
@@ -34,25 +34,21 @@ public class OrcamentoBean implements Serializable{
 
 	private Integer idEdicao;
 	
-	@ManagedProperty(value="#{sessaoBean}")
+	@Inject
 	private SessaoBean sessaoBean;
 
 	@PostConstruct
 	private void init() {
-		log.info("post construct");
-		orcamentoEdicao = sessaoBean.getOrcamentoAtual();
-		log.info("orcamento edicao " + orcamentoEdicao);
+		orcamentoEdicao = new Orcamento();
+	//	log.info("orcamento edicao " + orcamentoEdicao);
 		orcamentos = service.listaTodos(Orcamento.class);
-	}
-
-	public OrcamentoBean() {
-		log.info("construtor orcamento ");
+		log.info("post construct");
 	}
 
 	public void inclui() {
 		log.info("incluindo orcamento");
 		FacesContext context = FacesContext.getCurrentInstance();
-		log.info("Observacao " + orcamentoEdicao.getObservacao());
+	//	log.info("Observacao " + orcamentoEdicao.getObservacao());
 
 		if (orcamentoEdicao.getDataInicial()==null) {
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", 
@@ -76,7 +72,7 @@ public class OrcamentoBean implements Serializable{
 					"Orçamento incluído com sucesso!"));
 		} catch (Exception e) {
 			e.printStackTrace();
-			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Erro ao gravar orcamento", 
+			context.addMessage("frm_orcamento", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Erro ao gravar orcamento", 
 					"Erro ao gravar orçamento"));
 		}
 	}
@@ -100,10 +96,11 @@ public class OrcamentoBean implements Serializable{
 	/** abre detalhameneto */
 	public String abre() {
 		sessaoBean.setIdOrcamentoAtual(idEdicao);
-		return "orcamento";
+		return "orcamento_new";
 	}
 	
 	public String retornaMenuOrcamento() {
+		System.out.println("Retornando orcamento");
 		sessaoBean.setIdOrcamentoAtual(null);	
 		return "menu_orcamento";
 	}
@@ -145,5 +142,9 @@ public class OrcamentoBean implements Serializable{
 		this.sessaoBean = sessaoBean;
 	}
 
+	
+	public void testeOrcamento() {
+		System.out.println("OrcamentoBean testeOrcamento");
+	}
 
 }

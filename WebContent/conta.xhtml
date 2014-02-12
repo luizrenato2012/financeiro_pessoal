@@ -1,128 +1,224 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml"
+
+<ui:composition template="template/cadastro.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui">
 
-<h:head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<h:outputStylesheet library="css" name="style.css" />
-</h:head>
 
-<h:body>
-	<h:form id="frm_conta" prependId="false">
-		<p:commandButton icon="icone_inclusao"
-			onclick="PF('dlg_conta_inclui').show()" />
+	<ui:define name="titulo">.:Cadastro de Contas:.</ui:define>
 
-		<!-- exclusao de orcamento -->
-		<p:commandButton icon="icone_exclusao" title="excluir conta"
-			actionListener="#{contaBean.exibeExclusao}"/>
-		<p:messages id="msg_conta" />
-		<p:dialog widgetVar="dlg_conta_inclui" id="dlg_conta_inclui"
-			modal="true" header="Insere conta">
-			<p:panelGrid id="pnl_conta" columns="2">
-				<p:outputLabel value="Descrição" />
-				<p:inputText value="#{contaBean.conta.descricao}" required="true"
-					requiredMessage="Descrição obrigatória" />
+	<ui:define name="resumo_orcamento">
+		<h:form id="frm_resumo_orcamento">
+			<p:panelGrid id="pnl_resumo_conta" columns="2">
+				<p:outputLabel value="Orçamento Nº" />
+				<h:outputText value="#{sessaoBean.orcamentoAtual.id}">
+					<f:convertNumber minIntegerDigits="2"/> 
+				</h:outputText>
 
-				<p:outputLabel value="Valor" />
-				<p:inputText value="#{contaBean.conta.valor}" required="true"
-					requiredMessage="Valor obrigatório" />
-
-				<p:outputLabel value="Vencimento" />
-				<p:inputText value="#{contaBean.conta.dataVencimento}"
-					required="true" requiredMessage="Date de Vencimento obrigatório">
+				<p:outputLabel value="Data Inicial" />
+				<h:outputText value="#{sessaoBean.orcamentoAtual.dataInicial}">
 					<f:convertDateTime dateStyle="medium" />
-				</p:inputText>
+				</h:outputText>
 
-				<p:commandButton value="Grava" action="#{contaBean.inclui}"
-					oncomplete="PF('dlg_conta_inclui').hide()"
-					update="pnl_conta tab_conta" />
+				<p:outputLabel value="Data Final" />
+				<h:outputText value="#{sessaoBean.orcamentoAtual.dataFinal}">
+					<f:convertDateTime dateStyle="medium" />
+				</h:outputText>
+
+				<p:outputLabel value="Total Pendente" />
+				<h:outputText
+					value="#{sessaoBean.orcamentoAtual.valorTotalPendente}">
+					<f:convertNumber minFractionDigits="2" />
+				</h:outputText>
+
+				<p:outputLabel value="Disponivel na Conta" />
+				<h:outputText value="#{sessaoBean.orcamentoAtual.valorDisponivel}">
+					<f:convertNumber minFractionDigits="2" />
+				</h:outputText>
+
+				<p:outputLabel value="Resultado" />
+				<h:outputText value="#{sessaoBean.orcamentoAtual.valorResultado}">
+					<f:convertNumber minFractionDigits="2" />
+				</h:outputText>
+
+			</p:panelGrid>
+		</h:form>
+	</ui:define>
+
+	<ui:define name="header">
+		<h3>
+			<p:outputLabel>
+				<h:outputFormat value="Contas" />
+			</p:outputLabel>
+		</h3>
+	</ui:define>
+
+	<ui:define name="barra_botoes">
+		<h:form>
+			<p:commandButton icon="icone_inclusao"
+				title="inclui conta selecionada" onclick="PF('dlg_inclusao').show()" />
+			<p:commandButton icon="icone_saida" title="voltar ao orçamento"
+				action="#{contaBean.voltaOrcamento()}" />
+			<br />
+		</h:form>
+
+		<p:dialog id="dlg_inclusao_conta" widgetVar="dlg_inclusao"
+			modal="true" resizable="false" header="Inclusão de Conta">
+			<h:form id="frm_dlg_exclusao">
+				<p:panelGrid id="pnl_conta" columns="2">
+					<p:outputLabel value="Descrição" />
+					<p:inputText value="#{contaBean.conta.descricao}" required="true"
+						requiredMessage="Descrição obrigatória" />
+
+					<p:outputLabel value="Valor" />
+					<p:inputText value="#{contaBean.conta.valor}" required="true"
+						requiredMessage="Valor obrigatório" />
+
+					<p:outputLabel value="Vencimento" />
+					<p:inputMask value="#{contaBean.conta.dataVencimento}"
+						mask="99/99/9999" required="true"
+						requiredMessage="Date de Vencimento obrigatório">
+						<f:convertDateTime dateStyle="medium" />
+					</p:inputMask>
+
+					<p:commandButton value="Grava" actionListener="#{contaBean.inclui}"
+						oncomplete="PF('dlg_inclusao').hide()"
+						update=":frm_tab_conta:tbl_conta :frm_tab_conta:msg_conta 
+								pnl_conta :frm_resumo_orcamento:pnl_resumo_conta" />
+					<p:commandButton value="Cancela"
+						onclick="PF('dlg_inclusao').hide()" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+
+
+
+	<ui:define name="tabela">
+		<h:form id="frm_tab_conta">
+			<p:messages id="msg_conta" showDetail="true" showSummary="false" />
+
+			<p:dataTable id="tbl_conta" value="#{contaBean.contas}" var="conta">
+				<p:column headerText="Id">
+					<p:columnGroup>
+						<h:outputText value="#{conta.id}" />
+					</p:columnGroup>
+				</p:column>
+
+				<p:column headerText="Descrição">
+					<h:outputText value="#{conta.descricao}"
+						styleClass="#{conta.isPendente ? 'destaque_vermelho':'normal'}" />
+				</p:column>
+
+				<p:column headerText="Valor">
+					<h:outputText value="#{conta.valor}"
+						styleClass="#{conta.isPendente ? 'destaque_vermelho':'normal'}">
+						<f:convertNumber minFractionDigits="2" />
+					</h:outputText>
+					<f:facet name="footer">
+						<p:outputLabel value="#{contaBean.totalConta}">
+							<f:convertNumber minFractionDigits="2" />
+						</p:outputLabel>
+					</f:facet>
+				</p:column>
+
+				<p:column headerText="Valor Pago">
+					<h:outputText value="#{conta.valorPago}">
+						<f:convertNumber minFractionDigits="2" />
+					</h:outputText>
+
+					<f:facet name="footer">
+						<p:outputLabel value="#{contaBean.totalPago}">
+							<f:convertNumber minFractionDigits="2" />
+						</p:outputLabel>
+					</f:facet>
+				</p:column>
+
+				<p:column headerText="Data Venc.">
+					<h:outputText value="#{conta.dataVencimento}"
+						styleClass="#{conta.isPendente ? 'destaque_vermelho':'normal'}">
+						<f:convertDateTime dateStyle="medium" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Data Pag.">
+					<h:outputText value="#{conta.dataPagamento}">
+						<f:convertDateTime dateStyle="medium" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Ações">
+					<p:commandButton icon="icone_exclusao"
+						title="exclui conta selecionada"
+						onclick="PF('conf_exclusao').show()">
+						<f:setPropertyActionListener target="#{contaBean.idExclusao}"
+							value="#{conta.id}" />
+					</p:commandButton>
+
+					<p:commandButton icon="icone_dinheiro"
+						disabled="#{conta.situacao.name.equals('PAGA')}"
+						title="paga a conta selecionada"
+						onclick="PF('dlg_pagamento').show()" update=":frm_pagamento_conta">
+						<f:setPropertyActionListener
+							target="#{contaBean.contaSelecionada}" value="#{conta}" />
+					</p:commandButton>
+				</p:column>
+
+			</p:dataTable>
+		</h:form>
+
+
+
+		<p:confirmDialog widgetVar="conf_exclusao" header="Conta"
+			message="Confirma a exclusão desta conta?">
+			<h:form id="frm_exclusao">
+				<p:commandButton value="Confirma"
+					actionListener="#{contaBean.exclui}"
+					oncomplete="PF('conf_exclusao').hide()"
+					update=":frm_tab_conta:tbl_conta :frm_resumo_orcamento:pnl_resumo_conta 
+							:frm_tab_conta:msg_conta" />
 				<p:commandButton value="Cancela"
-					onclick="PF('dlg_conta_inclui').hide()" />
-			</p:panelGrid>
+					onclick="PF('conf_exclusao').hide()" />
+			</h:form>
+		</p:confirmDialog>
+
+<p:dialog widgetVar="dlg_pagamento" header="Pagamento de Conta"
+			modal="true" resizable="false">
+			<h:form id="frm_pagamento_conta">
+				<p:panelGrid columns="2">
+					<p:outputLabel value="ID" />
+					<p:inputText value="#{contaBean.contaSelecionada.id}" readonly="true"/>
+					
+					<p:outputLabel value="Descrição" />
+					<p:inputText value="#{contaBean.contaSelecionada.descricao}" readonly="true"/>
+					
+					<p:outputLabel value="Data" />
+					<p:inputMask value="#{contaBean.contaSelecionada.dataPagamento}"
+						mask="99/99/9999" required="true"
+						requiredMessage="Data do pagamento obrigatória!">
+						<f:convertDateTime dateStyle="medium" />
+					</p:inputMask>
+
+					<p:outputLabel value="Valor Pago" />
+					<p:inputText value="#{contaBean.contaSelecionada.valorPago}"
+						required="true"
+						requiredMessage="Valor do pagamento é obrigatório!" />
+
+					<p:commandButton value="Confirma"
+						actionListener="#{contaBean.paga()}"
+						oncomplete="PF('dlg_pagamento').hide()"
+						update=":frm_tab_conta:tbl_conta :frm_resumo_orcamento:pnl_resumo_conta :frm_tab_conta:msg_conta" />
+					<p:commandButton value="Cancela" onclick="PF('dlg_pagamento').hide()" />
+				</p:panelGrid>
+			</h:form>
 		</p:dialog>
 
-		<p:dataTable id="tab_conta" value="#{contaBean.contas}" var="conta"
-			selectionMode="single" rowKey="#{conta.id}"
-			selection="#{contaBean.conta}">
-			<p:column headerText="Id">
-				<h:outputText value="#{conta.id}" />
-			</p:column>
-
-			<p:column headerText="Descrição">
-				<h:outputText value="#{conta.descricao}" />
-			</p:column>
-
-			<p:column headerText="Valor">
-				<h:outputText value="#{conta.valor}">
-					<f:convertNumber minFractionDigits="2" />
-				</h:outputText>
-			</p:column>
-
-			<p:column headerText="Valor Pago">
-				<h:outputText value="#{conta.valorPago}">
-					<f:convertNumber minFractionDigits="2" />
-				</h:outputText>
-			</p:column>
-
-			<p:column headerText="Data Venc.">
-				<h:outputText value="#{conta.dataVencimento}">
-					<f:convertDateTime dateStyle="medium" />
-				</h:outputText>
-			</p:column>
-
-			<p:column headerText="Data Pag.">
-				<h:outputText value="#{conta.dataPagamento}">
-					<f:convertDateTime dateStyle="medium" />
-				</h:outputText>
-			</p:column>
-
-			<p:column headerText="Pendente">
-				<h:outputText value="#{conta.isPendente}" />
-			</p:column>
-
-			<p:column>
-
-
-				<!-- abertura de orcamento -->
-				<p:commandButton action="#{orcamentoBean.abre}"
-					icon="icone_alteracao" title="Detalha valores" ajax="false">
-					<f:setPropertyActionListener target="#{contaBean.conta}"
-						value="#{conta}" />
-				</p:commandButton>
-
-				<p:commandButton action="#{orcamentoBean.abre}"
-					icon="icone_dinheiro" title="paga a conta" ajax="false"
-					onclick="PF('dlg_paga_conta').show()">
-					<f:setPropertyActionListener target="#{contaBean.conta}"
-						value="#{conta}" />
-				</p:commandButton>
-			</p:column>
-
-		</p:dataTable>
 		<br />
-		<br />
+	</ui:define>
+</ui:composition>
 
-		<p:dialog header="Pagamento de conta" id="dlg_paga_conta"
-			widgetVar="dlg_paga_conta">
-			<p:panelGrid columns="2">
-				<p:outputLabel value="Data" />
-				<p:inputText value="#{contaBean.conta.dataPagamento}">
-					<f:convertDateTime dateStyle="medium" />
-				</p:inputText>
-
-				<p:outputLabel value="Valor" />
-				<p:inputText value="#{contaBean.conta.valorPago}">
-					<f:convertDateTime dateStyle="medium" />
-				</p:inputText>
-				<p:commandButton value="Confirma" action="#{contaBean.paga}"
-					oncomplete="PF('dlg_paga_conta').hide()" />
-			</p:panelGrid>
-		</p:dialog>
-	</h:form>
-</h:body>
-</html>

@@ -15,10 +15,12 @@ import javax.inject.Inject;
 
 import org.jboss.logging.Logger;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 
 import financeiro.model.bean.Conta;
 import financeiro.model.bean.Orcamento;
 import financeiro.model.service.ContaService;
+import financeiro.model.service.OrcamentoService;
 
 @ManagedBean
 @ViewScoped
@@ -30,81 +32,199 @@ public class ContaBean implements Serializable {
 	@EJB
 	private ContaService contaService;
 
+	@EJB
+	private OrcamentoService orcamentoService;
+
 	private List<Conta> contas;
 	private Conta selecao;
 	private Integer idExclusao;
 	private Integer idPagamento;
 	private Orcamento orcamentoAtual;
 	private Conta conta;
+	private Conta contaSelecionada;
 
 	@Inject
 	private SessaoBean sessaoBean;
 
 	@PostConstruct
 	private void init() {
+		log.info("criando contaBean");
 		conta = new Conta();
 		try {
 			orcamentoAtual = sessaoBean.getOrcamentoAtual();
-			contas = contaService.listaPorOrcamento(orcamentoAtual.getId());
+			atualizaContas();
+			contaSelecionada = new Conta();
 		} catch (Exception e ) {
 			e.printStackTrace();
 		}
 
 	}
 
+	private void atualizaContas() {
+		contas = contaService.listaPorOrcamento(orcamentoAtual.getId());
+	}
+
 	public void inclui() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (conta==null) {
-			context.addMessage("msg_conta", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", 
+			context.addMessage("frm_tab_conta:msg_conta", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", 
 					"Conta inválida"));
 			return;
 		}
 
 		if (conta.getDataVencimento()==null) {
-			context.addMessage("msg_conta", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", 
+			context.addMessage("frm_tab_conta:msg_conta", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", 
 					"Data de vecnimento inválida"));
 			return;
 		}
 
 		if (conta.getValor()==0d) {
-			context.addMessage("msg_conta", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", 
+			context.addMessage("frm_tab_conta:msg_conta", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", 
 					"Valor inválido"));
 			return;
 		}
 
 		try {
-			conta.setOrcamento(orcamentoAtual);
-			contaService.persiste(conta);
-			contas = contaService.listaPorOrcamento(orcamentoAtual.getId());
+			log.info("inserindo conta " + conta );
+			conta.setValorPendente(conta.getValor());
+			orcamentoService.adicionaConta(conta, orcamentoAtual);
+			atualizaContas();
+			conta = new Conta();
+			//forca atualizacao do orcamento p/ atualizar painel de resumo
+			orcamentoAtual = sessaoBean.getOrcamentoAtual();
+			context.addMessage("frm_tab_conta:msg_conta", new FacesMessage(FacesMessage.SEVERITY_INFO, 
+					"", "Conta cadastrada com sucesso"));
 		} catch (Exception e) {
 			e.printStackTrace();
-			context.addMessage("msg_conta", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Erro", 
+			context.addMessage("frm_tab_conta:msg_conta", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Erro", 
 					"Erro ao incluir conta"));
 			return;
 		}
 	}
 
-	public void exibeExclusao() {
-		if (conta==null){
+	public void teste() {
+		log.info("teste de action commandButoon");
+	}
+
+	public void exibeTelaExclusao() {
+		log.info("exibe exclusao ");
+		if (contaSelecionada==null || contaSelecionada.getId()==0){
+			log.info("exibe exclusao  - conta nula");
 			RequestContext.getCurrentInstance().showMessageInDialog(
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Exclusão de conta", "Selecione uma conta "));
 		} else {
+			log.info("exibe exclusao  - abrindo tela");
 			Map<String,Object> params = new HashMap<String,Object>();
 			params.put("modal", true);
-			RequestContext.getCurrentInstance().openDialog("confirma_exclusao_conta",params,null);
+			sessaoBean.setIdContaSelecionada(contaSelecionada.getId());
+			RequestContext.getCurrentInstance().openDialog("dialogs/confirma_exclusao_conta",params,null);
 		}
 	}
 
+	public void exibeTelaPagamento() {
+		log.info("exibe tela de pagamento");
+		if (contaSelecionada==null){
+			log.info("exibe exclusao  - conta nula");
+			RequestContext.getCurrentInstance().showMessageInDialog(
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Pagamento de conta", 
+							"Selecione uma conta "));
+		} else {
+			log.info("exibe exclusao  - abrindo tela");
+			Map<String,Object> params = new HashMap<String,Object>();
+			params.put("modal", true);
+
+			RequestContext.getCurrentInstance().openDialog("dialogs/pagamento_conta",params,null);
+		}
+	}
+
+	public void fechaPagamento() {
+		log.info("fechando pagamento");
+		sessaoBean.setIdContaSelecionada(null);
+		RequestContext.getCurrentInstance().closeDialog("dialogs/pagamento_conta");
+	}
+
+	public void fechaExclusao() {
+		log.info("fechando exclusao");
+		sessaoBean.setIdContaSelecionada(null);
+		RequestContext.getCurrentInstance().closeDialog("dialogs/confirma_exclusao_conta");
+	}
+
+	public void  atualizaContas(SelectEvent event) {
+		log.info("Atualizando contas apos insercao");
+		RequestContext.getCurrentInstance().update("tab_view:tbl_conta");
+	}
+
 	public void exclui() {
-		log.info("Excluindo conta idExclusao: " + this.idExclusao);
+		try {
+			log.info("Excluindo conta idExclusao: " + this.idExclusao);
+			if (idExclusao==null || idExclusao==0) {
+				log.info("id exclusao invalida");
+				FacesContext.getCurrentInstance().addMessage("frm_tab_conta:msg_conta", 
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+								"Erro ao excluir conta", "Id da conta a excluir invalido"));
+			} else {
+				log.info("removendo conta ");
+				orcamentoService.cancelaConta(idExclusao, orcamentoAtual);
+				atualizaContas();
+			}
+		} catch (Exception e ) {
+			FacesContext.getCurrentInstance().addMessage("frm_tab_conta:msg_conta", 
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+							"Erro ao excluir conta", e.getMessage()));
+		}
 	}
 
 	public void paga() {
+		try{
+			log.info("pagamento conta: " + contaSelecionada.getDescricao());
+			if(contaSelecionada==null) {
+				FacesContext.getCurrentInstance().addMessage("frm_tab_conta:msg_conta", 
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+								"Erro ao pagar conta", "Conta selecionada invalida"));
+			} else {
+				orcamentoService.pagaConta(contaSelecionada, orcamentoAtual);
+				FacesContext.getCurrentInstance().addMessage("frm_tab_conta:msg_conta", 
+						new FacesMessage(FacesMessage.SEVERITY_INFO, 
+								"Pagamento", "Conta paga com sucesso"));
+			} 
+		}catch (Exception e ) { 
+			FacesContext.getCurrentInstance().addMessage("frm_tab_conta:msg_conta", 
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+							"Não foi possível pagar conta", e.getMessage()));
+		}
+	}
+	
+	public void exibeContaSelecionada() {
+		log.debug("Conta selecionada: " + contaSelecionada);
+	}
 
+	public String voltaOrcamento() {
+		return "orcamento_menu";
 	}
 
 	public List<Conta> getContas() {
 		return contas;
+	}
+
+	public Double getTotalConta() {
+		double total = Double.valueOf(0);
+		if (this.contas!=null && this.contas.size()>0) {
+			for(Conta conta: contas) {
+				total+=conta.getValor();
+				log.info("situacao " + conta.getSituacao());
+			}
+		}
+		return total;
+	}
+
+	public Double getTotalPago() {
+		double totalPago=Double.valueOf(0);
+		if (this.contas!=null && this.contas.size()>0) {
+			for(Conta conta: contas) {
+				totalPago+=conta.getValorPago();
+			}
+		}
+		return totalPago;
 	}
 
 	public void setContas(List<Conta> contas) {
@@ -155,6 +275,13 @@ public class ContaBean implements Serializable {
 		this.sessaoBean = sessaoBean;
 	}
 
+	public Conta getContaSelecionada() {
+		return contaSelecionada;
+	}
+
+	public void setContaSelecionada(Conta contaSelecionada) {
+		this.contaSelecionada = contaSelecionada;
+	}
 
 
 }

@@ -19,3 +19,17 @@
 .icone_dinheiro {
 		background-image: url("../resources/image/Dollar.png") !important;
 }
+
+.icone_saida {
+		background-image: url("../resources/image/Back.png") !important;
+}
+
+.destaque_vermelho {
+	color: red; 
+	font-weight: bold;
+}
+
+.normal {
+	color: black;
+	font-weight: normal;
+}

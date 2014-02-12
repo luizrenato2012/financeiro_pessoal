@@ -45,6 +45,17 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 		}
 	}
 	
+	public void cancelaConta(Integer idConta, Orcamento orcamento) {
+		try {
+			Conta conta = contaService.encontra(idConta, Conta.class);
+			orcamento.cancelaConta(conta);
+			contaService.remove(conta);
+			this.atualiza(orcamento);
+		} catch (Exception e) {
+			throw new FinanceiroException(e);
+		}
+	}
+	
 	
 	public void adicionaGasto(Gasto gasto, Orcamento orcamento) {
 		try {
@@ -56,10 +67,9 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 		}
 	}
 	
-	public void pagaConta(Conta conta , double valor,Date data) {
+	public void pagaConta(Conta conta , Orcamento orcamento ) {
 		try {
-			Orcamento orcamento = conta.getOrcamento();
-			orcamento.pagaConta(conta, valor, data);
+			orcamento.pagaConta(conta, conta.getValorPago(), conta.getDataPagamento());
 			contaService.atualiza(conta);
 			this.atualiza(orcamento);
 		} catch (Exception e) {
@@ -77,4 +87,16 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 			throw new FinanceiroException(e);
 		}
 	}
+	
+	public void cancelaRecebimento(Integer idRecebimento,Orcamento orcamento) {
+		try {
+			Recebimento recebimento = recebimentoService.encontra(idRecebimento, Recebimento.class);
+			orcamento.cancelaRecebimento(recebimento.getValor());
+			recebimentoService.remove(recebimento);
+			this.atualiza(orcamento);
+		} catch(Exception e ) {
+			throw new FinanceiroException(e);
+		}
+	}
+	
 }

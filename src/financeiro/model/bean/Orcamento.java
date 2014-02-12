@@ -158,7 +158,7 @@ public class Orcamento implements Serializable {
     	this.valorTotalContas+=conta.getValor();
     	this.valorTotalDevido+=conta.getValor();
     	this.valorTotalPendente+=conta.getValor();
-    	this.contas.add(conta);
+    //	this.contas.add(conta);
     }
     
     /** aumenta valor devido,valor pendente */
@@ -172,13 +172,12 @@ public class Orcamento implements Serializable {
     /** aumenta total pago, diminui total pendente */
     public void pagaConta(Conta conta , double valor, Date data) {
     	if (valor==0d) {
-    		throw new FinanceiroException("Pagamento com valor invalido : " + 
-    				conta.getValor());
+    		throw new FinanceiroException("Pagamento com valor invalido : " + valor);
     	}
     	conta.paga(valor, data);
     	this.valorTotalPago+=valor;
-    	this.valorTotalPendente-=valor;
-    	this.valorTotalPendente =  this.valorTotalPendente < 0 ? 0 : this.valorTotalPendente ;
+    	this.valorTotalPendente =  this.valorTotalPendente == 0d ? 0 : this.valorTotalPendente-valor;
+    	this.valorTotalDevido =  this.valorTotalDevido== 0d ? 0 : this.valorTotalDevido-valor;
     	calculaTotalDisponivel();
     }
     
@@ -195,7 +194,6 @@ public class Orcamento implements Serializable {
     }
     
     public void cancelaConta(Conta conta) {
-    	this.contas.remove(conta);
     	this.valorTotalDevido-= conta.getValor();
     	
     	if (conta.getValorPago()> 0 ) {
@@ -236,16 +234,21 @@ public class Orcamento implements Serializable {
     }
     
     public void recebe (Recebimento recebimento) {
-    	this.recebimentos.add(recebimento);
+    	//this.recebimentos.add(recebimento);
     	this.valorTotalRecebido+= recebimento.getValor();
     	calculaTotalDisponivel();
-    	this.recebimentos.add(recebimento);
+    //	this.recebimentos.add(recebimento);
     	
     }
     
     public void  cancelaPagamento(double valorPagamento) {
     	this.valorTotalPago-=valorPagamento;
     	this.valorTotalPendente+=valorPagamento;
+    	calculaTotalDisponivel();
+    }
+    
+    public void cancelaRecebimento(double valor) {
+    	this.valorTotalRecebido-=valor;
     	calculaTotalDisponivel();
     }
     

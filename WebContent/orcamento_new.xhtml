@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Orçamento</title>
+	<h:outputStylesheet library="css" name="style.css" />
+</h:head>
+
+<h:body>
+	<h:form>
+		<h3>
+			<p:outputLabel>
+				<h:outputFormat value="Orçamento: {0}">
+					<f:param value="#{orcamentoBean.orcamentoEdicao.id}" />
+				</h:outputFormat>
+			</p:outputLabel>
+		</h3>
+		
+		<div id="resumo">
+			<ui:include src="/secoes/resumo.xhtml" />
+		</div>
+
+		<ul>
+			<li><p:commandLink action="recebimento" value="Recebimentos" /></li> 
+			<li><p:commandLink action="conta" value="Contas" /></li>
+			<!-- <li><h:commandLink action="gasto_new" value="Gastos" /></li>  -->
+		</ul>
+	</h:form>
+</h:body>
+
+</html>

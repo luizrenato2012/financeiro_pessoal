@@ -23,12 +23,14 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import financeiro.util.DataUtils;
+
 @Entity
 @Table(name="conta",schema="financ")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @SequenceGenerator(name="SEQ_ID_CONTA", sequenceName="financ.seq_id_conta",allocationSize=1)
 @NamedQueries( {
-	@NamedQuery(name="Conta.findByOrcamento",query="select c from Conta c inner join c.orcamento o " +
+	@NamedQuery(name="Conta.listByOrcamento",query="select c from Conta c inner join c.orcamento o " +
 			" where o.id = :idOrcamento")
 })
 public class Conta implements Serializable {
@@ -67,7 +69,10 @@ public class Conta implements Serializable {
 	private Orcamento orcamento;
 	
 	@Transient
-	private Boolean isPendente;
+	private Boolean isPendente=Boolean.TRUE;
+	
+	@Transient
+	private Boolean isVencida;
 	
 	public Conta(String descricao, double valor, Date data) {
 		this.descricao=descricao;
@@ -168,11 +173,19 @@ public class Conta implements Serializable {
 	
 
 	public Boolean getIsPendente() {
-		return isPendente;
+		return situacao.getName().equals("PENDENTE");
 	}
 
 	public void setIsPendente(Boolean isPendente) {
 		this.isPendente = isPendente;
+	}
+	
+	public Boolean getIsVencida() {
+		return DataUtils.isAnterior(this.dataVencimento ,new Date());
+	}
+	
+	public void setIsVencida(Boolean isVencida) {
+		this.isVencida = isVencida;
 	}
 
 	@Override

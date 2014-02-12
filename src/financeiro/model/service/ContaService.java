@@ -14,7 +14,7 @@ public class ContaService extends ServiceGeneric<Conta, Integer> {
 	public List<Conta> listaPorOrcamento(Integer idOrcamento) {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("idOrcamento", idOrcamento);
-		return this.lista("Conta.findByOrcamento", params);
+		return this.lista("Conta.listByOrcamento", params);
 	}
 
 }

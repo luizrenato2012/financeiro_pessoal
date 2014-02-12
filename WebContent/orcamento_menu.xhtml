@@ -15,29 +15,29 @@
 	<h2>
 		<p:outputLabel> Cadastro de Or&ccedil;amentos</p:outputLabel>
 	</h2>
-	<h:form id="frm_orcamento">
+	<h:form id="frm_orcamento" prependId="false">
 		<p:messages id="msg_orcamento" showDetail="true" showSummary="false" />
 		<p:panelGrid columns="2" id="pnl_orcamento">
 			<p:outputLabel value="Data Inicial" />
-			<p:inputText id="data_inicial"
+			<p:inputMask id="data_inicial" mask="99/99/9999"
 				value="#{orcamentoBean.orcamentoEdicao.dataInicial}" required="true"
 				requiredMessage="Data Inicial &ecutte; obrigat&oacutte;ria">
 				<f:convertDateTime dateStyle="medium"/>
-			</p:inputText>
+			</p:inputMask>
 
 			<p:outputLabel value="Data Final" />
-			<p:inputText id="data_final"
+			<p:inputMask id="data_final" mask="99/99/9999"
 				value="#{orcamentoBean.orcamentoEdicao.dataFinal}" required="true"
 				requiredMessage="Data final &eacutte; obrigat&oacute;ria">
 				<f:convertDateTime dateStyle="medium"/>
-			</p:inputText>
+			</p:inputMask>
 
 			<p:outputLabel value="Observa&ccedil;&atilde;o" />
 			<p:inputText id="observacao"
 				value="#{orcamentoBean.orcamentoEdicao.observacao}" />
 
 			<p:commandButton value="Inclui" action="#{orcamentoBean.inclui}"
-				process="@form" update="@form :frm_tab_orcamento:tab_orcamento" />
+				process="@form" update="@form :frm_tab_orcamento:tbl_orcamento" />
 		</p:panelGrid>
 	</h:form>
 
@@ -45,9 +45,8 @@
 	<br />
 
 	<h:form id="frm_tab_orcamento">
-		<p:dataTable id="tab_orcamento" value="#{orcamentoBean.orcamentos}"
+		<p:dataTable id="tbl_orcamento" value="#{orcamentoBean.orcamentos}"
 			var="orcamento">
-			<!--  rowKey="#{orcamento.id}" selectionMode="single"  selection="#{orcamentoBean.selecao}" -->
 
 			<p:column headerText="ID">
 				<h:outputText value="#{orcamento.id}" />
@@ -104,7 +103,7 @@
 
 			<p:commandButton value="Sim"
 				action="#{orcamentoBean.exclui()}"
-				update="tab_orcamento :frm_orcamento:pnl_orcamento :frm_orcamento:msg_orcamento"
+				update="tbl_orcamento :frm_orcamento:pnl_orcamento :frm_orcamento:msg_orcamento"
 				oncomplete="PF('conf_orcamento').hide()" />
 			<p:commandButton value="Não" onclick="PF('conf_orcamento').hide()" />
 
