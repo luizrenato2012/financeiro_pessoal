@@ -17,9 +17,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * Classe que representa um tipo de conta onde sao feito vários pagamento
+ * Classe que representa um tipo de conta onde sao feito vários pagamentos
  * p. ex refeição, passagens ,etc<br>
- * sao despesas que podenm continuar a receber pagamentos mesmo sem ter valores pendentes
+ * sao despesas que podem continuar a receber pagamentos mesmo sem ter valores pendentes
  * @author Luiz Renato
  *
  */

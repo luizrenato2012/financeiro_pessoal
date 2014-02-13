@@ -1,9 +1,7 @@
 package financeiro.controller;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -106,48 +104,48 @@ public class ContaBean implements Serializable {
 		log.info("teste de action commandButoon");
 	}
 
-	public void exibeTelaExclusao() {
-		log.info("exibe exclusao ");
-		if (contaSelecionada==null || contaSelecionada.getId()==0){
-			log.info("exibe exclusao  - conta nula");
-			RequestContext.getCurrentInstance().showMessageInDialog(
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Exclusão de conta", "Selecione uma conta "));
-		} else {
-			log.info("exibe exclusao  - abrindo tela");
-			Map<String,Object> params = new HashMap<String,Object>();
-			params.put("modal", true);
-			sessaoBean.setIdContaSelecionada(contaSelecionada.getId());
-			RequestContext.getCurrentInstance().openDialog("dialogs/confirma_exclusao_conta",params,null);
-		}
-	}
+//	public void exibeTelaExclusao() {
+//		log.info("exibe exclusao ");
+//		if (contaSelecionada==null || contaSelecionada.getId()==0){
+//			log.info("exibe exclusao  - conta nula");
+//			RequestContext.getCurrentInstance().showMessageInDialog(
+//					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Exclusão de conta", "Selecione uma conta "));
+//		} else {
+//			log.info("exibe exclusao  - abrindo tela");
+//			Map<String,Object> params = new HashMap<String,Object>();
+//			params.put("modal", true);
+//			sessaoBean.setIdContaSelecionada(contaSelecionada.getId());
+//			RequestContext.getCurrentInstance().openDialog("dialogs/confirma_exclusao_conta",params,null);
+//		}
+//	}
 
-	public void exibeTelaPagamento() {
-		log.info("exibe tela de pagamento");
-		if (contaSelecionada==null){
-			log.info("exibe exclusao  - conta nula");
-			RequestContext.getCurrentInstance().showMessageInDialog(
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Pagamento de conta", 
-							"Selecione uma conta "));
-		} else {
-			log.info("exibe exclusao  - abrindo tela");
-			Map<String,Object> params = new HashMap<String,Object>();
-			params.put("modal", true);
+//	public void exibeTelaPagamento() {
+//		log.info("exibe tela de pagamento");
+///		if (contaSelecionada==null){
+//			log.info("exibe exclusao  - conta nula");
+//			RequestContext.getCurrentInstance().showMessageInDialog(
+//	/				new FacesMessage(FacesMessage.SEVERITY_ERROR, "Pagamento de conta", 
+//							"Selecione uma conta "));
+//		} else {
+//			log.info("exibe exclusao  - abrindo tela");
+//			Map<String,Object> params = new HashMap<String,Object>();
+//			params.put("modal", true);
 
-			RequestContext.getCurrentInstance().openDialog("dialogs/pagamento_conta",params,null);
-		}
-	}
+//			RequestContext.getCurrentInstance().openDialog("dialogs/pagamento_conta",params,null);
+//		}
+//	}
 
-	public void fechaPagamento() {
-		log.info("fechando pagamento");
-		sessaoBean.setIdContaSelecionada(null);
-		RequestContext.getCurrentInstance().closeDialog("dialogs/pagamento_conta");
-	}
+//	public void fechaPagamento() {
+//		log.info("fechando pagamento");
+//		sessaoBean.setIdContaSelecionada(null);
+//		RequestContext.getCurrentInstance().closeDialog("dialogs/pagamento_conta");
+//	}
 
-	public void fechaExclusao() {
-		log.info("fechando exclusao");
-		sessaoBean.setIdContaSelecionada(null);
-		RequestContext.getCurrentInstance().closeDialog("dialogs/confirma_exclusao_conta");
-	}
+//	public void fechaExclusao() {
+//		log.info("fechando exclusao");
+//		sessaoBean.setIdContaSelecionada(null);
+//		RequestContext.getCurrentInstance().closeDialog("dialogs/confirma_exclusao_conta");
+//	}
 
 	public void  atualizaContas(SelectEvent event) {
 		log.info("Atualizando contas apos insercao");
@@ -199,7 +197,7 @@ public class ContaBean implements Serializable {
 	}
 
 	public String voltaOrcamento() {
-		return "orcamento_menu";
+		return "orcamento_new";
 	}
 
 	public List<Conta> getContas() {
@@ -211,7 +209,7 @@ public class ContaBean implements Serializable {
 		if (this.contas!=null && this.contas.size()>0) {
 			for(Conta conta: contas) {
 				total+=conta.getValor();
-				log.info("situacao " + conta.getSituacao());
+			//	log.info("situacao " + conta.getSituacao());
 			}
 		}
 		return total;

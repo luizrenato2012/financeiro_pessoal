@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	
+<!-- 	<p:outputLabel><h4>
+			<h:outputFormat value="Resumo do Orçamento {0}">
+				<f:param name="#{sessaoBean.orcamentoAtual.id}"/>
+			</h:outputFormat>
+			</h4>
+		</p:outputLabel>  -->
+		<p:panelGrid columns="2">
+			<p:outputLabel value="Total Recebido" />
+			<h:outputText
+				value="#{sessaoBean.orcamentoAtual.valorTotalRecebido}">
+				<f:convertNumber minFractionDigits="2" />
+			</h:outputText>
+
+			<p:outputLabel value="Total Despesas" />
+			<h:outputText
+				value="#{sessaoBean.orcamentoAtual.valorTotalDevido}">
+				<f:convertNumber minFractionDigits="2" />
+			</h:outputText>
+
+			<p:outputLabel value="Total Pago" />
+			<h:outputText value="#{sessaoBean.orcamentoAtual.valorTotalPago}">
+				<f:convertNumber minFractionDigits="2" />
+			</h:outputText>
+
+			<p:outputLabel value="Total Pendente" />
+			<h:outputText
+				value="#{sessaoBean.orcamentoAtual.valorTotalPendente}">
+				<f:convertNumber minFractionDigits="2" />
+			</h:outputText>
+
+			<p:outputLabel value="Disponivel na Conta" />
+			<h:outputText
+				value="#{sessaoBean.orcamentoAtual.valorDisponivel}">
+				<f:convertNumber minFractionDigits="2" />
+			</h:outputText>
+
+			<p:outputLabel value="Resultado" />
+			<h:outputText value="#{sessaoBean.orcamentoAtual.valorResultado}">
+				<f:convertNumber minFractionDigits="2" />
+			</h:outputText>
+
+		</p:panelGrid>
+</ui:composition>

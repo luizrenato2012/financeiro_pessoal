@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<h:outputStylesheet library="css" name="style.css" />
+</h:head>
+
+<h:body>
+	<p:panelGrid columns="2">
+		<p:outputLabel value="Total Recebido" />
+		<h:outputText
+			value="#{orcamentoBean.orcamentoEdicao.valorTotalRecebido}">
+			<f:convertNumber minFractionDigits="2" />
+		</h:outputText>
+
+		<p:outputLabel value="Total Despesas" />
+		<h:outputText
+			value="#{orcamentoBean.orcamentoEdicao.valorTotalDevido}">
+			<f:convertNumber minFractionDigits="2" />
+		</h:outputText>
+
+		<p:outputLabel value="Total Pago" />
+		<h:outputText value="#{orcamentoBean.orcamentoEdicao.valorTotalPago}">
+			<f:convertNumber minFractionDigits="2" />
+		</h:outputText>
+
+		<p:outputLabel value="Total Pendente" />
+		<h:outputText
+			value="#{orcamentoBean.orcamentoEdicao.valorTotalPendente}">
+			<f:convertNumber minFractionDigits="2" />
+		</h:outputText>
+
+		<p:outputLabel value="Disponivel na Conta" />
+		<h:outputText value="#{orcamentoBean.orcamentoEdicao.valorDisponivel}">
+			<f:convertNumber minFractionDigits="2" />
+		</h:outputText>
+
+		<p:outputLabel value="Resultado" />
+		<h:outputText value="#{orcamentoBean.orcamentoEdicao.valorResultado}">
+			<f:convertNumber minFractionDigits="2" />
+		</h:outputText>
+
+	</p:panelGrid>
+	<p:commandButton value="Teste" action="#{orcamentoBean.testeOrcamento}" />
+</h:body>
+</html>

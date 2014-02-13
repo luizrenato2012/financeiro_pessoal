@@ -51,7 +51,7 @@ public class SessaoBean implements Serializable{
 	}
 
 	public void setIdOrcamentoAtual(Integer id) {
-		//log.info("setando idOrcamentoAtual " + id);
+		log.info("setando idOrcamentoAtual " + id);
 		sessao.setAttribute("idOrcamentoAtual", id);
 	}
 

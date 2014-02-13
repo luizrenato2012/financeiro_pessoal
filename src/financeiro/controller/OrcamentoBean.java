@@ -95,6 +95,7 @@ public class OrcamentoBean implements Serializable{
 
 	/** abre detalhameneto */
 	public String abre() {
+		log.info("idEdicao " + idEdicao);
 		sessaoBean.setIdOrcamentoAtual(idEdicao);
 		return "orcamento_new";
 	}
