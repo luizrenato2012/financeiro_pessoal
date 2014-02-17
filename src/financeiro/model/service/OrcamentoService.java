@@ -56,10 +56,21 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 		}
 	}
 	
+	public void cancelaGasto(Integer idGasto, Orcamento orcamento) {
+		try {
+			Gasto gasto = gastoService.encontra(idGasto, Gasto.class);
+			orcamento.cancelaGasto(gasto);
+			gastoService.remove(gasto);
+			this.atualiza(orcamento);
+		} catch (Exception e) {
+			throw new FinanceiroException(e);
+		}
+	}
 	
 	public void adicionaGasto(Gasto gasto, Orcamento orcamento) {
 		try {
 			orcamento.adicionaGasto(gasto);
+			gasto.setOrcamento(orcamento);
 			gastoService.persiste(gasto);
 			this.atualiza(orcamento);
 		} catch (Exception e) {

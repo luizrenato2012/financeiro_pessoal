@@ -40,6 +40,7 @@ public class ContaBean implements Serializable {
 	private Orcamento orcamentoAtual;
 	private Conta conta;
 	private Conta contaSelecionada;
+	private Double totalGasto;
 
 	@Inject
 	private SessaoBean sessaoBean;
@@ -98,10 +99,6 @@ public class ContaBean implements Serializable {
 					"Erro ao incluir conta"));
 			return;
 		}
-	}
-
-	public void teste() {
-		log.info("teste de action commandButoon");
 	}
 
 //	public void exibeTelaExclusao() {
@@ -281,5 +278,13 @@ public class ContaBean implements Serializable {
 		this.contaSelecionada = contaSelecionada;
 	}
 
+	public Double getTotalGasto() {
+		return totalGasto;
+	}
+
+	public void setTotalGasto(Double totalGasto) {
+		this.totalGasto = totalGasto;
+	}
+	
 
 }

@@ -20,7 +20,7 @@ import javax.persistence.Query;
 public class ServiceGeneric <T,PK> implements Service <T,Integer>{
 
 	@PersistenceContext(name="financPU")
-	private EntityManager entityManager;
+	protected EntityManager entityManager;
 
 	@Override
 	public void persiste(T t) {

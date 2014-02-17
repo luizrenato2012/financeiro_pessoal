@@ -166,7 +166,7 @@ public class Orcamento implements Serializable {
     	this.valorTotalGastos+=gasto.getValor();
     	this.valorTotalDevido+=gasto.getValor();
     	this.valorTotalPendente+=gasto.getValor();
-    	this.gastos.add(gasto);
+    	//this.gastos.add(gasto);
     }
     
     /** aumenta total pago, diminui total pendente */
@@ -208,7 +208,7 @@ public class Orcamento implements Serializable {
     
     /** deve-se cancelar os pagamentos feitos */
     public void cancelaGasto(Gasto gasto) {
-    	this.gastos.remove(gasto);
+    	//this.gastos.remove(gasto);
     	this.valorTotalDevido-=gasto.getValor();
     	
     	if (gasto.getValorPago() > 0) {

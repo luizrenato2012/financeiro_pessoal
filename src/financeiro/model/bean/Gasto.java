@@ -12,6 +12,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -19,11 +21,17 @@ import javax.persistence.TemporalType;
 /**
  * Classe que representa um tipo de conta onde sao feito vários pagamentos
  * p. ex refeição, passagens ,etc<br>
- * sao despesas que podem continuar a receber pagamentos mesmo sem ter valores pendentes
+ * sao despesas que podem continuar a receber pagamentos mesmo sem ter valores pendentes,<br>
+ * sem data de vencimento e pagamento definidas
  * @author Luiz Renato
  *
  */
 @Entity
+@NamedQueries({
+	@NamedQuery(name="Gasto.listByOrcamento",query="select g from Gasto g inner join g.orcamento o where o.id=:idOrcamento"),
+	@NamedQuery(name="Gasto.listPagamento", query="select p from Gasto g inner join g.pagamentos p where g.id=:idGasto")
+
+})
 public class Gasto extends Conta {
 	
 	/** valor do gasto pode ser diferente do valor pago quando o pago ultrapassa o previsto*/
