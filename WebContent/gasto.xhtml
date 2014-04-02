@@ -1,0 +1,234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<ui:composition template="template/cadastro.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<ui:define name="titulo">.:Cadastro de Gastos:.</ui:define>
+
+	<ui:define name="resumo_orcamento">
+		<h:form id="frm_resumo_orcamento">
+			<p:panelGrid id="pnl_resumo_gasto" columns="2">
+				<p:outputLabel value="Orçamento Nº" />
+				<h:outputText value="#{sessaoBean.orcamentoAtual.id}">
+					<f:convertNumber minIntegerDigits="2"/> 
+				</h:outputText>
+
+				<p:outputLabel value="Data Inicial" />
+				<h:outputText value="#{sessaoBean.orcamentoAtual.dataInicial}">
+					<f:convertDateTime dateStyle="medium" />
+				</h:outputText>
+
+				<p:outputLabel value="Data Final" />
+				<h:outputText value="#{sessaoBean.orcamentoAtual.dataFinal}">
+					<f:convertDateTime dateStyle="medium" />
+				</h:outputText>
+
+				<p:outputLabel value="Total Pendente" />
+				<h:outputText
+					value="#{sessaoBean.orcamentoAtual.valorTotalPendente}">
+					<f:convertNumber minFractionDigits="2" />
+				</h:outputText>
+
+				<p:outputLabel value="Disponivel na Conta" />
+				<h:outputText value="#{sessaoBean.orcamentoAtual.valorDisponivel}">
+					<f:convertNumber minFractionDigits="2" />
+				</h:outputText>
+
+				<p:outputLabel value="Resultado" />
+				<h:outputText value="#{sessaoBean.orcamentoAtual.valorResultado}">
+					<f:convertNumber minFractionDigits="2" />
+				</h:outputText>
+
+			</p:panelGrid>
+		</h:form>
+	</ui:define>
+
+	<ui:define name="header">
+		<h3>
+			<p:outputLabel>
+				<h:outputFormat value="Gastos" />
+			</p:outputLabel>
+		</h3>
+	</ui:define>
+
+	<ui:define name="barra_botoes">
+		<h:form>
+			<p:commandButton icon="icone_inclusao"
+				title="inclui gasto selecionado" onclick="PF('dlg_inclusao').show()" />
+			<p:commandButton icon="icone_saida" title="voltar ao orçamento"
+				action="#{gastoBean.voltaOrcamento()}" ajax="false"/>
+			<br />
+		</h:form>
+
+		<p:dialog id="dlg_inclusao_gasto" widgetVar="dlg_inclusao"
+			modal="true" resizable="false" header="Inclusão de Gasto">
+			<h:form id="frm_dlg_exclusao">
+				<p:panelGrid id="pnl_gasto" columns="2">
+					<p:outputLabel value="Descrição" />
+					<p:inputText value="#{gastoBean.gasto.descricao}" required="true"
+						requiredMessage="Descrição obrigatória" />
+
+					<p:outputLabel value="Valor" />
+					<p:inputText value="#{gastoBean.gasto.valor}" required="true"
+						requiredMessage="Valor obrigatório" />
+
+					<p:outputLabel value="Data Inicial" />
+					<p:inputMask value="#{gastoBean.gasto.dataInicial}"
+						mask="99/99/9999" required="true"
+						requiredMessage="Date Inicial obrigatório">
+						<f:convertDateTime dateStyle="medium" />
+					</p:inputMask>
+					
+					<p:outputLabel value="Data Final" />
+					<p:inputMask value="#{gastoBean.gasto.dataFinal}"
+						mask="99/99/9999" required="true"
+						requiredMessage="Date Final obrigatório">
+						<f:convertDateTime dateStyle="medium" />
+					</p:inputMask>
+
+					<p:commandButton value="Grava" actionListener="#{gastoBean.inclui}"
+						oncomplete="PF('dlg_inclusao').hide()"
+						update=":frm_tab_gasto:tbl_gasto :frm_tab_gasto:msg_gasto pnl_gasto 
+							:frm_resumo_orcamento:pnl_resumo_gasto"/> 
+						
+					<p:commandButton value="Cancela" onclick="PF('dlg_inclusao').hide()" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+
+
+
+	<ui:define name="tabela">
+		<h:form id="frm_tab_gasto">
+			<p:messages id="msg_gasto" showDetail="true" showSummary="false" />
+
+			<p:dataTable id="tbl_gasto" value="#{gastoBean.gastos}" var="gasto">
+				<p:column headerText="Id">
+					<p:columnGroup>
+						<h:outputText value="#{gasto.id}" />
+					</p:columnGroup>
+				</p:column>
+
+				<p:column headerText="Descrição">
+					<h:outputText value="#{gasto.descricao}"
+						styleClass="#{gasto.isPendente ? 'destaque_vermelho':'normal'}" />
+				</p:column>
+
+				<p:column headerText="Valor">
+					<h:outputText value="#{gasto.valor}"
+						styleClass="#{gasto.isPendente ? 'destaque_vermelho':'normal'}">
+						<f:convertNumber minFractionDigits="2" />
+					</h:outputText>
+					<f:facet name="footer">
+						<p:outputLabel value="#{gastoBean.totalGasto}">
+							<f:convertNumber minFractionDigits="2" />
+						</p:outputLabel>
+					</f:facet>
+				</p:column>
+
+				<p:column headerText="Valor Pago">
+					<h:outputText value="#{gasto.valorPago}">
+						<f:convertNumber minFractionDigits="2" />
+					</h:outputText>
+
+					<f:facet name="footer">
+						<p:outputLabel value="#{gastoBean.totalPago}">
+							<f:convertNumber minFractionDigits="2" />
+						</p:outputLabel>
+					</f:facet>
+				</p:column>
+				
+				<p:column headerText="Valor Pendente">
+					<h:outputText value="#{gasto.valorPendente}">
+						<f:convertNumber minFractionDigits="2" />
+					</h:outputText>
+
+				</p:column>  
+
+				<p:column headerText="Ações">
+					<p:commandButton icon="icone_exclusao"
+						title="exclui gasto selecionada"
+						onclick="PF('conf_exclusao').show()">
+						<f:setPropertyActionListener target="#{gastoBean.idExclusao}"
+							value="#{gasto.id}" />
+					</p:commandButton>
+
+					<p:commandButton icon="icone_dinheiro"
+						disabled="#{gasto.situacao.name.equals('PAGA')}"
+						title="registra pagamento do gasto selecionado"
+						onclick="PF('dlg_pagamento').show()" update=":frm_pagamento_gasto">
+						<f:setPropertyActionListener
+							target="#{gastoBean.gastoSelecionado}" value="#{gasto}" />
+					</p:commandButton>
+				</p:column>
+
+			</p:dataTable>
+		</h:form>
+
+
+
+		<p:confirmDialog widgetVar="conf_exclusao" header="Gasto" message="Confirma a exclusão do gasto?">
+			<h:form id="frm_exclusao">
+				<p:commandButton value="Confirma"
+					actionListener="#{gastoBean.exclui}"
+					oncomplete="PF('conf_exclusao').hide()"
+					update=":frm_tab_gasto:tbl_gasto :frm_resumo_orcamento:pnl_resumo_gasto :frm_tab_gasto:msg_gasto" />
+				<p:commandButton value="Cancela"  onclick="PF('conf_exclusao').hide()" />
+			</h:form>
+		</p:confirmDialog>
+
+		<p:dialog widgetVar="dlg_pagamento" header="Registra Pagamento de Gasto" modal="true" resizable="false">
+			<h:form id="frm_pagamento_gasto">
+				<p:messages id="msg_pagamento"/>
+				<p:panelGrid columns="2" id="pnl_pagamento">
+					<p:outputLabel value="ID" />
+					<p:inputText value="#{pagamentoBean.gasto.id}" readonly="true"/>
+					
+					<p:outputLabel value="Data" />
+					<p:inputMask value="#{pagamentoBean.pagamento.data}"
+						mask="99/99/9999" required="true"
+						requiredMessage="Data do pagamento obrigatória!">
+						<f:convertDateTime dateStyle="medium" />
+					</p:inputMask>
+
+					<p:outputLabel value="Valor Pago" />
+					<p:inputText value="#{pagamentoBean.pagamento.valor}"
+						required="true"
+						requiredMessage="Valor do pagamento é obrigatório!" />
+
+					<p:commandButton value="Confirma"
+						actionListener="#{pagamentoBean.paga()}"
+						oncomplete="PF('dlg_pagamento').hide()"
+						update="tbl_pagamento pnl_pagamento msg_pagamento" />
+					<p:commandButton value="Cancela" onclick="PF('dlg_pagamento').hide()" />
+				</p:panelGrid>
+				
+				<p:dataTable id="tbl_pagamento" value="#{pagamentoBean.pagamentos}" var="pagamento">
+					<p:column headerText="Id">
+						<h:outputText value="#{pagamento.id}" />
+					</p:column>
+					<p:column headerText="Data">
+						<h:outputText value="#{pagamento.data}" />
+					</p:column>
+					<p:column headerText="Valor">
+						<h:outputText value="#{pagamento.valor}" />
+					</p:column>
+					<p:column headerText="Ações">
+						<p:commandButton icon="icone_dinheiro" action="#{pagamentoBean.exclui(pagamento.id)}"/>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<br />
+	</ui:define>
+</ui:composition>
+

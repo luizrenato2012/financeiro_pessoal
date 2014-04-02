@@ -10,8 +10,11 @@
 		<class>financeiro.model.bean.Recebimento</class>
 		<class>financeiro.model.bean.Usuario</class>
 		<class>financeiro.model.bean.RegistroLog</class>
-	<!-- <properties>
-				<property name="hibernate.hbm2ddl.auto" value="create"/>
-		</properties>  -->
+		<class>financeiro.model.beanTeste.Loja</class>
+		<class>financeiro.model.beanTeste.Produto</class>
+	 	<properties>
+				<property name="hibernate.hbm2ddl.auto" value="update"/>
+				<property name="hibernate.show_sql" value="true"/>
+		</properties>  
 	</persistence-unit>
 </persistence>

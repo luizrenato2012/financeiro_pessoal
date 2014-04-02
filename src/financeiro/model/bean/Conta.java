@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -28,6 +29,7 @@ import financeiro.util.DataUtils;
 @Entity
 @Table(name="conta",schema="financ")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="tipo_conta")
 @SequenceGenerator(name="SEQ_ID_CONTA", sequenceName="financ.seq_id_conta",allocationSize=1)
 @NamedQueries( {
 	@NamedQuery(name="Conta.listByOrcamento",query="select c from Conta c inner join c.orcamento o " +
@@ -64,7 +66,7 @@ public class Conta implements Serializable {
 	@Enumerated(EnumType.STRING)
 	protected SituacaoDespesa situacao;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.LAZY,targetEntity=Orcamento.class)
 	@JoinColumn(name="id_orcamento")
 	private Orcamento orcamento;
 	

@@ -153,13 +153,6 @@
 				</p:column>
 
 				<p:column headerText="Ações">
-					<p:commandButton icon="icone_exclusao"
-						title="exclui conta selecionada"
-						onclick="PF('conf_exclusao').show()">
-						<f:setPropertyActionListener target="#{contaBean.idExclusao}"
-							value="#{conta.id}" />
-					</p:commandButton>
-
 					<p:commandButton icon="icone_dinheiro"
 						disabled="#{conta.situacao.name.equals('PAGA')}"
 						title="paga a conta selecionada"
@@ -167,6 +160,13 @@
 						<f:setPropertyActionListener
 							target="#{contaBean.contaSelecionada}" value="#{conta}" />
 					</p:commandButton>
+					<p:commandButton icon="icone_exclusao"
+						title="exclui conta selecionada"
+						onclick="PF('conf_exclusao').show()">
+						<f:setPropertyActionListener target="#{contaBean.idExclusao}"
+							value="#{conta.id}" />
+					</p:commandButton>
+
 				</p:column>
 
 			</p:dataTable>

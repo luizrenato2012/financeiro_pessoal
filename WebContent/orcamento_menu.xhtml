@@ -83,17 +83,18 @@
 			</p:column>
 
 			<p:column>
-				<!-- exclusao de orcamento -->
-				<p:commandButton onclick="PF('conf_orcamento').show()" icon="icone_exclusao" title="exclui orçamento">
-					<f:setPropertyActionListener target="#{orcamentoBean.idExclusao}" value="#{orcamento.id}"/>  
-				</p:commandButton>
-				
 				<!-- abertura de orcamento -->
 				<p:commandButton  action="#{orcamentoBean.abre}" icon="icone_alteracao" title="Detalha valores"
 					ajax="false">
 					<f:setPropertyActionListener target="#{orcamentoBean.idEdicao}" 
 						value="#{orcamento.id}"/>
 				</p:commandButton>
+				
+				<!-- exclusao de orcamento -->
+				<p:commandButton onclick="PF('conf_orcamento').show()" icon="icone_exclusao" title="exclui orçamento">
+					<f:setPropertyActionListener target="#{orcamentoBean.idExclusao}" value="#{orcamento.id}"/>  
+				</p:commandButton>
+				
 			</p:column>
 
 		</p:dataTable>

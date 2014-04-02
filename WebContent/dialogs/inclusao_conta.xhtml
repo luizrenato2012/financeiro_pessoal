@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<h:outputStylesheet library="css" name="style.css" />
+	<title>Inclusao de Conta</title>
+</h:head>
+
+<h:body>
+	<h:form prependId="false">
+		<p:panelGrid id="pnl_conta" columns="2">
+			<p:outputLabel value="Descrição" />
+			<p:inputText value="#{contaBean.conta.descricao}" required="true"
+				requiredMessage="Descrição obrigatória" />
+
+			<p:outputLabel value="Valor" />
+			<p:inputText value="#{contaBean.conta.valor}" required="true"
+				requiredMessage="Valor obrigatório" />
+
+			<p:outputLabel value="Vencimento" />
+			<p:inputText value="#{contaBean.conta.dataVencimento}"
+				required="true" requiredMessage="Date de Vencimento obrigatório">
+				<f:convertDateTime dateStyle="medium" />
+			</p:inputText>
+
+			<p:commandButton value="Grava" actionListener="#{contaBean.inclui}">
+				<p:ajax event="dialogReturn" listener="#{contaBean.atualizaContas}"/>
+			</p:commandButton>
+			<p:commandButton value="Cancela" actionListener="#{contaBean.fechaInclusao}"/>
+		</p:panelGrid>
+	</h:form>
+</h:body>
+
+</html>

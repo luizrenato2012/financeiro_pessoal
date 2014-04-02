@@ -12,6 +12,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -19,10 +21,15 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+
 @Entity
 @Table(name="orcamento", schema="financ")
 @SequenceGenerator(name="SEQ_ID_ORCAMENTO",sequenceName="financ.seq_id_orcamento",
 	allocationSize=1)
+@NamedQueries({
+	@NamedQuery(name="Orcamento.loadContas",query="select o from Orcamento o join fetch o.contas where o.id= :id"),
+	@NamedQuery(name="Orcamento.loadGastos",query="select o from Orcamento o join fetch o.gastos where o.id= :id")
+})
 public class Orcamento implements Serializable {
 	
 	private static final long serialVersionUID = 4845673316790597578L;
@@ -68,10 +75,10 @@ public class Orcamento implements Serializable {
 	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	private List<Gasto> gastos;
 	
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="orcamento")
 	private List<Conta> contas;
 	
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER,mappedBy="orcamento")
 	private List<Recebimento> recebimentos;
 	
 	@Column(length=100)
@@ -325,6 +332,18 @@ public class Orcamento implements Serializable {
 				+ ", \nvalorDisponivel=" + valorDisponivel
 				+ ", \ngetValorResultado()=" + getValorResultado() + "]";
 	}
+	
+	
+
+	public void setGastos(List<Gasto> gastos) {
+		this.gastos = gastos;
+	}
+
+
+	public void setContas(List<Conta> contas) {
+		this.contas = contas;
+	}
+
 
 	public static void main(String[] args) {
 		Orcamento orcamento = new Orcamento();

@@ -10,6 +10,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import javax.persistence.Query;
 
 import org.jboss.logging.Logger;
 
@@ -105,8 +106,7 @@ public class OrcamentoBean implements Serializable{
 		sessaoBean.setIdOrcamentoAtual(null);	
 		return "menu_orcamento";
 	}
-
-
+	
 	public List<Orcamento> getOrcamentos() {
 		return orcamentos;
 	}
