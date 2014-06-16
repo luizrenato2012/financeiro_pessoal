@@ -10,6 +10,14 @@
 	xmlns:p="http://primefaces.org/ui">
 
 	<ui:define name="titulo">.:Cadastro de Recebimentos:.</ui:define>
+	
+	<ui:define name="header">
+		<h3>
+			<p:outputLabel>
+				<h:outputFormat value="Recebimentos" />
+			</p:outputLabel>
+		</h3>
+	</ui:define>
 
 
 	<ui:define name="resumo_orcamento">
@@ -50,22 +58,25 @@
 		</h:form>
 	</ui:define>
 
-	<ui:define name="header">
-		<h3>
-			<p:outputLabel>
-				<h:outputFormat value="Recebimentos" />
-			</p:outputLabel>
-		</h3>
-	</ui:define>
 
 	<ui:define name="barra_botoes">
 		<h:form>
-			<p:commandButton icon="icone_inclusao"
-				title="inclui recebimento selecionada"
-				onclick="PF('dlg_inclusao').show()" />
-			<p:commandButton icon="icone_saida" title="voltar ao orçamento"
-				action="#{recebimentoBean.voltaOrcamento()}" ajax="false"/>
-			<br />
+			<p:toolbar>
+				<p:toolbarGroup align="left">
+					<p:commandButton icon="icone_inclusao"
+						title="inclui recebimento selecionada"
+						onclick="PF('dlg_inclusao').show()" value="Inclui" />
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+				<span class="ui-separator">
+                	<span class="ui-icon ui-icon-grip-dotted-vertical" />
+            	</span>			
+					<p:commandButton icon="icone_saida" title="voltar ao orçamento"
+						action="#{recebimentoBean.voltaOrcamento()}" ajax="false"
+						value="Voltar" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
 		</h:form>
 
 		<p:dialog id="dlg_inclusao_recebimento" widgetVar="dlg_inclusao"
@@ -158,8 +169,6 @@
 			</h:form>
 		</p:confirmDialog>
 
-
-		<br />
 	</ui:define>
 
 </ui:composition>

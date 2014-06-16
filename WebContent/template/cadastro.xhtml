@@ -13,8 +13,6 @@
 </h:head>
 
 <h:body>
-	<!--  <h:form id="#{idForm}">  -->
-		<ui:debug />
 
 		<div id="header">
 			<ui:insert name="header">
@@ -22,18 +20,21 @@
 			</ui:insert>
 		</div>
 
+		<div id="barra_botoes">
+			<ui:insert name="barra_botoes" />
+		</div>
+		
 		<div id="resumo_orcamento">
 			<ui:insert name="resumo_orcamento" />
 		</div>
 
-		<div id="barra_botoes">
-			<ui:insert name="barra_botoes" />
-		</div>
+		
 
 		<div id="tabela">
 			<ui:insert name="tabela" />
 		</div>
-<!-- </h:form> -->
+		
+		<ui:debug hotkey="a"/>
 </h:body>
 
 </html>

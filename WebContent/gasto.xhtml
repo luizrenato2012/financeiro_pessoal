@@ -60,11 +60,21 @@
 
 	<ui:define name="barra_botoes">
 		<h:form>
+			<p:toolbar>
+			<p:toolbarGroup align="left">
 			<p:commandButton icon="icone_inclusao"
-				title="inclui gasto selecionado" onclick="PF('dlg_inclusao').show()" />
+				title="inclui gasto selecionado" onclick="PF('dlg_inclusao').show()" 
+				value="Inclui"/>
+			</p:toolbarGroup>
+			<span class="ui-separator">
+                <span class="ui-icon ui-icon-grip-dotted-vertical" />
+            </span>	
+            <p:toolbarGroup align="right">
 			<p:commandButton icon="icone_saida" title="voltar ao orçamento"
-				action="#{gastoBean.voltaOrcamento()}" ajax="false"/>
-			<br />
+				action="#{gastoBean.voltaOrcamento()}" ajax="false" 
+				value="Volta"/>
+			</p:toolbarGroup>	
+			</p:toolbar>
 		</h:form>
 
 		<p:dialog id="dlg_inclusao_gasto" widgetVar="dlg_inclusao"
@@ -153,6 +163,7 @@
 
 				</p:column>  
 
+				<!--  botoes de excluso de gasto e exibicao de dialog de pagamentos -->
 				<p:column headerText="Ações">
 					<p:commandButton icon="icone_exclusao"
 						title="exclui gasto selecionada"
@@ -162,17 +173,16 @@
 					</p:commandButton>
 
 					<p:commandButton icon="icone_dinheiro"
-						disabled="#{gasto.situacao.name.equals('PAGA')}"
 						title="registra pagamento do gasto selecionado"
-						onclick="PF('dlg_pagamento').show()" update=":frm_pagamento_gasto">
+						onclick="PF('dlg_pagamento').show()" update=":frm_pagamento_gasto"
+						action="#{pagamentoBean.atualizaPagamentos()}">
 						<f:setPropertyActionListener
-							target="#{gastoBean.gastoSelecionado}" value="#{gasto}" />
+							target="#{pagamentoBean.gasto}" value="#{gasto}" />
 					</p:commandButton>
 				</p:column>
 
 			</p:dataTable>
 		</h:form>
-
 
 
 		<p:confirmDialog widgetVar="conf_exclusao" header="Gasto" message="Confirma a exclusão do gasto?">
@@ -185,12 +195,11 @@
 			</h:form>
 		</p:confirmDialog>
 
+		<!-- tela de registro de pagamento -->
 		<p:dialog widgetVar="dlg_pagamento" header="Registra Pagamento de Gasto" modal="true" resizable="false">
 			<h:form id="frm_pagamento_gasto">
 				<p:messages id="msg_pagamento"/>
 				<p:panelGrid columns="2" id="pnl_pagamento">
-					<p:outputLabel value="ID" />
-					<p:inputText value="#{pagamentoBean.gasto.id}" readonly="true"/>
 					
 					<p:outputLabel value="Data" />
 					<p:inputMask value="#{pagamentoBean.pagamento.data}"
@@ -206,23 +215,26 @@
 
 					<p:commandButton value="Confirma"
 						actionListener="#{pagamentoBean.paga()}"
-						oncomplete="PF('dlg_pagamento').hide()"
 						update="tbl_pagamento pnl_pagamento msg_pagamento" />
 					<p:commandButton value="Cancela" onclick="PF('dlg_pagamento').hide()" />
 				</p:panelGrid>
 				
-				<p:dataTable id="tbl_pagamento" value="#{pagamentoBean.pagamentos}" var="pagamento">
+				<p:dataTable id="tbl_pagamento" value="#{pagamentoBean.pagamentos}" var="pagamento"
+					rendered="#{not empty pagamentoBean.pagamentos}">
 					<p:column headerText="Id">
-						<h:outputText value="#{pagamento.id}" />
+						<h:outputText value="#{pagamento.id}"/>
 					</p:column>
 					<p:column headerText="Data">
-						<h:outputText value="#{pagamento.data}" />
+						<h:outputText value="#{pagamento.data}">
+							<f:convertDateTime dateStyle="medium"/>
+						</h:outputText>
 					</p:column>
 					<p:column headerText="Valor">
 						<h:outputText value="#{pagamento.valor}" />
 					</p:column>
 					<p:column headerText="Ações">
-						<p:commandButton icon="icone_dinheiro" action="#{pagamentoBean.exclui(pagamento.id)}"/>
+						<p:commandButton icon="icone_exclusao" actionListener="#{pagamentoBean.testa()}"
+							update="tbl_pagamento"/>
 					</p:column>
 				</p:dataTable>
 			</h:form>

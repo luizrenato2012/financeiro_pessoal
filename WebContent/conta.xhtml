@@ -60,11 +60,20 @@
 
 	<ui:define name="barra_botoes">
 		<h:form>
+			<p:toolbar>
+			<p:toolbarGroup align="left">
 			<p:commandButton icon="icone_inclusao"
-				title="inclui conta selecionada" onclick="PF('dlg_inclusao').show()" />
+				title="inclui conta selecionada" onclick="PF('dlg_inclusao').show()" 
+				value="Inclui"/>
+			</p:toolbarGroup>	
+			<span class="ui-separator">
+                <span class="ui-icon ui-icon-grip-dotted-vertical" />
+            </span>
+			<p:toolbarGroup align="right">	
 			<p:commandButton icon="icone_saida" title="voltar ao orçamento"
-				action="#{contaBean.voltaOrcamento()}" ajax="false"/>
-			<br />
+				action="#{contaBean.voltaOrcamento()}" ajax="false" value="Volta"/>
+			</p:toolbarGroup>
+			</p:toolbar>
 		</h:form>
 
 		<p:dialog id="dlg_inclusao_conta" widgetVar="dlg_inclusao"

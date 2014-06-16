@@ -29,7 +29,8 @@ import javax.persistence.TemporalType;
 @Entity
 @NamedQueries({
 	@NamedQuery(name="Gasto.listByOrcamento",query="select g from Gasto g inner join g.orcamento o where o.id=:idOrcamento"),
-	@NamedQuery(name="Gasto.listPagamento", query="select p from Gasto g inner join g.pagamentos p where g.id=:idGasto")
+	@NamedQuery(name="Gasto.listPagamento", query="select p from Gasto g inner join g.pagamentos p where g.id=:idGasto"),
+	@NamedQuery(name="Gasto.loadPagamentos", query="select g from Gasto g left join fetch g.pagamentos where g.id=:idGasto")
 
 })
 public class Gasto extends Conta {
@@ -43,7 +44,7 @@ public class Gasto extends Conta {
 	@Temporal(TemporalType.DATE)
 	private Date dataFinal;
 	
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="gasto")
+	@OneToMany(cascade=CascadeType.REMOVE,fetch=FetchType.LAZY,mappedBy="gasto")
 	private List<Pagamento> pagamentos;
 	
 	public Gasto() {

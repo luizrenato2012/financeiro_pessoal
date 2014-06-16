@@ -6,19 +6,20 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.FacesContext;
+import javax.faces.webapp.FacesServlet;
 import javax.inject.Inject;
-import javax.persistence.Query;
+import javax.inject.Named;
 
+import org.apache.myfaces.extensions.cdi.core.api.scope.conversation.ViewAccessScoped;
 import org.jboss.logging.Logger;
 
 import financeiro.model.bean.Orcamento;
 import financeiro.model.service.OrcamentoService;
 
-@ManagedBean
-@ViewScoped
+@Named
+@ViewAccessScoped
 public class OrcamentoBean implements Serializable{
 
 	private static final long serialVersionUID = 8560642129797177973L;
@@ -37,72 +38,73 @@ public class OrcamentoBean implements Serializable{
 	
 	@Inject
 	private SessaoBean sessaoBean;
+	
+	private static final String MENU_ORCAMENTO = "orcamento_new";
+//	private final String FRM_ORCAMENTO = ":frm_orcamento";
+	private final String MSG_ORCAMENTO = ":frm_orcamento:msg_orcamento";
+	
 
 	@PostConstruct
 	private void init() {
 		orcamentoEdicao = new Orcamento();
-	//	log.info("orcamento edicao " + orcamentoEdicao);
 		orcamentos = service.listaTodos(Orcamento.class);
 		log.info("post construct");
 	}
 
 	public void inclui() {
-		log.info("incluindo orcamento");
-		FacesContext context = FacesContext.getCurrentInstance();
-	//	log.info("Observacao " + orcamentoEdicao.getObservacao());
+		String mensagem="";
+		Severity severity = null; 
 
 		if (orcamentoEdicao.getDataInicial()==null) {
-			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", 
-					"Data inicial inváliida"));
-			return;
-		}
+			mensagem = "Data inicial inváliida";
+			severity = FacesMessage.SEVERITY_ERROR;
+		} else if (orcamentoEdicao.getDataFinal()==null) {
+			mensagem = "Data final inváliida";
+			severity = FacesMessage.SEVERITY_ERROR;
+		} else {
 
-		if (orcamentoEdicao.getDataFinal()==null) {
-			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", 
-					"Data final inváliida"));
-			return;
-		}
+			try {
+				service.persiste(orcamentoEdicao);
+				orcamentos = service.listaTodos(Orcamento.class);
+				orcamentoEdicao = new Orcamento();
+				
+				severity = FacesMessage.SEVERITY_INFO;
+				mensagem = "Orçamento incluído com sucesso!";
+			} catch (Exception e) {
+				e.printStackTrace();
+				severity = FacesMessage.SEVERITY_ERROR;
+				mensagem = "Erro ao incluir orçamento!";
 
-		try {
-			service.persiste(orcamentoEdicao);
-			log.info("persistindo orcamento");
-			orcamentos = service.listaTodos(Orcamento.class);
-			log.info("listando orcamento");
-			orcamentoEdicao = new Orcamento();
-			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Informação", 
-					"Orçamento incluído com sucesso!"));
-		} catch (Exception e) {
-			e.printStackTrace();
-			context.addMessage("frm_orcamento", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Erro ao gravar orcamento", 
-					"Erro ao gravar orçamento"));
+			}
+			FacesContext.getCurrentInstance().addMessage(MSG_ORCAMENTO ,  
+					new FacesMessage(severity, "",	mensagem));
 		}
 	}
 
 	public void exclui() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		log.info("orcamento id " + idExclusao);
+		String mensagem = "";
+		Severity severity = null;
 		try {
 			service.remove(idExclusao,Orcamento.class);
 			orcamentos = service.listaTodos(Orcamento.class);
-			context.addMessage(":frm_orcamento:msg_orcamento", new FacesMessage(
-					FacesMessage.SEVERITY_INFO, "Exclusao", "Orçamento excluido com sucesso!"));
+			mensagem = "Orçamento excluido com sucesso!";
+			severity = FacesMessage.SEVERITY_INFO;
 		} catch (Exception e) {
 			e.printStackTrace();
-			context.addMessage(":frm_orcamento:msg_orcamento", new FacesMessage(
-					FacesMessage.SEVERITY_FATAL, "Erro", "Erro ao excluir"));
-			return ;
+			mensagem = "Erro ao excluir!";
+			severity = FacesMessage.SEVERITY_ERROR;
 		}
+		FacesContext.getCurrentInstance().addMessage(MSG_ORCAMENTO, 
+				new FacesMessage(severity, "", mensagem));
 	}
 
 	/** abre detalhameneto */
-	public String abre() {
-		log.info("idEdicao " + idEdicao);
+	public String detalhaOrcamento() {
 		sessaoBean.setIdOrcamentoAtual(idEdicao);
-		return "orcamento_new";
+		return MENU_ORCAMENTO;
 	}
 	
 	public String retornaMenuOrcamento() {
-		System.out.println("Retornando orcamento");
 		sessaoBean.setIdOrcamentoAtual(null);	
 		return "menu_orcamento";
 	}
@@ -144,8 +146,8 @@ public class OrcamentoBean implements Serializable{
 	}
 
 	
-	public void testeOrcamento() {
-		System.out.println("OrcamentoBean testeOrcamento");
-	}
+//	public void testeOrcamento() {
+//		System.out.println("OrcamentoBean testeOrcamento");
+//	}
 
 }

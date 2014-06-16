@@ -19,25 +19,26 @@
 		<p:messages id="msg_orcamento" showDetail="true" showSummary="false" />
 		<p:panelGrid columns="2" id="pnl_orcamento">
 			<p:outputLabel value="Data Inicial" />
-			<p:inputMask id="data_inicial" mask="99/99/9999"
+			<p:calendar id="data_inicial" pattern="dd/MM/yyyy"
 				value="#{orcamentoBean.orcamentoEdicao.dataInicial}" required="true"
-				requiredMessage="Data Inicial &ecutte; obrigat&oacutte;ria">
+				requiredMessage="Data inicial &ecutte; obrigat&oacutte;ria">
 				<f:convertDateTime dateStyle="medium"/>
-			</p:inputMask>
+			</p:calendar>
 
 			<p:outputLabel value="Data Final" />
-			<p:inputMask id="data_final" mask="99/99/9999"
+			<p:calendar id="data_final" pattern="dd/MM/yyyy"
 				value="#{orcamentoBean.orcamentoEdicao.dataFinal}" required="true"
 				requiredMessage="Data final &eacutte; obrigat&oacute;ria">
 				<f:convertDateTime dateStyle="medium"/>
-			</p:inputMask>
+			</p:calendar>
 
 			<p:outputLabel value="Observa&ccedil;&atilde;o" />
 			<p:inputText id="observacao"
 				value="#{orcamentoBean.orcamentoEdicao.observacao}" />
 
 			<p:commandButton value="Inclui" action="#{orcamentoBean.inclui}"
-				process="@form" update="@form :frm_tab_orcamento:tbl_orcamento" />
+				process="@form" update="@form :frm_tab_orcamento:tbl_orcamento" 
+					icon="icone_inclusao"/>
 		</p:panelGrid>
 	</h:form>
 
@@ -84,15 +85,17 @@
 
 			<p:column>
 				<!-- abertura de orcamento -->
-				<p:commandButton  action="#{orcamentoBean.abre}" icon="icone_alteracao" title="Detalha valores"
-					ajax="false">
+				<p:commandButton  action="#{orcamentoBean.detalhaOrcamento()}" icon="icone_alteracao" 
+					title="Detalha valores" ajax="false">
 					<f:setPropertyActionListener target="#{orcamentoBean.idEdicao}" 
 						value="#{orcamento.id}"/>
 				</p:commandButton>
 				
 				<!-- exclusao de orcamento -->
-				<p:commandButton onclick="PF('conf_orcamento').show()" icon="icone_exclusao" title="exclui orçamento">
-					<f:setPropertyActionListener target="#{orcamentoBean.idExclusao}" value="#{orcamento.id}"/>  
+				<p:commandButton onclick="PF('conf_orcamento').show()" icon="icone_exclusao" 
+					title="exclui orçamento">
+					<f:setPropertyActionListener target="#{orcamentoBean.idExclusao}" 
+						value="#{orcamento.id}"/>  
 				</p:commandButton>
 				
 			</p:column>

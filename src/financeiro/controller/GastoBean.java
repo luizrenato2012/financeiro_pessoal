@@ -7,11 +7,11 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import javax.inject.Named;
 
+import org.apache.myfaces.extensions.cdi.core.api.scope.conversation.ViewAccessScoped;
 import org.jboss.logging.Logger;
 
 import financeiro.model.bean.Gasto;
@@ -20,8 +20,8 @@ import financeiro.model.bean.Pagamento;
 import financeiro.model.service.GastoService;
 import financeiro.model.service.OrcamentoService;
 
-@ManagedBean
-@ViewScoped
+@Named
+@ViewAccessScoped
 public class GastoBean implements Serializable {
 	
 	private static final long serialVersionUID = -8450332101863770172L;

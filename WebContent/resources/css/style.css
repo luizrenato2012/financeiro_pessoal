@@ -24,6 +24,17 @@
 		background-image: url("../resources/image/Back.png") !important;
 }
 
+.icone_pino_vermelho {
+		background-image: url("../resources/image/Red_pin.png") !important;
+}
+
+.icone_pino_azul {
+		background-image: url("../resources/image/Blue_pin.png") !important;
+}
+
+.icone_dinheiro {
+		background-image: url("../resources/image/Dollar.png") !important;
+}
 .destaque_vermelho {
 	color: red; 
 	font-weight: bold;

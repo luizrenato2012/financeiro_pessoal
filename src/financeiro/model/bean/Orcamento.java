@@ -189,12 +189,12 @@ public class Orcamento implements Serializable {
     }
     
     /** aumenta total pago, diminui total pendente */
-    public void pagaGasto(Gasto gasto,double valor,Date dataPagamento) {
+    public void pagaGasto(Gasto gasto,double valor) {
     	if (valor==0d) {
     		throw new FinanceiroException("Pagamento com valor invalido : " + valor);
     	}
-    	gasto.paga(valor, dataPagamento);
-    	this.valorTotalPendente-=valor;
+    //	gasto.paga(valor, dataPagamento); 
+    	this.valorTotalPendente-= valor;
     	this.valorTotalPendente =  this.valorTotalPendente < 0 ? 0 : this.valorTotalPendente ; 
     	this.valorTotalPago+=valor;
     	calculaTotalDisponivel();
@@ -364,7 +364,7 @@ public class Orcamento implements Serializable {
 		gastoPassagens.setDataFinal(new Date());
 		
 		orcamento.adicionaGasto(gastoPassagens);
-		orcamento.pagaGasto(gastoPassagens, 15, new Date());
+	//	orcamento.pagaGasto(gastoPassagens, 15, new Date());
 		
 		Gasto gastoAlmoco = new Gasto();
 		gastoAlmoco.setDescricao("Almoco");
@@ -373,7 +373,7 @@ public class Orcamento implements Serializable {
 		gastoAlmoco.setDataInicial(new Date());
 		
 		orcamento.adicionaGasto(gastoAlmoco);
-		orcamento.pagaGasto(gastoAlmoco, 50, new Date());
+	//	orcamento.pagaGasto(gastoAlmoco, 50, new Date());
 		System.out.println(orcamento);
 		System.out.println("\n/---------Cancelando pagamento conta ---------/\n");
 		

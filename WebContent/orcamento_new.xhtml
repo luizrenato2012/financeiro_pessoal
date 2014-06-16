@@ -21,16 +21,22 @@
 			</p:outputLabel>
 		</h3>
 		
-		<div id="resumo">
+	 	<p:toolbar>
+			<p:toolbarGroup>
+				<p:commandButton ajax="false" value="Recebimentos" action="recebimento.jsf" icon="icone_dinheiro" />
+				<p:commandButton ajax="false" value="Contas" action="conta.jsf" icon="icone_pino_azul" />
+				<p:commandButton ajax="false" value="Gastos" action="gasto.jsf" icon="icone_pino_vermelho" />
+				<span class="ui-separator"/>
+				<p:commandButton value="Voltar" action="orcamento_menu" icon="icone_saida" />
+			</p:toolbarGroup>
+		</p:toolbar>
+		
+	 	<div id="resumo">
 			<ui:include src="/secoes/resumo.xhtml" />
-		</div>
+		</div> 
+	
+		
 
-		<ul>
-			<li><p:commandLink action="recebimento" value="Recebimentos" /></li> 
-			<li><p:commandLink action="conta" value="Contas" /></li>
-			<li><p:commandLink action="gasto" value="Gastos" /></li>
-		</ul>
-		<p:commandLink action="orcamento_menu" value="Voltar"/>
 	</h:form>
 </h:body>
 

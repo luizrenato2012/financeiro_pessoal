@@ -1,14 +1,12 @@
 package financeiro.model.service;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
 
 import org.jboss.logging.Logger;
-import org.primefaces.component.log.Log;
 
 import financeiro.model.bean.Conta;
 import financeiro.model.bean.FinanceiroException;
@@ -140,8 +138,8 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 	public void efetuaPagamentoGasto(Gasto gasto, double valor,Date data) {
 		try {
 			Orcamento orcamento = gasto.getOrcamento();
-			orcamento.pagaGasto(gasto, valor, data);
-			gastoService.atualiza(gasto);
+			orcamento.pagaGasto(gasto, valor);
+		  //gastoService.atualiza(gasto);
 			this.atualiza(orcamento);
 		} catch (Exception e) {
 			throw new FinanceiroException(e);
@@ -168,7 +166,7 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 			recebimentoService.remove(recebimento);
 			this.atualiza(orcamento);
 			log.info(">>> Recebimento " + idRecebimento + " cancelado com sucesso");
-		} catch(Exception e ) {
+		} catch(Exception e) {
 			throw new FinanceiroException(e);
 		}
 	}

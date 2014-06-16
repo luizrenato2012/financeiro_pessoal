@@ -11,6 +11,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
+import org.hibernate.Hibernate;
 import org.jboss.logging.Logger;
 
 import financeiro.model.bean.Orcamento;

@@ -17,7 +17,7 @@ public class TesteSituacaoApp {
 		System.out.println(o2.getSituacao().getName());
 		System.out.println(o3.getSituacao().getName());
 		ExecutorService pool = Executors.newSingleThreadExecutor();
-		pool.submit(task)
+		//pool.submit(task)
 	}
 
 }

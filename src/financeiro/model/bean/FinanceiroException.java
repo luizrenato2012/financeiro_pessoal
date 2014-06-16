@@ -10,5 +10,9 @@ public class FinanceiroException extends RuntimeException {
 		super(cause);
 	}
 
+	public FinanceiroException(String message, Exception e) {
+		super(message, e);
+	}
+
 	
 }

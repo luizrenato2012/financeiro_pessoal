@@ -5,8 +5,8 @@ import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.logging.Logger;
@@ -14,7 +14,7 @@ import org.jboss.logging.Logger;
 import financeiro.model.bean.Orcamento;
 import financeiro.model.service.OrcamentoService;
 
-@ManagedBean
+@Named
 @SessionScoped
 public class SessaoBean implements Serializable{
 

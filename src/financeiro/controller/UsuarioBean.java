@@ -18,25 +18,29 @@ public class UsuarioBean {
 	@EJB
 	private UsuarioService usuarioService;
 	
+	private static final String ORCAMENTO_MENU = "orcamento_menu.jsf";
+	
 	public String autentica() {
 		FacesContext context = FacesContext.getCurrentInstance();
-		System.out.println(">> autenticando ");
 		try {
 			if (this.login==null || this.login.equals("")) {
-				context.addMessage( null, new FacesMessage("Login inválido"));
+				context.addMessage( null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR,"Login inválido","" ));
 				return null;
 			}
 			
 			if (this.senha==null || this.senha.equals("")) {
-				context.addMessage( null, new FacesMessage("Senha inválido"));
+				context.addMessage( null, 
+						new FacesMessage(FacesMessage.SEVERITY_ERROR,"Senha inválido",""));
 				return null;
 			}
 			Usuario usuario = usuarioService.valida(login, senha);
 			if (usuario==null) {
-				context.addMessage( null, new FacesMessage("Senha/senha incorreto"));
+				context.addMessage( null, 
+						new FacesMessage(FacesMessage.SEVERITY_ERROR,"Senha/senha incorreto",""));
 				return null;
 			} else {
-				return "orcamento_menu.jsf";
+				return ORCAMENTO_MENU;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -6,11 +6,11 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import javax.inject.Named;
 
+import org.apache.myfaces.extensions.cdi.core.api.scope.conversation.ViewAccessScoped;
 import org.jboss.logging.Logger;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
@@ -20,8 +20,8 @@ import financeiro.model.bean.Orcamento;
 import financeiro.model.service.ContaService;
 import financeiro.model.service.OrcamentoService;
 
-@ManagedBean
-@ViewScoped
+@Named
+@ViewAccessScoped
 public class ContaBean implements Serializable {
 	private static final long serialVersionUID = -3940177813948818914L;
 
