@@ -172,10 +172,9 @@
 							value="#{gasto.id}" />
 					</p:commandButton>
 
-					<p:commandButton icon="icone_dinheiro"
+					<p:commandButton icon="icone_dinheiro" 
 						title="registra pagamento do gasto selecionado"
-						onclick="PF('dlg_pagamento').show()" update=":frm_pagamento_gasto"
-						action="#{pagamentoBean.atualizaPagamentos()}">
+						action="#{pagamentoBean.atualizaPagamentos()}" ajax="false">
 						<f:setPropertyActionListener
 							target="#{pagamentoBean.gasto}" value="#{gasto}" />
 					</p:commandButton>
@@ -184,7 +183,7 @@
 			</p:dataTable>
 		</h:form>
 
-
+		<!--  dialog de confirmacao de exclusao -->
 		<p:confirmDialog widgetVar="conf_exclusao" header="Gasto" message="Confirma a exclusão do gasto?">
 			<h:form id="frm_exclusao">
 				<p:commandButton value="Confirma"
@@ -194,52 +193,6 @@
 				<p:commandButton value="Cancela"  onclick="PF('conf_exclusao').hide()" />
 			</h:form>
 		</p:confirmDialog>
-
-		<!-- tela de registro de pagamento -->
-		<p:dialog widgetVar="dlg_pagamento" header="Registra Pagamento de Gasto" modal="true" resizable="false">
-			<h:form id="frm_pagamento_gasto">
-				<p:messages id="msg_pagamento"/>
-				<p:panelGrid columns="2" id="pnl_pagamento">
-					
-					<p:outputLabel value="Data" />
-					<p:inputMask value="#{pagamentoBean.pagamento.data}"
-						mask="99/99/9999" required="true"
-						requiredMessage="Data do pagamento obrigatória!">
-						<f:convertDateTime dateStyle="medium" />
-					</p:inputMask>
-
-					<p:outputLabel value="Valor Pago" />
-					<p:inputText value="#{pagamentoBean.pagamento.valor}"
-						required="true"
-						requiredMessage="Valor do pagamento é obrigatório!" />
-
-					<p:commandButton value="Confirma"
-						actionListener="#{pagamentoBean.paga()}"
-						update="tbl_pagamento pnl_pagamento msg_pagamento" />
-					<p:commandButton value="Cancela" onclick="PF('dlg_pagamento').hide()" />
-				</p:panelGrid>
-				
-				<p:dataTable id="tbl_pagamento" value="#{pagamentoBean.pagamentos}" var="pagamento"
-					rendered="#{not empty pagamentoBean.pagamentos}">
-					<p:column headerText="Id">
-						<h:outputText value="#{pagamento.id}"/>
-					</p:column>
-					<p:column headerText="Data">
-						<h:outputText value="#{pagamento.data}">
-							<f:convertDateTime dateStyle="medium"/>
-						</h:outputText>
-					</p:column>
-					<p:column headerText="Valor">
-						<h:outputText value="#{pagamento.valor}" />
-					</p:column>
-					<p:column headerText="Ações">
-						<p:commandButton icon="icone_exclusao" actionListener="#{pagamentoBean.testa()}"
-							update="tbl_pagamento"/>
-					</p:column>
-				</p:dataTable>
-			</h:form>
-		</p:dialog>
-
 		<br />
 	</ui:define>
 </ui:composition>

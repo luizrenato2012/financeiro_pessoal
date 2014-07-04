@@ -118,9 +118,14 @@ public class PagamentoBean implements Serializable {
 		}
 	}
 	
-	public void atualizaPagamentos() {
-		log.info("pagamentoBean - atualizaPagamentos");
+	public String atualizaPagamentos() {
+		//log.info("pagamentoBean - atualizaPagamentos");
 		this.pagamentos = gastoService.carregaPagamentos(gasto.getId()).getPagamentos();
+		return "pagamento";
+	}
+	
+	public String voltaParaGastos() {
+		return "gasto";
 	}
 
 	public Pagamento getPagamento() {
@@ -132,10 +137,6 @@ public class PagamentoBean implements Serializable {
 	}
 
 	public List<Pagamento> getPagamentos() {
-		//if (pagamentos==null || pagamentos.size()==0) {
-		//	gasto = gastoService.carregaPagamentos(gasto.getId());
-		//	pagamentos = gasto.getPagamentos();
-		//}
 		return pagamentos;
 	}
 

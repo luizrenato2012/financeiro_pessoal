@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="template/cadastro.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">.:Cadastro de Pagamento:.</ui:define>
+
+	<ui:define name="header">
+		<h3>
+			<p:outputLabel>
+				<h:outputFormat value="Pagamentos do gasto: {0} - {1}">
+					<f:param value="#{pagamentoBean.gasto.id}" />
+					<f:param value="#{pagamentoBean.gasto.descricao}" />
+				</h:outputFormat>
+			</p:outputLabel>
+		</h3>
+	</ui:define>
+
+	<br />
+	<br />
+
+	<ui:define name="resumo_orcamento">
+		<h:form id="frm_resumo_orcamento">
+			<p:panelGrid id="pnl_resumo_gasto" styleClass="ui-panelgrid_ext" style="margin-top:10px" >
+
+				<f:facet name="header">
+					<p:row>
+						<p:column colspan="2" style="border-style: solid !important">Orçamento</p:column>
+						<p:column colspan="2" style="border-style: solid !important">Gasto</p:column>
+					</p:row>
+				</f:facet>
+				
+				<p:row>
+				<p:column colspan="1" styleClass="font_bold">Nº</p:column>
+				<p:column colspan="1">#{sessaoBean.orcamentoAtual.id}</p:column>
+				
+				
+				<p:column colspan="1" styleClass="font_bold">Id</p:column>
+				<p:column colspan="1">#{pagamentoBean.gasto.id}</p:column>
+				</p:row>
+				
+				<p:row>
+					<p:column styleClass="font_bold">Data Inicial</p:column>
+					<p:column>
+					<h:outputText value="#{sessaoBean.orcamentoAtual.dataInicial}">
+						<f:convertDateTime dateStyle="medium" />
+					</h:outputText>
+					</p:column>
+				
+					<p:column styleClass="font_bold">Descrição</p:column>
+					<p:column>#{pagamentoBean.gasto.descricao}</p:column>
+				</p:row>
+
+				<p:row>
+					<p:column styleClass="font_bold">Data Final</p:column>
+					<p:column>
+					<h:outputText value="#{sessaoBean.orcamentoAtual.dataFinal}">
+						<f:convertDateTime dateStyle="medium" />
+					</h:outputText>
+					</p:column>
+
+					<p:column styleClass="font_bold">Pendente</p:column>
+					<p:column>#{pagamentoBean.gasto.isPendente ? 'Sim' : 'Não'}</p:column>
+				</p:row>
+				
+				<p:row>
+					<p:column styleClass="font_bold">Total Pendente</p:column>
+					<p:column>
+					<h:outputText
+						value="#{sessaoBean.orcamentoAtual.valorTotalPendente}">
+						<f:convertNumber minFractionDigits="2" />
+					</h:outputText>
+					</p:column>
+
+					<p:column styleClass="font_bold">Valor</p:column>
+					<p:column>
+						<h:outputText value="#{pagamentoBean.gasto.valor}" >
+							<f:convertNumber maxFractionDigits="2"/> />
+						</h:outputText>
+					</p:column>
+				</p:row>
+				
+				<p:row>
+					<p:column styleClass="font_bold">Disponivel na Conta </p:column>
+					<p:column>
+						<h:outputText value="#{sessaoBean.orcamentoAtual.valorDisponivel}">
+							<f:convertNumber minFractionDigits="2" />
+						</h:outputText>
+					</p:column>
+				
+					<p:column styleClass="font_bold">Valor Pago</p:column>
+					<p:column>
+						<h:outputText value="#{pagamentoBean.gasto.valorPago}">
+							<f:convertNumber minFractionDigits="2" />
+						</h:outputText>
+					</p:column>	
+				</p:row>
+				
+				<p:row>
+					<p:column styleClass="font_bold">Resultado</p:column>
+					<p:column>
+						<h:outputText value="#{sessaoBean.orcamentoAtual.valorResultado}">
+							<f:convertNumber minFractionDigits="2" />
+						</h:outputText>
+					</p:column>
+					<p:column styleClass="font_bold">Valor Pendente</p:column>
+					<p:column>
+						<h:outputText value="#{pagamentoBean.gasto.valorPendente}">
+							<f:convertNumber minFractionDigits="2" />
+						</h:outputText>
+					</p:column>
+				</p:row>
+			</p:panelGrid>
+		</h:form>
+	</ui:define>
+
+	<ui:define name="barra_botoes">
+		<h:form>
+			<p:toolbar>
+				<p:toolbarGroup align="left">
+					<p:commandButton icon="icone_inclusao"
+						title="inclui pagamento selecionado"
+						onclick="PF('dlg_pagamento').show()" value="Inclui" />
+				</p:toolbarGroup>
+				<span class="ui-separator"> <span
+					class="ui-icon ui-icon-grip-dotted-vertical" />
+				</span>
+				<p:toolbarGroup align="right">
+					<p:commandButton icon="icone_saida" title="voltar a tela de gastos"
+						action="#{pagamentoBean.voltaParaGastos()}" ajax="false"
+						value="Volta" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+		</h:form>
+
+		<!-- tela de registro de pagamento -->
+		<p:dialog widgetVar="dlg_pagamento" header="Registra Pagamento "
+			modal="true" resizable="false" height="300">
+			<h:form id="frm_pagamento_gasto">
+				<p:messages id="msg_pagamento" />
+				<p:panelGrid columns="2" id="pnl_pagamento">
+					<p:outputLabel value="Gasto" />
+					<p:outputLabel value="#{pagamentoBean.gasto.descricao}"
+						style="font-weight:bold" />
+
+					<p:outputLabel value="Valor" />
+					<p:outputLabel value="#{pagamentoBean.gasto.valor}"
+						style="font-weight:bold">
+						<f:convertNumber minFractionDigits="2" />
+					</p:outputLabel>
+
+					<p:outputLabel value="Valor Pago" />
+					<p:inputText value="#{pagamentoBean.pagamento.valor}"
+						required="true"
+						requiredMessage="Valor do pagamento é obrigatório!" />
+
+					<p:outputLabel value="Data" />
+					<p:calendar value="#{pagamentoBean.pagamento.data}"
+						pattern="dd/MM/yyyy" required="true"
+						requiredMessage="Data do pagamento obrigatória!">
+					</p:calendar>
+
+					<p:commandButton value="Confirma"
+						actionListener="#{pagamentoBean.paga()}"
+						update=":frm_lst_pagamento:tbl_pagamento pnl_pagamento msg_pagamento 
+							:frm_lst_pagamento:tbl_pagamento" />
+					<p:commandButton value="Cancela"
+						onclick="PF('dlg_pagamento').hide()" />
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+
+	<ui:define name="tabela">
+		<h:form id="frm_lst_pagamento">
+			<p:dataTable id="tbl_pagamento" value="#{pagamentoBean.pagamentos}"
+				var="pagamento" rendered="#{not empty pagamentoBean.pagamentos}"
+				scrollable="true" scrollHeight="150" style="margin-top:10px">
+				<p:column headerText="Id">
+					<h:outputText value="#{pagamento.id}" />
+				</p:column>
+				<p:column headerText="Data">
+					<h:outputText value="#{pagamento.data}">
+						<f:convertDateTime dateStyle="medium" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Valor">
+					<h:outputText value="#{pagamento.valor}" />
+				</p:column>
+				<p:column headerText="Ações">
+					<p:commandButton icon="icone_exclusao"
+						actionListener="#{pagamentoBean.testa()}" update="tbl_pagamento" />
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	
+	</ui:define>
+
+</ui:composition>

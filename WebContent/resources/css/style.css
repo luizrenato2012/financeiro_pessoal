@@ -1,6 +1,11 @@
 .ui-panelgrid td, .ui-panelgrid tr
 {
-    border-style: none !important
+    border-style: none !important; 
+} 
+
+.ui-panelgrid_ext td, .ui-panelgrid_ext tr, .ui-panelgrid_ext th
+{
+    border-style: solid !important;
 }
 
 /** usado no atributo icon do primefaces */
@@ -43,4 +48,12 @@
 .normal {
 	color: black;
 	font-weight: normal;
+}
+
+.borda_simples {
+	border: 1px solid black;
+}
+
+.font_bold {
+	font-weight: bold !important;
 }

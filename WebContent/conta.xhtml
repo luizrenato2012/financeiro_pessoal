@@ -196,27 +196,26 @@
 			</h:form>
 		</p:confirmDialog>
 
-<p:dialog widgetVar="dlg_pagamento" header="Pagamento de Conta"
+<p:dialog widgetVar="dlg_pagamento" header="Pagamento "
 			modal="true" resizable="false">
 			<h:form id="frm_pagamento_conta">
 				<p:panelGrid columns="2">
-					<p:outputLabel value="ID" />
-					<p:inputText value="#{contaBean.contaSelecionada.id}" readonly="true"/>
 					
 					<p:outputLabel value="Descrição" />
-					<p:inputText value="#{contaBean.contaSelecionada.descricao}" readonly="true"/>
+					<p:outputLabel value="#{contaBean.contaSelecionada.descricao}" 
+						style="font-weight: bold;"/>
 					
-					<p:outputLabel value="Data" />
-					<p:inputMask value="#{contaBean.contaSelecionada.dataPagamento}"
-						mask="99/99/9999" required="true"
-						requiredMessage="Data do pagamento obrigatória!">
-						<f:convertDateTime dateStyle="medium" />
-					</p:inputMask>
-
 					<p:outputLabel value="Valor Pago" />
 					<p:inputText value="#{contaBean.contaSelecionada.valorPago}"
 						required="true"
 						requiredMessage="Valor do pagamento é obrigatório!" />
+					
+					<p:outputLabel value="Data" />
+					<p:calendar value="#{contaBean.contaSelecionada.dataPagamento}"
+						pattern="dd/MM/yyyy" required="true"
+						requiredMessage="Data do pagamento obrigatória!">
+						<f:convertDateTime dateStyle="medium" />
+					</p:calendar>
 
 					<p:commandButton value="Confirma"
 						actionListener="#{contaBean.paga()}"
