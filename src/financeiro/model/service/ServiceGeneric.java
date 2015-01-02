@@ -66,6 +66,12 @@ public class ServiceGeneric <T,PK> implements Service <T,Integer>{
 		}
 		return query.getResultList();
 	}
+
+	@Override
+	public void removeBydId(String namedQuery, Integer id) {
+		Query query = entityManager.createNamedQuery(namedQuery);
+		query.setParameter(1, id).executeUpdate();
+	}
 	
 	
 

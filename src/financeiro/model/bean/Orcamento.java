@@ -184,7 +184,7 @@ public class Orcamento implements Serializable {
     	conta.paga(valor, data);
     	this.valorTotalPago+=valor;
     	this.valorTotalPendente =  this.valorTotalPendente == 0d ? 0 : this.valorTotalPendente-valor;
-    	this.valorTotalDevido =  this.valorTotalDevido== 0d ? 0 : this.valorTotalDevido-valor;
+    	//this.valorTotalDevido =  this.valorTotalDevido== 0d ? 0 : this.valorTotalDevido-valor;
     	calculaTotalDisponivel();
     }
     
@@ -215,7 +215,6 @@ public class Orcamento implements Serializable {
     
     /** deve-se cancelar os pagamentos feitos */
     public void cancelaGasto(Gasto gasto) {
-    	//this.gastos.remove(gasto);
     	this.valorTotalDevido-=gasto.getValor();
     	
     	if (gasto.getValorPago() > 0) {

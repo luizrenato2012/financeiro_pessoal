@@ -161,6 +161,7 @@ public class ContaBean implements Serializable {
 				log.info("removendo conta ");
 				orcamentoService.cancelaConta(idExclusao, orcamentoAtual);
 				atualizaContas();
+				this.orcamentoAtual = this.sessaoBean.getOrcamentoAtual();
 			}
 		} catch (Exception e ) {
 			FacesContext.getCurrentInstance().addMessage("frm_tab_conta:msg_conta", 

@@ -19,6 +19,7 @@ public class UsuarioService extends ServiceGeneric<Usuario, Integer> {
 		try {
 			
 			Map<String,Object> parametros = new HashMap<String,Object>();
+			System.out.println("Senha " + senha);
 			parametros.put("login", login);
 			parametros.put("senha", getHash(senha));
 			List<Usuario> usuarios = this.lista("Usuario.findByLoginSenha",parametros);

@@ -68,6 +68,14 @@ public class SessaoBean implements Serializable{
 	public void setIdContaSelecionada(Integer idContaSelecionada) {
 		this.sessao.setAttribute("idContaSelecionada", idContaSelecionada);
 	}
+	
+	public double getValorTotalContas() {
+		return orcamentoService.getValorTotalContas(this.getIdOrcamentoAtual());
+	}
+	
+	public double getValorTotalGastos() {
+		return orcamentoService.getValorTotalGastos(this.getIdOrcamentoAtual());
+	}
 
 
 }

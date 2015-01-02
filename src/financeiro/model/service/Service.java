@@ -15,6 +15,8 @@ public interface Service<T,PK extends Serializable> {
 	
 	public void remove(T t) ;
 	
+	public void removeBydId(String hql, Integer id);
+	
 	public T encontra (PK pk, Class<T> classe) ;
 	
 	public List<T> listaTodos (Class<T> classe) ;

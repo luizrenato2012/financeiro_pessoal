@@ -19,14 +19,14 @@
 		<p:messages id="msg_orcamento" showDetail="true" showSummary="false" />
 		<p:panelGrid columns="2" id="pnl_orcamento">
 			<p:outputLabel value="Data Inicial" />
-			<p:calendar id="data_inicial" pattern="dd/MM/yyyy"
+			<p:calendar id="data_inicial" pattern="dd/MM/yyyy" mindate="01/12/2014"
 				value="#{orcamentoBean.orcamentoEdicao.dataInicial}" required="true"
 				requiredMessage="Data inicial &ecutte; obrigat&oacutte;ria">
 				<f:convertDateTime dateStyle="medium"/>
 			</p:calendar>
 
 			<p:outputLabel value="Data Final" />
-			<p:calendar id="data_final" pattern="dd/MM/yyyy"
+			<p:calendar id="data_final" pattern="dd/MM/yyyy" mindate="01/12/2014"
 				value="#{orcamentoBean.orcamentoEdicao.dataFinal}" required="true"
 				requiredMessage="Data final &eacutte; obrigat&oacute;ria">
 				<f:convertDateTime dateStyle="medium"/>

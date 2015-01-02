@@ -168,6 +168,8 @@
 						onclick="PF('dlg_pagamento').show()" update=":frm_pagamento_conta">
 						<f:setPropertyActionListener
 							target="#{contaBean.contaSelecionada}" value="#{conta}" />
+						<f:setPropertyActionListener
+							target="#{contaBean.contaSelecionada.valorPago}" value="#{conta.valor}" />	
 					</p:commandButton>
 					<p:commandButton icon="icone_exclusao"
 						title="exclui conta selecionada"
@@ -196,7 +198,7 @@
 			</h:form>
 		</p:confirmDialog>
 
-<p:dialog widgetVar="dlg_pagamento" header="Pagamento "
+		<p:dialog widgetVar="dlg_pagamento" header="Pagamento "
 			modal="true" resizable="false">
 			<h:form id="frm_pagamento_conta">
 				<p:panelGrid columns="2">

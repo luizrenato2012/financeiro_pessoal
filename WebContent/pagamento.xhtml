@@ -141,7 +141,7 @@
 
 		<!-- tela de registro de pagamento -->
 		<p:dialog widgetVar="dlg_pagamento" header="Registra Pagamento "
-			modal="true" resizable="false" height="300">
+			modal="true" resizable="false" height="205">
 			<h:form id="frm_pagamento_gasto">
 				<p:messages id="msg_pagamento" />
 				<p:panelGrid columns="2" id="pnl_pagamento">
@@ -169,7 +169,7 @@
 					<p:commandButton value="Confirma"
 						actionListener="#{pagamentoBean.paga()}"
 						update=":frm_lst_pagamento:tbl_pagamento pnl_pagamento msg_pagamento 
-							:frm_lst_pagamento:tbl_pagamento" />
+							:frm_lst_pagamento:tbl_pagamento :frm_resumo_orcamento:pnl_resumo_gasto" />
 					<p:commandButton value="Cancela"
 						onclick="PF('dlg_pagamento').hide()" />
 				</p:panelGrid>

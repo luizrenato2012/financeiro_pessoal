@@ -1,0 +1,13 @@
+Funcionalidades
+
+ - Criar bot√£o de logoff nas p√°ginas
+ - Guardar usuario na sessao
+  - Tela de inclusao de recebimeno - preenche automaticamente campo de data (sugestao) e permitir alteracao
+
+
+Erros
+ -  OK Verificar campos de data no form de cadastro de or√ßamento nao aceitam formato da data dd/MM/yyyy http://in.relation.to/Bloggers/StepRightUpAndSelectYourTimeZone.
+   - OK Apos excluir uma conta, ao se incluir outra o valor pendente È adicionado do valor da conta excluida anteriormente (executada pesquisa do orcamento atual na sessaoBean).
+  - OK Erro ao excluir um gasto na tela de gastos (alteracao da forma exclusao em GastoService)
+  - OK Duplicando valor no pagamento de conta 
+  - OK Nao atualiza os dados do gasto pago na tela de pagamento  quando È cadastrado um pagamento

@@ -79,7 +79,7 @@ public class GastoBean implements Serializable {
 		}
 
 		try {
-			log.info("inserindo gssto " + gasto);
+		//	log.info("inserindo gssto " + gasto);
 			orcamentoService.adicionaGasto(gasto, orcamentoAtual);
 			atualizaGastos();
 			gasto = new Gasto();
@@ -106,7 +106,7 @@ public class GastoBean implements Serializable {
 			mensagem="Id da conta a excluir invalido";
 		} else {
 			try {
-				log.info("removendo gasto ");
+			//	log.info("removendo gasto ");
 				orcamentoService.cancelaGasto(idExclusao, orcamentoAtual);
 				atualizaGastos();
 				severity = FacesMessage.SEVERITY_INFO;

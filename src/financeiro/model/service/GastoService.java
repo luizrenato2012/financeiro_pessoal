@@ -44,7 +44,8 @@ public class GastoService extends ServiceGeneric<Gasto, Integer>{
 	public void registraPagamento (Gasto gasto, Pagamento pagamento) {
 		pagamento.setGasto(gasto);
 		pagamentoService.persiste(pagamento);
-		gasto.paga(pagamento.getValor(), pagamento.getData());
+		//gasto.paga(pagamento.getValor(), pagamento.getData());
+		gasto.paga(pagamento.getValor());
 		this.atualiza(gasto);
 		List<Pagamento> pagamentos = this.listaPagamento(gasto.getId());
 		gasto.setPagamentos( pagamentos!=null && pagamentos.size()> 0 ? pagamentos :

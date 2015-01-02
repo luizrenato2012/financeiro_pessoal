@@ -1,5 +1,6 @@
 package financeiro.model.service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.ejb.EJB;
@@ -91,14 +92,8 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 		try {
 			Gasto gasto = gastoService.encontra(idGasto, Gasto.class);
 			orcamento.cancelaGasto(gasto);
-			orcamento = carregaGastos(orcamento.getId());
-			
-			if (orcamento.getGastos()!=null && orcamento.getGastos().size() > 0 ) {
-				gastoService.remove(gasto);
-			} else {
-				throw new FinanceiroException("Orçamento "+ orcamento.getId() + 
-						" nao possui gastos relacionados") ; 
-			}
+			//alterada forma de exclusao
+			gastoService.removeBydId("Gasto.deleteById", idGasto);
 			
 			this.atualiza(orcamento);
 			log.info(">>> Cancelado gasto " + idGasto);
@@ -169,6 +164,26 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 		} catch(Exception e) {
 			throw new FinanceiroException(e);
 		}
+	}
+	
+	public double getValorTotalGastos(Integer idOrcamento) {
+		StringBuilder strb = new StringBuilder();
+		strb.append("select sum(valor) from financ.conta ")
+			.append (" where id_orcamento=?1 and tipo_conta=\'Gasto\'");
+		Query query = this.entityManager.createNativeQuery(strb.toString());
+		query.setParameter(1, idOrcamento);
+		Double res = (Double) query.getSingleResult();
+		return res!=null ? res.doubleValue() : 0.0;
+	}
+	
+	public double getValorTotalContas(Integer idOrcamento) {
+		StringBuilder strb = new StringBuilder();
+		strb.append("select sum(valor) from financ.conta ")
+			.append (" where id_orcamento=?1 and tipo_conta=\'Conta\'");
+		Query query = this.entityManager.createNativeQuery(strb.toString());
+		query.setParameter(1, idOrcamento);
+		Double res = (Double) query.getSingleResult();
+		return res!=null ? res.doubleValue() : 0.0;
 	}
 
 

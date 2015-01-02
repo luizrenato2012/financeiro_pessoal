@@ -33,7 +33,7 @@ import financeiro.util.DataUtils;
 @SequenceGenerator(name="SEQ_ID_CONTA", sequenceName="financ.seq_id_conta",allocationSize=1)
 @NamedQueries( {
 	@NamedQuery(name="Conta.listByOrcamento",query="select c from Conta c inner join c.orcamento o " +
-			" where o.id = :idOrcamento")
+			" where o.id = :idOrcamento and TYPE (c) = Conta")
 })
 public class Conta implements Serializable {
 	
@@ -94,7 +94,8 @@ public class Conta implements Serializable {
 	
 	// ---------------metodos de negocio -------------------//
 	public void paga (double valor,Date dataPagamento) {
-		this.valorPago+=valor;
+		//conta tem apenas um valor, não cumulativo
+		this.valorPago=valor;
 		this.valorPendente-=valor;
 		this.dataPagamento=dataPagamento;
 		this.situacao=SituacaoDespesa.PAGA;

@@ -30,8 +30,8 @@ import javax.persistence.TemporalType;
 @NamedQueries({
 	@NamedQuery(name="Gasto.listByOrcamento",query="select g from Gasto g inner join g.orcamento o where o.id=:idOrcamento"),
 	@NamedQuery(name="Gasto.listPagamento", query="select p from Gasto g inner join g.pagamentos p where g.id=:idGasto"),
-	@NamedQuery(name="Gasto.loadPagamentos", query="select g from Gasto g left join fetch g.pagamentos where g.id=:idGasto")
-
+	@NamedQuery(name="Gasto.loadPagamentos", query="select g from Gasto g left join fetch g.pagamentos where g.id=:idGasto"),
+	@NamedQuery(name="Gasto.deleteById", query="delete from Gasto where id= ?1")
 })
 public class Gasto extends Conta {
 	
@@ -52,15 +52,10 @@ public class Gasto extends Conta {
 		this.setId(null);
 	}
 	
-	public void paga(Date data,double valor,String observacao) {
-		Pagamento pagamento = new Pagamento();
-		pagamento.setData(data);
-		pagamento.setObservacao(observacao);
-		pagamento.setValor(valor);
-		
+	public void paga(double valor) {
 		this.valorPendente-= valor;
 		this.valorPago+=valor;
-		if (this.valorPendente==0d) {
+		if (this.valorPendente==0.0d) {
 			this.situacao=SituacaoDespesa.PAGA;
 		}
 	}
