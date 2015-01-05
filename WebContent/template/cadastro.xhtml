@@ -10,6 +10,18 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<h:outputStylesheet library="css" name="style.css" />
 	<title><ui:insert name="titulo"/></title>
+	<script type="text/javascript">
+		function desabilitaTipo(selection) {
+			console.log('Selecionando ' + selection);
+			var componente=document.getElementById('frm_dlg_exclusao:incl_valor');
+			if (selection=='VARIAVEL') {
+				componente.value="0.00";
+				componente.disabled=true;
+			} else {
+				componente.disabled=false;
+			}
+		}
+	</script>
 </h:head>
 
 <h:body>
