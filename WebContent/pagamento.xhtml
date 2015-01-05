@@ -143,7 +143,6 @@
 		<p:dialog widgetVar="dlg_pagamento" header="Registra Pagamento "
 			modal="true" resizable="false" height="205">
 			<h:form id="frm_pagamento_gasto">
-				<p:messages id="msg_pagamento" />
 				<p:panelGrid columns="2" id="pnl_pagamento">
 					<p:outputLabel value="Gasto" />
 					<p:outputLabel value="#{pagamentoBean.gasto.descricao}"
@@ -165,11 +164,15 @@
 						pattern="dd/MM/yyyy" required="true"
 						requiredMessage="Data do pagamento obrigatória!">
 					</p:calendar>
+					
+					<p:outputLabel value="Observação" />
+					<p:inputText value="#{pagamentoBean.pagamento.observacao}"/>
 
 					<p:commandButton value="Confirma"
 						actionListener="#{pagamentoBean.paga()}"
-						update=":frm_lst_pagamento:tbl_pagamento pnl_pagamento msg_pagamento 
-							:frm_lst_pagamento:tbl_pagamento :frm_resumo_orcamento:pnl_resumo_gasto" />
+						update=":frm_lst_pagamento:tbl_pagamento pnl_pagamento :frm_lst_pagamento:msg_pagamento 
+							:frm_lst_pagamento:tbl_pagamento :frm_resumo_orcamento:pnl_resumo_gasto" 
+							oncomplete="PF('dlg_pagamento').hide()"/>
 					<p:commandButton value="Cancela"
 						onclick="PF('dlg_pagamento').hide()" />
 				</p:panelGrid>
@@ -180,6 +183,7 @@
 
 	<ui:define name="tabela">
 		<h:form id="frm_lst_pagamento">
+			<p:messages id="msg_pagamento"/> <br/>
 			<p:dataTable id="tbl_pagamento" value="#{pagamentoBean.pagamentos}"
 				var="pagamento" rendered="#{not empty pagamentoBean.pagamentos}"
 				scrollable="true" scrollHeight="150" style="margin-top:10px">
@@ -193,6 +197,9 @@
 				</p:column>
 				<p:column headerText="Valor">
 					<h:outputText value="#{pagamento.valor}" />
+				</p:column>
+					<p:column headerText="Observação">
+					<h:outputText value="#{pagamento.observacao}" />
 				</p:column>
 				<p:column headerText="Ações">
 					<p:commandButton icon="icone_exclusao"

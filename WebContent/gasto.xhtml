@@ -81,23 +81,30 @@
 			modal="true" resizable="false" header="Inclusão de Gasto">
 			<h:form id="frm_dlg_exclusao">
 				<p:panelGrid id="pnl_gasto" columns="2">
+					<p:outputLabel value="Tipo" />
+					<h:selectOneMenu id="tipo" value="#{gastoBean.gastoDTO.tipo}" onchange="desabilitaTipo(this.value)"
+						immediate="true">
+						<f:selectItem  itemValue="FIXO" itemLabel="Fixo"/>
+						<f:selectItem  itemValue="VARIAVEL" itemLabel="Variavel"/>
+					</h:selectOneMenu>
+					
 					<p:outputLabel value="Descrição" />
-					<p:inputText value="#{gastoBean.gasto.descricao}" required="true"
+					<p:inputText id="incl_descricao" value="#{gastoBean.gastoDTO.descricao}" required="true"
 						requiredMessage="Descrição obrigatória" />
 
 					<p:outputLabel value="Valor" />
-					<p:inputText value="#{gastoBean.gasto.valor}" required="true"
+					<p:inputText id="incl_valor" value="#{gastoBean.gastoDTO.valor}" required="true"
 						requiredMessage="Valor obrigatório" />
 
 					<p:outputLabel value="Data Inicial" />
-					<p:inputMask value="#{gastoBean.gasto.dataInicial}"
+					<p:inputMask id="incl_data_inicial" value="#{gastoBean.gastoDTO.dataInicial}"
 						mask="99/99/9999" required="true"
 						requiredMessage="Date Inicial obrigatório">
 						<f:convertDateTime dateStyle="medium" />
 					</p:inputMask>
 					
 					<p:outputLabel value="Data Final" />
-					<p:inputMask value="#{gastoBean.gasto.dataFinal}"
+					<p:inputMask id="incl_data_final" value="#{gastoBean.gastoDTO.dataFinal}"
 						mask="99/99/9999" required="true"
 						requiredMessage="Date Final obrigatório">
 						<f:convertDateTime dateStyle="medium" />
@@ -195,5 +202,6 @@
 		</p:confirmDialog>
 		<br />
 	</ui:define>
+	
 </ui:composition>
 

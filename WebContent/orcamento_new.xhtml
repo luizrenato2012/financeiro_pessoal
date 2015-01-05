@@ -15,8 +15,9 @@
 	<h:form>
 		<h3>
 			<p:outputLabel>
-				<h:outputFormat value="Orçamento: {0}">
+				<h:outputFormat value="Orçamento: {0} - {1}">
 					<f:param value="#{sessaoBean.orcamentoAtual.id}" />
+					<f:param value="#{sessaoBean.orcamentoAtual.descricao}" />
 				</h:outputFormat>
 			</p:outputLabel>
 		</h3>

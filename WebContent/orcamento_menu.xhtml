@@ -18,6 +18,11 @@
 	<h:form id="frm_orcamento" prependId="false">
 		<p:messages id="msg_orcamento" showDetail="true" showSummary="false" />
 		<p:panelGrid columns="2" id="pnl_orcamento">
+		
+			<p:outputLabel value="Descri&ccedil;&atilde;o" />
+			<p:inputText id="descricao"
+				value="#{orcamentoBean.orcamentoEdicao.descricao}" maxlength="50"/>
+			
 			<p:outputLabel value="Data Inicial" />
 			<p:calendar id="data_inicial" pattern="dd/MM/yyyy" mindate="01/12/2014"
 				value="#{orcamentoBean.orcamentoEdicao.dataInicial}" required="true"
@@ -51,6 +56,10 @@
 
 			<p:column headerText="ID">
 				<h:outputText value="#{orcamento.id}" />
+			</p:column>
+			
+			<p:column headerText="Descrição">
+				<h:outputText value="#{orcamento.descricao}" />
 			</p:column>
 
 			<p:column headerText="Data Inicial">
