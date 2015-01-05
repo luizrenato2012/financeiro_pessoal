@@ -1,7 +1,7 @@
 package financeiro.model.bean;
 
 public enum SituacaoDespesa {
-	PENDENTE("PENDENTE"),PAGA("PAGA");
+	PENDENTE("PENDENTE"),PAGA("PAGA"), ABERTO("ABERTO");
 	
 	private String name;
 	

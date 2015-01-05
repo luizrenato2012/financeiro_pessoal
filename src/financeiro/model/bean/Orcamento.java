@@ -83,6 +83,9 @@ public class Orcamento implements Serializable {
 	
 	@Column(length=100)
 	private String observacao;
+	
+	@Column(length=50)
+	private String descricao;
 	/** */
 	//private double totalPendenteGastos;
 	//private double totalPendenteContas;
@@ -170,10 +173,13 @@ public class Orcamento implements Serializable {
     
     /** aumenta valor devido,valor pendente */
     public void adicionaGasto(Gasto gasto) {
-    	this.valorTotalGastos+=gasto.getValor();
-    	this.valorTotalDevido+=gasto.getValor();
-    	this.valorTotalPendente+=gasto.getValor();
-    	//this.gastos.add(gasto);
+    	if (gasto instanceof GastoVariavel) {
+    		this.valorTotalGastos+=gasto.getValor();
+    	} else if (gasto instanceof Gasto) {
+    		this.valorTotalGastos+=gasto.getValor();
+    		this.valorTotalDevido+=gasto.getValor();
+    		this.valorTotalPendente+=gasto.getValor();
+    	}
     }
     
     /** aumenta total pago, diminui total pendente */
@@ -194,8 +200,10 @@ public class Orcamento implements Serializable {
     		throw new FinanceiroException("Pagamento com valor invalido : " + valor);
     	}
     //	gasto.paga(valor, dataPagamento); 
-    	this.valorTotalPendente-= valor;
-    	this.valorTotalPendente =  this.valorTotalPendente < 0 ? 0 : this.valorTotalPendente ; 
+    	if (gasto instanceof GastoVariavel==false) {
+    		this.valorTotalPendente-= valor;
+    		this.valorTotalPendente =  this.valorTotalPendente < 0 ? 0 : this.valorTotalPendente ; 
+    	}
     	this.valorTotalPago+=valor;
     	calculaTotalDisponivel();
     }
@@ -215,13 +223,15 @@ public class Orcamento implements Serializable {
     
     /** deve-se cancelar os pagamentos feitos */
     public void cancelaGasto(Gasto gasto) {
-    	this.valorTotalDevido-=gasto.getValor();
+    	if (gasto instanceof GastoVariavel ==false) {
+    		this.valorTotalDevido-=gasto.getValor();
+    	}
     	
     	if (gasto.getValorPago() > 0) {
     		this.valorTotalPago-=gasto.getValorPago();
     	}
     	
-    	if (gasto.getValorPendente()> 0 ) {
+    	if ( gasto instanceof GastoVariavel ==false && gasto.getValorPendente()> 0 ) {
     		this.valorTotalPendente-=gasto.getValorPendente();
     	}
     	calculaTotalDisponivel();
@@ -321,6 +331,16 @@ public class Orcamento implements Serializable {
 	public Double getValorTotalDevido() {
 		return valorTotalDevido;
 	}
+	
+	public String getDescricao() {
+		return descricao;
+	}
+
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
 
 	@Override
 	public String toString() {
