@@ -15,6 +15,7 @@ import org.apache.myfaces.extensions.cdi.core.api.scope.conversation.ViewAccessS
 import org.jboss.logging.Logger;
 
 import financeiro.model.bean.Gasto;
+import financeiro.model.bean.GastoVariavel;
 import financeiro.model.bean.Orcamento;
 import financeiro.model.bean.Pagamento;
 import financeiro.model.service.GastoService;
@@ -26,9 +27,8 @@ public class GastoBean implements Serializable {
 	
 	private static final long serialVersionUID = -8450332101863770172L;
 	
-	private Gasto gasto;
+	private GastoDTO gastoDTO;
 	private Integer idExclusao;
-	private Gasto gastoSelecionado;
 	private List<Gasto> gastos;
 	private Orcamento orcamentoAtual;
 	private Logger log = Logger.getLogger(GastoBean.class);
@@ -44,8 +44,7 @@ public class GastoBean implements Serializable {
 
 	@PostConstruct
 	private void init() {
-		gasto = new Gasto();
-		gastoSelecionado = new Gasto();
+		gastoDTO = new GastoDTO();
 		try{
 			orcamentoAtual = sessaoBean.getOrcamentoAtual();
 			atualizaGastos();
@@ -60,19 +59,19 @@ public class GastoBean implements Serializable {
 
 	public void inclui() {
 		FacesContext context = FacesContext.getCurrentInstance();
-		if (gasto==null) {
+		if (gastoDTO==null) {
 			context.addMessage("frm_tab_gasto:msg_gasto", new FacesMessage(FacesMessage.SEVERITY_ERROR, 
 					"Erro", "Gasto inválido"));
 			return;
 		}
 
-		if (gasto.getDataInicial()==null) {
+		if (gastoDTO.getDataInicial()==null) {
 			context.addMessage("frm_tab_gasto:msg_gasto", new FacesMessage(FacesMessage.SEVERITY_ERROR, 
 					"Erro",	"Data inicial inválida"));
 			return;
 		}
 
-		if (gasto.getDataFinal()== null) {
+		if (gastoDTO.getDataFinal()== null) {
 			context.addMessage("frm_tab_gasto:msg_gosta", new FacesMessage(FacesMessage.SEVERITY_ERROR, 
 					"Erro", "Data final inválida"));
 			return;
@@ -80,9 +79,11 @@ public class GastoBean implements Serializable {
 
 		try {
 		//	log.info("inserindo gssto " + gasto);
-			orcamentoService.adicionaGasto(gasto, orcamentoAtual);
+			
+			orcamentoService.adicionaGasto(gastoDTO.getGasto(), orcamentoAtual);
 			atualizaGastos();
-			gasto = new Gasto();
+			//TODO verificar a criacao do Gasto quando for variavel
+			gastoDTO = new GastoDTO();
 			//forca atualizacao do orcamento p/ atualizar painel de resumo
 			orcamentoAtual = sessaoBean.getOrcamentoAtual();
 			context.addMessage("frm_tab_gasto:msg_gasto", new FacesMessage(FacesMessage.SEVERITY_INFO, 
@@ -95,7 +96,7 @@ public class GastoBean implements Serializable {
 		}
 
 	}
-
+	
 	public void exclui() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		Severity severity = null;
@@ -120,20 +121,8 @@ public class GastoBean implements Serializable {
 				"Exclusão", mensagem));
 	}
 	
-	public void paga() {
-		
-	}
-
 	public String voltaOrcamento() {
 		return "orcamento_new";
-	}
-
-	public Gasto getGasto() {
-		return gasto;
-	}
-
-	public void setGasto(Gasto gasto) {
-		this.gasto = gasto;
 	}
 
 	public Integer getIdExclusao() {
@@ -142,14 +131,6 @@ public class GastoBean implements Serializable {
 
 	public void setIdExclusao(Integer idExclusao) {
 		this.idExclusao = idExclusao;
-	}
-
-	public Gasto getGastoSelecionado() {
-		return gastoSelecionado;
-	}
-
-	public void setGastoSelecionado(Gasto gastoSelecionado) {
-		this.gastoSelecionado = gastoSelecionado;
 	}
 
 	public List<Gasto> getGastos() {
@@ -193,6 +174,16 @@ public class GastoBean implements Serializable {
 		}
 		return totalPago;
 	}
+
+	public GastoDTO getGastoDTO() {
+		return gastoDTO;
+	}
+
+	public void setGastoDTO(GastoDTO gastoDTO) {
+		this.gastoDTO = gastoDTO;
+	}
+	
+	
 
 
 
