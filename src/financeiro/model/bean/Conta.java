@@ -244,6 +244,4 @@ public class Conta implements Serializable {
 				+ valorPendente + "]";
 	}
 	
-	
-	
 }
