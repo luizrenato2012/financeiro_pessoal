@@ -93,21 +93,27 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 			Gasto gasto = gastoService.encontra(idGasto, Gasto.class);
 			orcamento.cancelaGasto(gasto);
 			//alterada forma de exclusao
-			gastoService.removeBydId("Gasto.deleteById", idGasto);
-			
+			this.removeGasto(idGasto);
 			this.atualiza(orcamento);
 			log.info(">>> Cancelado gasto " + idGasto);
 		} catch (Exception e) {
 			throw new FinanceiroException(e);
 		}
 	}
-
-
-	private Orcamento carregaGastos(Integer idOrcamento) {
-		Query query = entityManager.createNamedQuery("Orcamento.loadGastos");
-		query.setParameter("id", idOrcamento);
-		return (Orcamento) query.getSingleResult();
+	
+	/**
+	 * bulk update delete - exclusao de muitos registros @OneToMany(Cascade.REMOVE)
+	 * nao funciona
+	 * @param idGasto
+	 */
+	private void removeGasto(Integer idGasto){
+		String qryUpdate = "update financ.pagamento set id_gasto=null where id_gasto=?1";
+		Query query = this.entityManager.createNativeQuery(qryUpdate);
+		query.setParameter(1, idGasto);
+		query.executeUpdate();
+		gastoService.removeBydId("Gasto.deleteById", idGasto);
 	}
+
 
 	public void adicionaGasto(Gasto gasto, Orcamento orcamento) {
 		try {
