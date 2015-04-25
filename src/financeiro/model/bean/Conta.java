@@ -242,6 +242,6 @@ public class Conta implements Serializable {
 		return "Conta [descricao=" + descricao + ", valor=" + valor
 				+ ", valorPago=" + valorPago + ", valorPendente="
 				+ valorPendente + "]";
-	}
+	} 
 	
 }

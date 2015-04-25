@@ -54,6 +54,7 @@
 		<p:dataTable id="tbl_orcamento" value="#{orcamentoBean.orcamentos}"
 			var="orcamento">
 
+			
 			<p:column headerText="ID">
 				<h:outputText value="#{orcamento.id}" />
 			</p:column>
@@ -80,19 +81,24 @@
 				</h:outputText>
 			</p:column>
 
-			<p:column headerText="Total Recebido">
+			<p:column headerText="Total Recebidos">
 				<h:outputText value="#{orcamento.valorTotalRecebido}">
 					<f:convertNumber minFractionDigits="2" />
 				</h:outputText>
 			</p:column>
 
-			<p:column headerText="Total Pendente">
+			<p:column headerText="Total Pendentes">
 				<h:outputText value="#{orcamento.valorTotalPendente}">
 					<f:convertNumber minFractionDigits="2" />
 				</h:outputText>
 			</p:column>
 
 			<p:column>
+				<p:commandLink action="#{orcamentoBean.ativaOrcamento()}"  process="@this" update=":frm_tab_orcamento:tbl_orcamento :frm_orcamento:msg_orcamento"
+						disabled="#{orcamento.ativo}">
+					<p:graphicImage value="resources/image/ativo.png"/>
+					<f:setPropertyActionListener target="#{orcamentoBean.idAtivacao}" value="#{orcamento.id}"/>
+				</p:commandLink>
 				<!-- abertura de orcamento -->
 				<p:commandButton  action="#{orcamentoBean.detalhaOrcamento()}" icon="icone_alteracao" 
 					title="Detalha valores" ajax="false">

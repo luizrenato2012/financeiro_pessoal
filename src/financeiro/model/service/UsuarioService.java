@@ -15,18 +15,50 @@ import financeiro.model.bean.Usuario;
 public class UsuarioService extends ServiceGeneric<Usuario, Integer> {
 
 
+	private Map<String,Usuario> mapUsuario ;
+	
+	public UsuarioService() {
+		mapUsuario = new HashMap<String, Usuario>();
+	}
+	
 	public Usuario valida (String login,String senha) {
 		try {
 			
-			Map<String,Object> parametros = new HashMap<String,Object>();
-			System.out.println("Senha " + senha);
-			parametros.put("login", login);
-			parametros.put("senha", getHash(senha));
-			List<Usuario> usuarios = this.lista("Usuario.findByLoginSenha",parametros);
-			return usuarios!=null && usuarios.size()!=0 ? usuarios.get(0) : null;
+		//	Map<String,Object> parametros = new HashMap<String,Object>();
+		//	parametros.put("login", login);
+		//	parametros.put("senha", getHash(senha));
+			
+		//	List<Usuario> usuarios = this.lista("Usuario.findByLoginSenha",parametros);
+		//	return usuarios!=null && usuarios.size()!=0 ? usuarios.get(0) : null;
+			
+			if (mapUsuario.size()==0) {
+				initMapUsuarios();
+			}
+			return existeUsuario(login, getHash(senha));
 		} catch (Exception e ) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	private void initMapUsuarios(){
+		List<Usuario> lista = this.listaTodos(Usuario.class);
+		for(Usuario usuario: lista) {
+			mapUsuario.put(usuario.getLogin(), usuario);
+		}
+	}
+	
+	public Usuario existeUsuario(String login, String senha){
+		if (!mapUsuario.containsKey(login)){
+			return null;
+		}
+		
+		for(String key : mapUsuario.keySet()){
+			Usuario usuario = mapUsuario.get(key);
+			if( login.equals(usuario.getLogin()) && senha.equals(usuario.getSenha()) ){
+				return usuario;
+			}
+		}
+		return null;
 	}
 	
 	public void insert(String login,String senha) {
@@ -52,9 +84,4 @@ public class UsuarioService extends ServiceGeneric<Usuario, Integer> {
 		return strbHex.toString();
 	}
 	
-	public static void main(String[] args) throws Exception {
-		System.out.println(new UsuarioService().getHash("admin123"));
-	}
-
-
 }

@@ -53,7 +53,7 @@ public class ServiceGeneric <T,PK> implements Service <T,Integer>{
 	
 	@Override
 	public List<T> listaTodos (Class<T> classe) {
-		Query query = entityManager.createQuery("select f from "+ classe.getName()+ " f");
+		Query query = entityManager.createQuery("select f from "+ classe.getName()+ " f order by f.id");
 		return query.getResultList();
 	}
 	

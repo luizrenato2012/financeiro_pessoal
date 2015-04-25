@@ -2,6 +2,8 @@ package financeiro.controller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -106,6 +108,7 @@ public class PagamentoBean implements Serializable {
 			// atualiza dados orçamento
 			//atualizaContas();
 			this.pagamentos = gasto.getPagamentos();
+			Collections.sort(this.pagamentos, new PagamentoComparator());
 			this.pagamento = new Pagamento();
 			context.addMessage(this.COMPONENTE_MENSAGEM, 
 					new FacesMessage(FacesMessage.SEVERITY_INFO, 
@@ -121,6 +124,7 @@ public class PagamentoBean implements Serializable {
 	public String atualizaPagamentos() {
 		//log.info("pagamentoBean - atualizaPagamentos");
 		this.pagamentos = gastoService.carregaPagamentos(gasto.getId()).getPagamentos();
+		Collections.sort(this.pagamentos, new PagamentoComparator());
 		return "pagamento";
 	}
 	
@@ -137,6 +141,7 @@ public class PagamentoBean implements Serializable {
 	}
 
 	public List<Pagamento> getPagamentos() {
+		Collections.sort(this.pagamentos, new PagamentoComparator());
 		return pagamentos;
 	}
 
@@ -155,6 +160,15 @@ public class PagamentoBean implements Serializable {
 
 	public void setSessaoBean(SessaoBean sessaoBean) {
 		this.sessaoBean = sessaoBean;
+	}
+	
+	class PagamentoComparator implements Comparator<Pagamento> {
+
+		@Override
+		public int compare(Pagamento p1, Pagamento p2) {
+			return p1.getData().compareTo(p2.getData());
+		}
+		
 	}
 
 }

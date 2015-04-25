@@ -32,14 +32,13 @@
 			
 			<p:toolbarGroup align="right">
 				<p:commandButton value="Voltar" action="orcamento_menu" icon="icone_saida" />
+				<p:commandButton ajax="false" value="Deslogar" action="#{sessaoBean.logoff()}" icon="icone_logoff" />
 			</p:toolbarGroup>
 		</p:toolbar>
 		
 	 	<div id="resumo">
 			<ui:include src="/secoes/resumo.xhtml" />
 		</div> 
-	
-		
 
 	</h:form>
 </h:body>

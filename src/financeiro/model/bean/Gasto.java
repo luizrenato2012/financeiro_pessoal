@@ -53,7 +53,11 @@ public class Gasto extends Conta {
 	}
 	
 	public void paga(double valor) {
-		this.valorPendente-= valor;
+	//	this.valorPendente-= valor;
+	//	this.valorPendente = this.valorPendente < 0.0 ? 0.0d : this.valorPendente;
+		
+		this.valorPendente = valor > this.valorPendente ? 0.0d : (this.valorPendente-valor);
+		
 		this.valorPago+=valor;
 		if (this.valorPendente==0.0d) {
 			this.situacao=SituacaoDespesa.PAGA;

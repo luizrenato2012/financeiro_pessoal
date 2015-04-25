@@ -167,6 +167,12 @@
 					<h:outputText value="#{gasto.valorPendente}">
 						<f:convertNumber minFractionDigits="2" />
 					</h:outputText>
+					
+					<f:facet name="footer">
+						<p:outputLabel value="#{gastoBean.totalPendente}">
+							<f:convertNumber minFractionDigits="2" />
+						</p:outputLabel>
+					</f:facet>
 
 				</p:column>  
 

@@ -36,11 +36,12 @@ public class OrcamentoBean implements Serializable{
 
 	private Integer idEdicao;
 	
+	private Integer idAtivacao;
+	
 	@Inject
 	private SessaoBean sessaoBean;
 	
 	private static final String MENU_ORCAMENTO = "orcamento_new";
-//	private final String FRM_ORCAMENTO = ":frm_orcamento";
 	private final String MSG_ORCAMENTO = ":frm_orcamento:msg_orcamento";
 	
 
@@ -109,6 +110,18 @@ public class OrcamentoBean implements Serializable{
 		return "menu_orcamento";
 	}
 	
+	public void ativaOrcamento() {
+		try {
+			this.service.ativaOrcamento(this.idAtivacao);
+			this.orcamentos = service.listaTodos(Orcamento.class);
+			this.sessaoBean.setOrcamentoAtivo();
+		} catch (Exception e ) {
+			e.printStackTrace();
+			FacesContext.getCurrentInstance().addMessage(MSG_ORCAMENTO, 
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Erro ao ativar orçamento"));
+		}
+	}
+	
 	public List<Orcamento> getOrcamentos() {
 		return orcamentos;
 	}
@@ -145,9 +158,13 @@ public class OrcamentoBean implements Serializable{
 		this.sessaoBean = sessaoBean;
 	}
 
+	public Integer getIdAtivacao() {
+		return idAtivacao;
+	}
+
+	public void setIdAtivacao(Integer idAtivacao) {
+		this.idAtivacao = idAtivacao;
+	}
 	
-//	public void testeOrcamento() {
-//		System.out.println("OrcamentoBean testeOrcamento");
-//	}
 
 }

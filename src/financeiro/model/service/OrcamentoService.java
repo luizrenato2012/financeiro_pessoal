@@ -1,14 +1,30 @@
 package financeiro.model.service;
 
-import java.math.BigDecimal;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
 
+import org.hibernate.Session;
+import org.hibernate.jdbc.Work;
 import org.jboss.logging.Logger;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import financeiro.controller.LabelValueDTO;
 import financeiro.model.bean.Conta;
 import financeiro.model.bean.FinanceiroException;
 import financeiro.model.bean.Gasto;
@@ -28,6 +44,16 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 	private GastoService gastoService;
 
 	private Logger log = Logger.getLogger(this.getClass());
+	
+	private NumberFormat numFormat;
+	private DateFormat dtFormat;
+	
+	@PostConstruct
+	private void configFormat() {
+		numFormat = NumberFormat.getNumberInstance(new Locale("pt", "BR"));
+		numFormat.setMinimumFractionDigits(2);
+		dtFormat = new SimpleDateFormat("dd/MM/yyyy");
+	}
 
 	public void recebe(Recebimento recebimento, Orcamento orcamento) {
 		try {
@@ -60,14 +86,14 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 		try {
 			Conta conta = contaService.encontra(idConta, Conta.class);
 			orcamento = this.carregaContas(orcamento.getId());
-			
+
 			if (orcamento.getContas()!=null && orcamento.getContas().size() > 0 ) {
 				orcamento.getContas().remove(conta);
 			} else {
 				throw new FinanceiroException("Orçamento " + orcamento.getId() + 
 						" nao possui contas relacionadas");
 			}
-			
+
 			orcamento.cancelaConta(conta);
 			contaService.remove(conta);
 			this.atualiza(orcamento);
@@ -100,7 +126,7 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 			throw new FinanceiroException(e);
 		}
 	}
-	
+
 	/**
 	 * bulk update delete - exclusao de muitos registros @OneToMany(Cascade.REMOVE)
 	 * nao funciona
@@ -140,7 +166,7 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 		try {
 			Orcamento orcamento = gasto.getOrcamento();
 			orcamento.pagaGasto(gasto, valor);
-		  //gastoService.atualiza(gasto);
+			//gastoService.atualiza(gasto);
 			this.atualiza(orcamento);
 		} catch (Exception e) {
 			throw new FinanceiroException(e);
@@ -155,14 +181,14 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 		try {
 			Recebimento recebimento = recebimentoService.encontra(idRecebimento, Recebimento.class);
 			recebimento.setOrcamento(null);
-			
+
 			if (orcamento.getRecebimentos()!=null && orcamento.getRecebimentos().size() > 0 ) {
 				orcamento.getRecebimentos().remove(recebimento);
 			} else {
 				throw new FinanceiroException("Orcamento " + orcamento.getId() + 
 						" nao possui recebimentos associados");
 			}
-			
+
 			orcamento.cancelaRecebimento(recebimento.getValor());
 			recebimentoService.remove(recebimento);
 			this.atualiza(orcamento);
@@ -171,26 +197,114 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 			throw new FinanceiroException(e);
 		}
 	}
-	
+
 	public double getValorTotalGastos(Integer idOrcamento) {
 		StringBuilder strb = new StringBuilder();
 		strb.append("select sum(valor) from financ.conta ")
-			.append (" where id_orcamento=?1 and tipo_conta=\'Gasto\'");
+		.append (" where id_orcamento=?1 and tipo_conta=\'Gasto\'");
 		Query query = this.entityManager.createNativeQuery(strb.toString());
 		query.setParameter(1, idOrcamento);
 		Double res = (Double) query.getSingleResult();
 		return res!=null ? res.doubleValue() : 0.0;
 	}
-	
+
 	public double getValorTotalContas(Integer idOrcamento) {
 		StringBuilder strb = new StringBuilder();
 		strb.append("select sum(valor) from financ.conta ")
-			.append (" where id_orcamento=?1 and tipo_conta=\'Conta\'");
+		.append (" where id_orcamento=?1 and tipo_conta=\'Conta\'");
 		Query query = this.entityManager.createNativeQuery(strb.toString());
 		query.setParameter(1, idOrcamento);
 		Double res = (Double) query.getSingleResult();
 		return res!=null ? res.doubleValue() : 0.0;
 	}
+
+	public void ativaOrcamento(final Integer idOrcamento) {
+		//	StringBuilder strbUpdate = new StringBuilder();
+		//	strbUpdate.append ("update financ.orcamento set ativo=not ")
+		//			  .append ("( select o.ativo from financ.orcamento o where o.id= :id1) ")
+		//			  .append (" where id = :id2"); 
+		Session session = ((Session)this.entityManager.getDelegate());
+		session.doWork(new Work() {
+
+			@Override
+			public void execute(Connection connecion) throws SQLException {
+				CallableStatement callable = connecion.prepareCall("{call financ.ativa_orcamento(?)}");
+				callable.setInt(1, idOrcamento);
+				callable.executeUpdate();
+
+			}
+		});
+	}
+
+	//	public Orcamento getOrcamentoAtivo() {
+	//		Query query = this.entityManager.createNamedQuery("Orcamento.findOrcamentoAtivo");
+	//		List<Orcamento> orcamentos = query.getResultList();
+	//		if (orcamentos==null || orcamentos.size()==0) {
+	//			throw new RuntimeException("Não foi encontrado orçamento ativo");
+	//		}
+	//	return orcamentos.get(0);
+	//	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public JsonObject getOrcamentoAtivo() {
+		StringBuilder strb = new StringBuilder();
+		strb.append("select orc.id 			as idOrcamento,")
+		.append("orc.data_inicial 			as dataInicial,")
+		.append("orc.data_final  			as dataFinal,")
+		.append("orc.valor_disponivel	    as valorDisponivel, ")
+		.append("orc.valor_total_pendente 	as valorPendente, ")
+		.append("(orc.valor_disponivel - orc.valor_total_pendente) as valorSobrante, ")
+		.append("ct.id as idGasto, ")
+		.append("ct.descricao as descGasto, ")
+		.append("ct.valor	  as valorGasto ")
+		.append("from financ.orcamento  orc ")
+		.append("left join financ.conta ct on ct.id_orcamento = orc.id and ct.tipo_conta in ('Gasto','GastoVariavel') ")
+		.append("where orc.ativo = true");
+		Query query = this.entityManager.createNativeQuery(strb.toString());
+
+		List<Object[]> lista = query.getResultList();
+		JsonObject jsObj = new JsonObject();
+		List<LabelValueDTO> listaDTO = new ArrayList<LabelValueDTO>();
+		LabelValueDTO labelDTo = null;
+		int count = 1 ;
+		Date d1 = null;
+		Date d2 = null;
+		for (Object [] ar : lista) {
+			if (count==1) {
+				jsObj.add("idOrcamento",     new JsonParser().parse( new Gson().toJson( ar[0])));
+				d1 = new Date(((java.sql.Date) ar[1]).getTime());
+				d2 = new Date(((java.sql.Date) ar[2]).getTime());
+				jsObj.add("descOrcamento",   new JsonParser().parse( new Gson().toJson( ar[0] + 
+						" - " + this.dtFormat.format(d1)+ " a " + 
+							  this.dtFormat.format(d2)     ))   );
+				jsObj.add("valorDisponivel", new JsonParser().parse( new Gson().toJson( "Valor disponivel: " 
+							+ numFormat.format((Double)ar[3])) ));
+				jsObj.add("valorPendente",   new JsonParser().parse( new Gson().toJson( "Valor Pendente:  "+ 
+						numFormat.format((Double)ar[4]))));
+				jsObj.add("valorSobrante",   new JsonParser().parse( new Gson().toJson( "Sobrara: "+ 
+						numFormat.format((Double)ar[5]))));
+				count++;
+			}
+			labelDTo = new LabelValueDTO((Integer)ar[6], ar[7]+ ": " + (numFormat.format((Double) ar[8])) );
+			listaDTO.add(labelDTo);
+		}
+		jsObj.add("gastos", new JsonParser().parse(new Gson().toJson(listaDTO)));
+		return jsObj;
+	}
+
+
+
+	/** retorna resuma do orcamento com o valor disponivel, total pendente e o que sobrará */
+	//	public List<Map> getResumo(int idOrcamento) {
+	//		StringBuilder strb = new StringBuilder();
+	//		strb.append("select  valor_disponivel as em_conta, ")
+	//			.append("valor_total_pendente as total_pendente, ")
+	//			.append("valor_disponivel-valor_total_pendente as sobrante")
+	//			.append("from financ.orcamento where id=?1");
+	//		Query query = this.entityManager.createNativeQuery(strb.toString());
+	//		query.setParameter(1, idOrcamento);
+	//		return query.getResultList();
+	//	}
 
 
 }

@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ColumnResult;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -16,6 +17,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -28,8 +30,10 @@ import javax.persistence.Transient;
 	allocationSize=1)
 @NamedQueries({
 	@NamedQuery(name="Orcamento.loadContas",query="select o from Orcamento o join fetch o.contas where o.id= :id"),
-	@NamedQuery(name="Orcamento.loadGastos",query="select o from Orcamento o join fetch o.gastos where o.id= :id")
+	@NamedQuery(name="Orcamento.loadGastos",query="select o from Orcamento o join fetch o.gastos where o.id= :id"),
+	@NamedQuery(name="Orcamento.findOrcamentoAtivo",query="select o from Orcamento o join fetch o.gastos where o.ativo = true")
 })
+@SqlResultSetMapping(name="scalar",columns={ @ColumnResult(name="id")})
 public class Orcamento implements Serializable {
 	
 	private static final long serialVersionUID = 4845673316790597578L;
@@ -86,6 +90,10 @@ public class Orcamento implements Serializable {
 	
 	@Column(length=50)
 	private String descricao;
+	
+	@Column
+	private boolean ativo;
+	
 	/** */
 	//private double totalPendenteGastos;
 	//private double totalPendenteContas;
@@ -97,6 +105,7 @@ public class Orcamento implements Serializable {
         this.valorTotalContas = 0d;
         this.valorTotalRecebido = 0d;
         this.valorDisponivel = 0d;
+        this.ativo = false;
         
         gastos = new ArrayList<Gasto>();
         contas = new ArrayList<Conta>();
@@ -339,6 +348,15 @@ public class Orcamento implements Serializable {
 
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
+	}
+
+	public boolean getAtivo() {
+		return this.ativo;
+	}
+
+
+	public void setAtivo(boolean ativo) {
+		this.ativo = ativo;
 	}
 
 

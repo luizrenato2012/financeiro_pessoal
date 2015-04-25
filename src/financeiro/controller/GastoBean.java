@@ -174,6 +174,16 @@ public class GastoBean implements Serializable {
 		}
 		return totalPago;
 	}
+	
+	public Double getTotalPendente() {
+		double totalPendente=0d;
+		if (gastos!=null && gastos.size()!=0) {
+			for(Gasto gasto: gastos){
+				totalPendente+= gasto.getValorPendente();
+			}
+		}
+		return totalPendente;
+	}
 
 	public GastoDTO getGastoDTO() {
 		return gastoDTO;

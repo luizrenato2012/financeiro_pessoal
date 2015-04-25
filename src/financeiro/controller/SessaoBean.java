@@ -18,15 +18,16 @@ import financeiro.model.service.OrcamentoService;
 @SessionScoped
 public class SessaoBean implements Serializable{
 
+	private static final long serialVersionUID = -7868357574495386347L;
+	
 	private static final Logger log = Logger.getLogger(SessaoBean.class);
 	@EJB
 	private OrcamentoService orcamentoService;
 
 	private Integer idContaSelecionada;
-
-	private static final long serialVersionUID = -7868357574495386347L;
+	
 	private HttpSession sessao;
-
+	
 	@SuppressWarnings("unused")
 	public SessaoBean() {
 	//	log.info("Criando sessao");
@@ -76,6 +77,26 @@ public class SessaoBean implements Serializable{
 	public double getValorTotalGastos() {
 		return orcamentoService.getValorTotalGastos(this.getIdOrcamentoAtual());
 	}
+	
+	public String logoff() {
+		this.sessao.removeAttribute(ConfiguracaoWeb.USUARIO_SESSAO.getDescricao());
+		this.sessao.invalidate();
+		return "login.xhtml";
+	}
+	
+	public void registraUsuario(String usuario) {
+		this.sessao.setAttribute(ConfiguracaoWeb.USUARIO_SESSAO.getDescricao(), usuario);
+	}
+
+	public Orcamento getOrcamentoAtivo() {
+		return (Orcamento) this.sessao.getAttribute(ConfiguracaoWeb.ORCAMENTO_ATIVO.getDescricao());
+	}
+
+	public void setOrcamentoAtivo() {
+		this.sessao.setAttribute(ConfiguracaoWeb.ORCAMENTO_ATIVO.getDescricao(),this.orcamentoService.getOrcamentoAtivo());
+	}
+	
+	
 
 
 }

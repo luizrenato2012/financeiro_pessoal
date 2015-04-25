@@ -40,6 +40,11 @@
 .icone_dinheiro {
 		background-image: url("../resources/image/Dollar.png") !important;
 }
+
+.icone_logoff {
+		background-image: url("../resources/image/Exit.png") !important;
+}
+
 .destaque_vermelho {
 	color: red; 
 	font-weight: bold;
