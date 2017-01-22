@@ -6,11 +6,11 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import javax.inject.Named;
 
+import org.apache.myfaces.extensions.cdi.core.api.scope.conversation.ViewAccessScoped;
 import org.jboss.logging.Logger;
 
 import br.com.lrsantos.financeiro_pessoal.model.bean.Orcamento;
@@ -18,8 +18,8 @@ import br.com.lrsantos.financeiro_pessoal.model.bean.Recebimento;
 import br.com.lrsantos.financeiro_pessoal.model.service.OrcamentoService;
 import br.com.lrsantos.financeiro_pessoal.model.service.RecebimentoService;
 
-@ManagedBean
-@ViewScoped
+@Named
+@ViewAccessScoped
 public class RecebimentoBean implements Serializable{
 
 	private static final long serialVersionUID = 6929361999234674129L;
