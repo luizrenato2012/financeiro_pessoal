@@ -24,17 +24,17 @@ public class UsuarioService extends ServiceGeneric<Usuario, Integer> {
 	public Usuario valida (String login,String senha) {
 		try {
 			
-		//	Map<String,Object> parametros = new HashMap<String,Object>();
-		//	parametros.put("login", login);
-		//	parametros.put("senha", getHash(senha));
+			Map<String,Object> parametros = new HashMap<String,Object>();
+			parametros.put("login", login);
+			parametros.put("senha", getHash(senha));
 			
-		//	List<Usuario> usuarios = this.lista("Usuario.findByLoginSenha",parametros);
-		//	return usuarios!=null && usuarios.size()!=0 ? usuarios.get(0) : null;
-			
-			if (mapUsuario.size()==0) {
-				initMapUsuarios();
-			}
-			return existeUsuario(login, getHash(senha));
+			List<Usuario> usuarios = this.lista("Usuario.findByLoginSenha",parametros);
+			return usuarios!=null && usuarios.size()!=0 ? usuarios.get(0) : null;
+			// retirado cache de usuario p/ permitir insercao do mesmo sem reiniciar a
+//			if (mapUsuario.size()==0) {
+//				initMapUsuarios();
+//			}
+//			return existeUsuario(login, getHash(senha));
 		} catch (Exception e ) {
 			throw new RuntimeException(e);
 		}

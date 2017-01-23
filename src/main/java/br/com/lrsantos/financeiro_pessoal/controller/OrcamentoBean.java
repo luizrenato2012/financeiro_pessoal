@@ -37,7 +37,7 @@ public class OrcamentoBean implements Serializable{
 	
 	private Integer idAtivacao;
 	
-	@Inject
+	@Inject @SessaoQualifier
 	private SessaoBeanImpl sessaoBean;
 	
 	private static final String MENU_ORCAMENTO = "orcamento_new";

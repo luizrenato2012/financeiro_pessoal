@@ -18,7 +18,8 @@ public class UsuarioBean {
 	
 	@EJB
 	private UsuarioService usuarioService;
-	@Inject
+	
+	@Inject @SessaoQualifier
 	private SessaoBeanImpl sessaoBean;
 	
 	private static final String ORCAMENTO_MENU = "orcamento_menu.jsf";

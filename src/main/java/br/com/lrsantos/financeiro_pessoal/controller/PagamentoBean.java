@@ -33,7 +33,7 @@ public class PagamentoBean implements Serializable {
 	private final String COMPONENTE_MENSAGEM="frm_pagamento_gasto:msg_pagamento";
 	private Logger log = Logger.getLogger(this.getClass());
 	
-	@Inject
+	@Inject @SessaoQualifier
 	private SessaoBeanImpl sessaoBean;
 			
 	@EJB

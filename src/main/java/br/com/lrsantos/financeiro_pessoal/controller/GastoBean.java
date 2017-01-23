@@ -38,7 +38,7 @@ public class GastoBean implements Serializable {
 	@EJB
 	private GastoService gastoService;
 	
-	@Inject
+	@Inject @SessaoQualifier
 	private SessaoBeanImpl sessaoBean;
 
 	@PostConstruct

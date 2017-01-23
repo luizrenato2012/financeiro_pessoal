@@ -14,8 +14,8 @@
 	
     <locale-config>
     	<default-locale>pt_BR</default-locale>
+<!--    <default-time-zone-id>America/Belem</default-time-zone-id> -->
     	<supported-locale>pt_BR</supported-locale>
-        <default-time-zone-id>America/Belem</default-time-zone-id>
     </locale-config>
 </application>  
 

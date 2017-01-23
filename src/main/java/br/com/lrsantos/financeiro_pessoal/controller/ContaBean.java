@@ -42,7 +42,7 @@ public class ContaBean implements Serializable {
 	private Conta contaSelecionada;
 	private Double totalGasto;
 
-	@Inject
+	@Inject @SessaoQualifier
 	private SessaoBeanImpl sessaoBean;
 
 	@PostConstruct
