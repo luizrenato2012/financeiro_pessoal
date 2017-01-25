@@ -1,0 +1,35 @@
+
+<!-- <div class="container"> -->
+	<label>{{titulo}}</label>
+	<div>
+	<input type="text" name='dataInicial'  ng-model="dataInicial" style='font-size: 130%;width: 30%' size='10'/>
+	<input type="text" name='dataFinal' ng-model="dataFinal" style='font-size: 130%; ;width: 30%' size='10'/>
+	<select type="select" name='tipoPagamento' ng-model="tipoPagamento" style='font-size: 130%;;width: 25%'>
+		<option value="">Todos</option>
+		<option value="Gasto">Gasto</option>
+		<option value="Conta">Conta</option>
+	</select>
+	<button ng-click="listaPagamento()" style="width: 10%;">...</button>
+	</div>
+	<span class="text-success">{{mensagemPesquisaPag}}</span>
+	</br>
+	
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Tipo</th> <th>Data</th> <th>Descri&ccedil;&atilde;o</th> <th>Valor</th> 
+			</tr>
+		<thead>
+		<tbody>
+			<tr ng-repeat="pagamento in pagamentos ">
+				<td>{{pagamento.tipo}}</td> <td>{{pagamento.data | date:'dd/MM/yyyy' }}</td> <td>{{pagamento.descricao}}</td> 
+				<td>{{pagamento.valor | number :2}}</td>
+			</tr>	
+		<tbody>
+		<tfoot>
+			<tr> <td></td> <td></td> <td style="font-weight: bold;">Total</td> 
+				<td style="font-weight: bold;">{{resumePagamentos() | number :2}}</td>    </tr>
+		<tfoot>
+	</table>
+	
+<!-- </div>	-->
