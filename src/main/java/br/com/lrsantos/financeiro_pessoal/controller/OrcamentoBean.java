@@ -56,10 +56,10 @@ public class OrcamentoBean implements Serializable{
 		Severity severity = null; 
 
 		if (orcamentoEdicao.getDataInicial()==null) {
-			mensagem = "Data inicial inv�liida";
+			mensagem = "Data inicial invalida";
 			severity = FacesMessage.SEVERITY_ERROR;
 		} else if (orcamentoEdicao.getDataFinal()==null) {
-			mensagem = "Data final inv�liida";
+			mensagem = "Data final invaliida";
 			severity = FacesMessage.SEVERITY_ERROR;
 		} else {
 
@@ -69,11 +69,11 @@ public class OrcamentoBean implements Serializable{
 				orcamentoEdicao = new Orcamento();
 				
 				severity = FacesMessage.SEVERITY_INFO;
-				mensagem = "Or�amento inclu�do com sucesso!";
+				mensagem = "Orçamento incluido com sucesso!";
 			} catch (Exception e) {
 				e.printStackTrace();
 				severity = FacesMessage.SEVERITY_ERROR;
-				mensagem = "Erro ao incluir or�amento!";
+				mensagem = "Erro ao incluir orcamento!";
 
 			}
 			FacesContext.getCurrentInstance().addMessage(MSG_ORCAMENTO ,  
@@ -87,7 +87,7 @@ public class OrcamentoBean implements Serializable{
 		try {
 			service.remove(idExclusao,Orcamento.class);
 			orcamentos = service.listaTodos(Orcamento.class);
-			mensagem = "Or�amento excluido com sucesso!";
+			mensagem = "Orçamento excluido com sucesso!";
 			severity = FacesMessage.SEVERITY_INFO;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -117,7 +117,7 @@ public class OrcamentoBean implements Serializable{
 		} catch (Exception e ) {
 			e.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(MSG_ORCAMENTO, 
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Erro ao ativar or�amento"));
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Erro ao ativar orcamento"));
 		}
 	}
 	

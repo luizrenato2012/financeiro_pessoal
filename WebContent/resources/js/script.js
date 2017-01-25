@@ -3,8 +3,8 @@
  */
 
 var app = angular.module('gastoApp',['ui.mask']);
-app.constant('PATH_APP' ,  'http://lrsantos.com.br/lr_financeiro/' );
-//app.constant('PATH_APP' ,'http://localhost:8080/lr_financeiro/' );
+//app.constant('PATH_APP' ,  'http://lrsantos.com.br/lr_financeiro/' );
+app.constant('PATH_APP' ,'http://localhost:8080/financeiro_pessoal/' );
 app.constant('APPLICATION_JSON' ,'application/json' );
 
 /** CONTROLLER          **/

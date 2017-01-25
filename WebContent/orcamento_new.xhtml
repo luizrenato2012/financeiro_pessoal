@@ -16,8 +16,8 @@
 		<h3>
 			<p:outputLabel>
 				<h:outputFormat value="Orçamento: {0} - {1}">
-					<f:param value="#{sessaoBean.orcamentoAtual.id}" />
-					<f:param value="#{sessaoBean.orcamentoAtual.descricao}" />
+					<f:param value="#{orcamentoNewBean.orcamentoAtual.id}" />
+					<f:param value="#{orcamentoNewBean.orcamentoAtual.descricao}" />
 				</h:outputFormat>
 			</p:outputLabel>
 		</h3>
@@ -32,7 +32,7 @@
 			
 			<p:toolbarGroup align="right">
 				<p:commandButton value="Voltar" action="orcamento_menu" icon="icone_saida" />
-				<p:commandButton ajax="false" value="Deslogar" action="#{sessaoBean.logoff()}" icon="icone_logoff" />
+				<p:commandButton ajax="false" value="Deslogar" action="#{orcamentoNewBean.logoff()}" icon="icone_logoff" />
 			</p:toolbarGroup>
 		</p:toolbar>
 		
