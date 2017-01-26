@@ -97,7 +97,10 @@ public class SessaoBeanImpl implements SessaoBean, Serializable{
 		this.sessao.setAttribute(ConfiguracaoWeb.ORCAMENTO_ATIVO.getDescricao(),this.orcamentoService.getOrcamentoAtivo());
 	}
 	
-	
+	public void atualizaResumoOrcamento()  {
+	    this.sessao.setAttribute(ConfiguracaoWeb.RESUMO_ORCAMENTO.getDescricao(), 
+	    this.orcamentoService.getResumoOrcamento());
+	}
 
 
 }

@@ -85,7 +85,7 @@ app.service('gastoService', ['$http', 'PATH_APP', 'APPLICATION_JSON' , '$q','log
 			//console.log(data.gastos);
 			defer.resolve(data);
 		}).error(function(data,status,headers,config,params) {
-			console.error('Erro ao testar ' + data);
+			console.error('Erro ao buscar gastos ' + data);
 			defer.reject(data);
 		});
 		return defer.promise;

@@ -15,11 +15,14 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.hibernate.Session;
 import org.hibernate.jdbc.Work;
 import org.jboss.logging.Logger;
 
+import br.com.lrsantos.financeiro_pessoal.controller.ConfiguracaoWeb;
 import br.com.lrsantos.financeiro_pessoal.controller.LabelValueDTO;
 import br.com.lrsantos.financeiro_pessoal.model.bean.Conta;
 import br.com.lrsantos.financeiro_pessoal.model.bean.FinanceiroException;
@@ -44,10 +47,10 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 	private GastoService gastoService;
 
 	private Logger log = Logger.getLogger(this.getClass());
-	
+
 	private NumberFormat numFormat;
 	private DateFormat dtFormat;
-	
+
 	@PostConstruct
 	private void configFormat() {
 		numFormat = NumberFormat.getNumberInstance(new Locale("pt", "BR"));
@@ -78,9 +81,9 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 	}
 
 	/** 
-	 * necessario carregamento dos gastos do or�amento 
+	 * necessario carregamento dos gastos do orçamento 
 	 * em virtudo do cascade.all e pelo fato do relacionamento ser bidirecional
-	 * sem o carregamento, s� o gastoService.remove(gasto) nao apaga o gasto
+	 * sem o carregamento, so o gastoService.remove(gasto) nao apaga o gasto
 	 */
 	public void cancelaConta(Integer idConta, Orcamento orcamento) {
 		try {
@@ -90,7 +93,7 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 			if (orcamento.getContas()!=null && orcamento.getContas().size() > 0 ) {
 				orcamento.getContas().remove(conta);
 			} else {
-				throw new FinanceiroException("Or�amento " + orcamento.getId() + 
+				throw new FinanceiroException("Orçamento " + orcamento.getId() + 
 						" nao possui contas relacionadas");
 			}
 
@@ -110,9 +113,9 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 	}
 
 	/** 
-	 * necessario carregamento dos gastos do or�amento 
+	 * necessario carregamento dos gastos do orcamento 
 	 * em virtudo do cascade.all e pelo fato do relacionamento ser bidirecional
-	 * sem o carregamento, s� o gastoService.remove(gasto) nao apaga o gasto
+	 * sem o carregamento, so o gastoService.remove(gasto) nao apaga o gasto
 	 */
 	public void cancelaGasto(Integer idGasto, Orcamento orcamento) {
 		try {
@@ -166,7 +169,7 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 		try {
 			Orcamento orcamento = gasto.getOrcamento();
 			orcamento.pagaGasto(gasto, valor);
-			//gastoService.atualiza(gasto);
+
 			this.atualiza(orcamento);
 		} catch (Exception e) {
 			throw new FinanceiroException(e);
@@ -174,8 +177,8 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 	}
 
 	/** 
-	 * na exclusao do recebimento n�o � necess�ria a carga da lista de recebimentos 
-	 * pois o fetch do relacionamento � EAGER
+	 * na exclusao do recebimento nao é necessaria a carga da lista de recebimentos 
+	 * pois o fetch do relacionamento é EAGER
 	 */
 	public void cancelaRecebimento(Integer idRecebimento,Orcamento orcamento) {
 		try {
@@ -219,10 +222,6 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 	}
 
 	public void ativaOrcamento(final Integer idOrcamento) {
-		//	StringBuilder strbUpdate = new StringBuilder();
-		//	strbUpdate.append ("update financ.orcamento set ativo=not ")
-		//			  .append ("( select o.ativo from financ.orcamento o where o.id= :id1) ")
-		//			  .append (" where id = :id2"); 
 		Session session = ((Session)this.entityManager.getDelegate());
 		session.doWork(new Work() {
 
@@ -236,133 +235,103 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 		});
 	}
 
-	//	public Orcamento getOrcamentoAtivo() {
-	//		Query query = this.entityManager.createNamedQuery("Orcamento.findOrcamentoAtivo");
-	//		List<Orcamento> orcamentos = query.getResultList();
-	//		if (orcamentos==null || orcamentos.size()==0) {
-	//			throw new RuntimeException("N�o foi encontrado or�amento ativo");
-	//		}
-	//	return orcamentos.get(0);
-	//	}
+	public Orcamento getOrcamentoAtivo() {
+		Query query = this.entityManager.createNamedQuery("Orcamento.findOrcamentoAtivo");
+		List<Orcamento> orcamentos = query.getResultList();
+//		this.log.info("Total de orcamentos "+ orcamentos.size());
+		if (orcamentos==null || orcamentos.size()==0) {
+			throw new RuntimeException("Nao foi encontrado oramento ativo");
+		}
+//		this.log.info("Orcamento ativo "+ orcamentos.get(0));
+		return orcamentos.get(0);
+	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public JsonObject getOrcamentoAtivo() {
-//		StringBuilder strb = new StringBuilder();
-//		strb.append("select orc.id 			as idOrcamento,")
-//		.append("orc.data_inicial 			as dataInicial,")
-//		.append("orc.data_final  			as dataFinal,")
-//		.append("orc.valor_disponivel	    as valorDisponivel, ")
-//		.append("orc.valor_total_pendente 	as valorPendente, ")
-//		.append("(orc.valor_disponivel - orc.valor_total_pendente) as valorSobrante, ")
-//		.append("ct.id as idGasto, ")
-//		.append("ct.descricao as descGasto, ")
-//		.append("ct.valor	  as valorGasto ")
-//		.append("from financ.orcamento  orc ")
-//		.append("left join financ.conta ct on ct.id_orcamento = orc.id and ct.tipo_conta in ('Gasto','GastoVariavel') ")
-//		.append("where orc.ativo = true");
-//		Query query = this.entityManager.createNativeQuery(strb.toString());
-//
-//		List<Object[]> lista = query.getResultList();
-//		JsonObject jsObj = new JsonObject();
-//		List<LabelValueDTO> listaDTO = new ArrayList<LabelValueDTO>();
-//		LabelValueDTO labelDTo = null;
-//		int count = 1 ;
-//		Date d1 = null;
-//		Date d2 = null;
-//		for (Object [] ar : lista) {
-//			if (count==1) {
-//				jsObj.add("idOrcamento",     new JsonParser().parse( new Gson().toJson( ar[0])));
-//				d1 = new Date(((java.sql.Date) ar[1]).getTime());
-//				d2 = new Date(((java.sql.Date) ar[2]).getTime());
-//				jsObj.add("descOrcamento",   new JsonParser().parse( new Gson().toJson( ar[0] + 
-//						" - " + this.dtFormat.format(d1)+ " a " + 
-//							  this.dtFormat.format(d2)     ))   );
-//				jsObj.add("valorDisponivel", new JsonParser().parse( new Gson().toJson( "Valor disponivel: " 
-//							+ numFormat.format((Double)ar[3])) ));
-//				jsObj.add("valorPendente",   new JsonParser().parse( new Gson().toJson( "Valor Pendente:  "+ 
-//						numFormat.format((Double)ar[4]))));
-//				jsObj.add("valorSobrante",   new JsonParser().parse( new Gson().toJson( "Sobrara: "+ 
-//						numFormat.format((Double)ar[5]))));
-//				count++;
-//			}
-//			labelDTo = new LabelValueDTO((Integer)ar[6], ar[7]+ ": " + (numFormat.format((Double) ar[8])) );
-//			listaDTO.add(labelDTo);
-//		}
-//		jsObj.add("gastos", new JsonParser().parse(new Gson().toJson(listaDTO)));
-//		return jsObj;
-		
-		StringBuilder strb = new StringBuilder();
-	    strb.append("select orc.id as idOrcamento,")
-	      .append("orc.data_inicial \t\t\tas dataInicial,")
-	      .append("orc.data_final  \t\t\tas dataFinal,")
-	      .append("orc.valor_disponivel\t    as valorDisponivel, ")
-	      .append("orc.valor_total_pendente \tas valorPendente, ")
-	      .append("(orc.valor_disponivel - orc.valor_total_pendente) as valorSobrante, ")
-	      .append("(select sum(ct2.valor_Pendente)  from financ.conta ct2 ")
-	      .append("where  ct2.tipo_conta = 'Conta' and ct2.situacao = 'PENDENTE' and ct2.id_orcamento = orc.id ")
-	      .append("group by  ct2.tipo_conta ) as conta_pendente, ")
-	      .append("(select sum(ct3.valor_Pendente) from financ.conta ct3  ")
-	      .append("where  ct3.tipo_conta like 'Gasto%' and ct3.situacao = 'PENDENTE' and ct3.id_orcamento = orc.id  ")
-	      .append("group by  ct3.tipo_conta) as gasto_pendente ")
-	      .append("from financ.orcamento  orc ")
-	      .append("left join financ.conta ct on ct.id_orcamento = orc.id and ct.tipo_conta in ('Gasto','GastoVariavel') ")
-	      .append("where orc.ativo = true ")
-	      .append("order by ct.descricao");
-	    Query query = this.entityManager.createNativeQuery(strb.toString());
-	    
-	    List<Object[]> lista = query.getResultList();
-	    JsonObject jsObj = new JsonObject();
-	    List<LabelValueDTO> listaDTO = new ArrayList();
-	    LabelValueDTO labelDTo = null;
-	    int count = 1;
-	    java.util.Date d1 = null;
-	    java.util.Date d2 = null;
-	    Double valorDisponivel = null;
-	    Double valorPendente = null;
-	    Double valorSobrante = null;
-	    Double contaPendente = null;
-	    Double gastoPendente = null;
-	    for (Object[] ar : lista) {
-	      if (count == 1)
-	      {
-	        jsObj.add("idOrcamento", new JsonParser().parse(new Gson().toJson(ar[0])));
-	        d1 = new java.util.Date(((java.sql.Date)ar[1]).getTime());
-	        d2 = new java.util.Date(((java.sql.Date)ar[2]).getTime());
-	        jsObj.add("descOrcamento", new JsonParser().parse(new Gson().toJson(ar[0] + 
-	          " - " + this.dtFormat.format(d1) + " a " + 
-	          this.dtFormat.format(d2))));
-	        
-	        valorDisponivel = Double.valueOf((Double)ar[3] == null ? 0.0D : ((Double)ar[3]).doubleValue());
-	        valorPendente = Double.valueOf((Double)ar[4] == null ? 0.0D : ((Double)ar[4]).doubleValue());
-	        valorSobrante = Double.valueOf((Double)ar[5] == null ? 0.0D : ((Double)ar[5]).doubleValue());
-	        contaPendente = Double.valueOf((Double)ar[6] == null ? 0.0D : ((Double)ar[6]).doubleValue());
-	        gastoPendente = Double.valueOf((Double)ar[7] == null ? 0.0D : ((Double)ar[7]).doubleValue());
-	        
-	        jsObj.add("valorDisponivel", new JsonParser().parse(new Gson().toJson(valorDisponivel)));
-	        jsObj.add("valorPendente", new JsonParser().parse(new Gson().toJson(valorPendente)));
-	        jsObj.add("valorSobrante", new JsonParser().parse(new Gson().toJson(valorSobrante)));
-	        jsObj.add("contaPendente", new JsonParser().parse(new Gson().toJson(contaPendente)));
-	        jsObj.add("gastoPendente", new JsonParser().parse(new Gson().toJson(gastoPendente)));
-	        count++;
-	      }
-	    }
-	    jsObj.add("resumo", new JsonParser().parse(new Gson().toJson(listaDTO)));
-	    return jsObj;
+	public Integer getIdOrcamentoAtivo(HttpServletRequest request) {
+		HttpSession session = request.getSession(true);
+		if (session.getAttribute(ConfiguracaoWeb.ID_ORCAMENTO_ATIVO.getDescricao()) == null)
+		{
+			String str = "select id from financ.orcamento where ativo = true";
+			Query query = this.entityManager.createNativeQuery(str);
+			List lista = query.getResultList();
+			if ((lista == null) || (lista.size() == 0)) {
+				return Integer.valueOf(0);
+			}
+			Integer id = (Integer)lista.get(0);
+			session.setAttribute(ConfiguracaoWeb.ID_ORCAMENTO_ATIVO.getDescricao(), id);
+			return id;
+		}
+		return (Integer)session.getAttribute(ConfiguracaoWeb.ID_ORCAMENTO_ATIVO.getDescricao());
+	}
+
+	public void reiniciaIdOrcamentoAtual(HttpServletRequest request) {
+		HttpSession session = request.getSession(true);
+		String str = "select id from financ.orcamento where ativo = true";
+		Query query = this.entityManager.createNativeQuery(str);
+		List lista = query.getResultList();
+
+		Integer id = (Integer)lista.get(0);
+		session.setAttribute(ConfiguracaoWeb.ID_ORCAMENTO_ATIVO.getDescricao(), id);
 	}
 
 
+	public JsonObject getResumoOrcamento() 	{
+		StringBuilder strb = new StringBuilder();
+		strb.append("select orc.id as idOrcamento,")
+		.append("orc.data_inicial \t\t\tas dataInicial,")
+		.append("orc.data_final  \t\t\tas dataFinal,")
+		.append("orc.valor_disponivel\t    as valorDisponivel, ")
+		.append("orc.valor_total_pendente \tas valorPendente, ")
+		.append("(orc.valor_disponivel - orc.valor_total_pendente) as valorSobrante, ")
+		.append("(select sum(ct2.valor_Pendente)  from financ.conta ct2 ")
+		.append("where  ct2.tipo_conta = 'Conta' and ct2.situacao = 'PENDENTE' and ct2.id_orcamento = orc.id ")
+		.append("group by  ct2.tipo_conta ) as conta_pendente, ")
+		.append("(select sum(ct3.valor_Pendente) from financ.conta ct3  ")
+		.append("where  ct3.tipo_conta like 'Gasto%' and ct3.situacao = 'PENDENTE' and ct3.id_orcamento = orc.id  ")
+		.append("group by  ct3.tipo_conta) as gasto_pendente ")
+		.append("from financ.orcamento  orc ")
+		.append("left join financ.conta ct on ct.id_orcamento = orc.id and ct.tipo_conta in ('Gasto','GastoVariavel') ")
+		.append("where orc.ativo = true ")
+		.append("order by ct.descricao");
+		Query query = this.entityManager.createNativeQuery(strb.toString());
 
-	/** retorna resuma do orcamento com o valor disponivel, total pendente e o que sobrar� */
-	//	public List<Map> getResumo(int idOrcamento) {
-	//		StringBuilder strb = new StringBuilder();
-	//		strb.append("select  valor_disponivel as em_conta, ")
-	//			.append("valor_total_pendente as total_pendente, ")
-	//			.append("valor_disponivel-valor_total_pendente as sobrante")
-	//			.append("from financ.orcamento where id=?1");
-	//		Query query = this.entityManager.createNativeQuery(strb.toString());
-	//		query.setParameter(1, idOrcamento);
-	//		return query.getResultList();
-	//	}
+		List<Object[]> lista = query.getResultList();
+		JsonObject jsObj = new JsonObject();
+		List<LabelValueDTO> listaDTO = new ArrayList();
+		LabelValueDTO labelDTo = null;
+		int count = 1;
+		java.util.Date d1 = null;
+		java.util.Date d2 = null;
+		Double valorDisponivel = null;
+		Double valorPendente = null;
+		Double valorSobrante = null;
+		Double contaPendente = null;
+		Double gastoPendente = null;
+		for (Object[] ar : lista) {
+			if (count == 1)
+			{
+				jsObj.add("idOrcamento", new JsonParser().parse(new Gson().toJson(ar[0])));
+				d1 = new java.util.Date(((java.sql.Date)ar[1]).getTime());
+				d2 = new java.util.Date(((java.sql.Date)ar[2]).getTime());
+				jsObj.add("descOrcamento", new JsonParser().parse(new Gson().toJson(ar[0] + 
+						" - " + this.dtFormat.format(d1) + " a " + 
+						this.dtFormat.format(d2))));
 
+				valorDisponivel = Double.valueOf((Double)ar[3] == null ? 0.0D : ((Double)ar[3]).doubleValue());
+				valorPendente = Double.valueOf((Double)ar[4] == null ? 0.0D : ((Double)ar[4]).doubleValue());
+				valorSobrante = Double.valueOf((Double)ar[5] == null ? 0.0D : ((Double)ar[5]).doubleValue());
+				contaPendente = Double.valueOf((Double)ar[6] == null ? 0.0D : ((Double)ar[6]).doubleValue());
+				gastoPendente = Double.valueOf((Double)ar[7] == null ? 0.0D : ((Double)ar[7]).doubleValue());
+
+				jsObj.add("valorDisponivel", new JsonParser().parse(new Gson().toJson(valorDisponivel)));
+				jsObj.add("valorPendente", new JsonParser().parse(new Gson().toJson(valorPendente)));
+				jsObj.add("valorSobrante", new JsonParser().parse(new Gson().toJson(valorSobrante)));
+				jsObj.add("contaPendente", new JsonParser().parse(new Gson().toJson(contaPendente)));
+				jsObj.add("gastoPendente", new JsonParser().parse(new Gson().toJson(gastoPendente)));
+				count++;
+			}
+		}
+		jsObj.add("resumo", new JsonParser().parse(new Gson().toJson(listaDTO)));
+		return jsObj;
+	}
 
 }

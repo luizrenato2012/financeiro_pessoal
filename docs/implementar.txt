@@ -8,7 +8,10 @@ Funcionalidades
  - Retirar mensagem do dialogo de inclusao de pagamento e colocar tela de pagamentos 
 Erros
   - OK Verificar campos de data no form de cadastro de orÃ§amento nao aceitam formato da data dd/MM/yyyy http://in.relation.to/Bloggers/StepRightUpAndSelectYourTimeZone.
-  - OK Apos excluir uma conta, ao se incluir outra o valor pendente é adicionado do valor da conta excluida anteriormente (executada pesquisa do orcamento atual na sessaoBean).
+  - OK Apos excluir uma conta, ao se incluir outra o valor pendente ï¿½ adicionado do valor da conta excluida anteriormente (executada pesquisa do orcamento atual na sessaoBean).
   - OK Erro ao excluir um gasto na tela de gastos (alteracao da forma exclusao em GastoService)
   - OK Duplicando valor no pagamento de conta 
-  - OK Nao atualiza os dados do gasto pago na tela de pagamento  quando é cadastrado um pagamento (alteracao atualizacao dialog de inclusao pagamento)
+  - OK Nao atualiza os dados do gasto pago na tela de pagamento  quando ï¿½ cadastrado um pagamento (alteracao atualizacao dialog de inclusao pagamento)
+  
+  Implementar
+  26/01/2017 - pesquisa de orcamento ativo colocar left join p/ que busque mesmo q nao tenha gastos

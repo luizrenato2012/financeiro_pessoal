@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -24,6 +25,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.DiscriminatorOptions;
+
 import br.com.lrsantos.financeiro_pessoal.util.DataUtils;
 
 @Entity
@@ -35,6 +38,8 @@ import br.com.lrsantos.financeiro_pessoal.util.DataUtils;
 	@NamedQuery(name="Conta.listByOrcamento",query="select c from Conta c inner join c.orcamento o " +
 			" where o.id = :idOrcamento and TYPE (c) = Conta")
 })
+@DiscriminatorValue("Conta")
+@DiscriminatorOptions(force=true)
 public class Conta implements Serializable {
 	
 	private static final long serialVersionUID = 8884725799844326520L;

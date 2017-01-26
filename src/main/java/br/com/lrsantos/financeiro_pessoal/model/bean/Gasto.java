@@ -10,8 +10,11 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -19,8 +22,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * Classe que representa um tipo de conta onde sao feito v�rios pagamentos
- * p. ex refei��o, passagens ,etc<br>
+ * Classe que representa um tipo de conta onde sao feito varios pagamentos
+ * p. ex refeicao, passagens ,etc<br>
  * sao despesas que podem continuar a receber pagamentos mesmo sem ter valores pendentes,<br>
  * sem data de vencimento e pagamento definidas
  * @author Luiz Renato
@@ -33,37 +36,42 @@ import javax.persistence.TemporalType;
 	@NamedQuery(name="Gasto.loadPagamentos", query="select g from Gasto g left join fetch g.pagamentos where g.id=:idGasto"),
 	@NamedQuery(name="Gasto.deleteById", query="delete from Gasto where id= ?1")
 })
+@DiscriminatorValue("Gasto")
 public class Gasto extends Conta {
-	
+
 	/** valor do gasto pode ser diferente do valor pago quando o pago ultrapassa o previsto*/
 	@Column(name="data_inicial")
 	@Temporal(TemporalType.DATE)
 	private Date dataInicial;
-	
+
 	@Column(name="data_final")
 	@Temporal(TemporalType.DATE)
 	private Date dataFinal;
-	
+
 	@OneToMany(cascade=CascadeType.REMOVE,fetch=FetchType.LAZY,mappedBy="gasto")
 	private List<Pagamento> pagamentos;
-	
+
+	@ManyToOne(fetch=FetchType.LAZY, targetEntity=Orcamento.class)
+	@JoinColumn(name="id_orcamento", insertable=false, updatable=false)
+	private Orcamento orcamento;	
+
 	public Gasto() {
 		pagamentos = new ArrayList<Pagamento>();
 		this.setId(null);
 	}
-	
+
 	public void paga(double valor) {
-	//	this.valorPendente-= valor;
-	//	this.valorPendente = this.valorPendente < 0.0 ? 0.0d : this.valorPendente;
-		
+		//	this.valorPendente-= valor;
+		//	this.valorPendente = this.valorPendente < 0.0 ? 0.0d : this.valorPendente;
+
 		this.valorPendente = valor > this.valorPendente ? 0.0d : (this.valorPendente-valor);
-		
+
 		this.valorPago+=valor;
 		if (this.valorPendente==0.0d) {
 			this.situacao=SituacaoDespesa.PAGA;
 		}
 	}
-	
+
 	public void cancelaPagamento(Pagamento pagamento) {
 		this.valorPago-=pagamento.getValor();
 		this.valorPendente+=pagamento.getValor();
@@ -134,13 +142,21 @@ public class Gasto extends Conta {
 	public void setSituacao(SituacaoDespesa situacao) {
 		this.situacao = situacao;
 	}
-	
+
+	public Orcamento getOrcamento() {
+		return orcamento;
+	}
+
+	public void setOrcamento(Orcamento orcamento) {
+		this.orcamento = orcamento;
+	}
+
 	@Override
 	public String toString() {
 		return "Gasto [descricao=" + descricao + ", valor=" + valor
 				+ ", valorPago=" + valorPago + ", valorPendente="
 				+ valorPendente + "]";
 	}
-	
-	
+
+
 }
