@@ -22,6 +22,7 @@ public class AutenticacaoServlet extends HttpServlet {
 	
 	private static final String PAGINA_LOGIN="mob/login.html";
 	private static final String PAGINA_GASTO="mob/gasto.html";
+	private static final String PAGINA_PRINCIPAL="mob/main.html";
 	
 	@EJB
 	private UsuarioService usuarioService;
@@ -84,7 +85,7 @@ public class AutenticacaoServlet extends HttpServlet {
 			}
 			request.getSession().setAttribute(ConfiguracaoWeb.USUARIO_SESSAO_MOB.getDescricao(),
 					usuario.getLogin());
-			response.sendRedirect(PAGINA_GASTO);
+			response.sendRedirect(PAGINA_PRINCIPAL);
 		} catch (Exception e){
 			e.printStackTrace();
 			response.sendRedirect(PAGINA_LOGIN);
