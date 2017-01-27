@@ -1,21 +1,26 @@
-<div class="container">
-	
+<div class="panel panel-success">
+	<div class="panel-heading">Resumo</div>
 	<div class="form-group">
-		<label>Resumo de orcamento</label>
-		<input name='edt_orcamento' type="text" class="form-control" ng-model="descOrcamento" required /> 
-		</div>
-		
-		<div class="container">
+		<label>Resumo de orcamento</label> <input name='edt_orcamento'
+			type="text" class="form-control" ng-model="descOrcamento" required />
+	</div>
+
+	<div class="container">
 		<ul class="list-group">
-			<li class="list-group-item" style="color: blue; font-weight:bold">Valor disponível: {{valorDisponivel | number:2}}</li>
-			<li class="list-group-item" style="color: red; font-weight:bold">Contas pendentes: {{contaPendente | number :2}}</li>
-			<li class="list-group-item" style="color: red; font-weight:bold">Gastos pendentes: {{gastoPendente | number:2}}</li>
-			<li class="list-group-item" style="color: red; font-weight:bold">Total pendentes: {{valorPendente | number:2}}</li>
-			<li class="list-group-item" style="color: green; font-weight:bold">Sobrará: {{valorSobrante | number:2}}</li>
+			<li class="list-group-item" style="color: blue; font-weight: bold">Valor
+				disponível: {{valorDisponivel | number:2}}</li>
+			<li class="list-group-item" style="color: red; font-weight: bold">Contas
+				pendentes: {{contaPendente | number :2}}</li>
+			<li class="list-group-item" style="color: red; font-weight: bold">Gastos
+				pendentes: {{gastoPendente | number:2}}</li>
+			<li class="list-group-item" style="color: red; font-weight: bold">Total
+				pendentes: {{valorPendente | number:2}}</li>
+			<li class="list-group-item" style="color: green; font-weight: bold">Sobrará:
+				{{valorSobrante | number:2}}</li>
 		</ul>
 	</div>
-	<form>	
+	<form>
 		<button class="btn btn-primary" ng-click="resumeOrcamento()">Atualiza</button>
 		<button class="btn btn-warning" ng-click="logoff()">Logoff</button>
 	</form>
-</div>	
+</div>
