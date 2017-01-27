@@ -1,45 +1,50 @@
 
-<div class="container">
-	
-	<form name='frm_gasto' role="form">
-		<div class="form-group">
-		<label>Orcamento</label>
-			<input id="orcamento" name='edt_orcamento' type="text" class="form-control" ng-model="descOrcamento" required style='font-size: 130%;' readonly/> 
-		</div>
-		
-		<div class="form-group">
-			<label>Gastos</label>
-			<select name='slc_gasto' class="form-control" ng-model="gastoSel" ng-options="gasto.label for gasto in gastos" ng-change="limpa()" required style='font-size: 130%;''>
-				<option value="Selecione">
-			</select>
-		</div>
-		
-		
-		<div class="form-group">
-			<label>Data do Pagamento</label>
-				<input name='edt_data' type="text" class="form-control"  ng-model="data" data-role="date" required style='font-size: 130%;'/> 
-		</div>
-		
-		<div class="form-group">
-				<label>Descrição</label> 
-			<input name='edt_descricao' class="form-control" type="text"  ng-model="descricao" style='font-weight:bold; font-size: 130%;'/>
-		</div>
-		
-		<div class="form-group">
-			<label>Valor</label>
-				<input name='edt_valor' type="text" ui-number-mask class="form-control"  ng-model="valor" required style='font-weight:bold; font-size: 130%;'/> 
-		</div>	
-		
-		
-		
-		<button class="btn btn-primary" ng-click="paga()">Registra</button>
-		<button class="btn btn-warning" ng-click="logoff()">Logoff</button>
-		<div class="form-group">
-			<span class="text-success">{{mensagemInfo}}</span>
-			<span class="text-danger">{{mensagemErro}}</span>
-		</div>
-	</form>
-	<br/>
-			
-	<br/>
-</div>	
+<div class="panel panel-primary">
+	<div class="panel-heading">Registra Pagamento Gasto</div>
+	<div class="panel-body">
+		<form name='frm_gasto' role="form">
+			<div class="form-group">
+				<label>Orcamento</label> <input id="orcamento" name='edt_orcamento'
+					type="text" class="form-control" ng-model="descOrcamento" required
+					style='font-size: 130%;' readonly />
+			</div>
+
+			<div class="form-group">
+				<label>Gastos</label> <select name='slc_gasto' class="form-control"
+					ng-model="gastoSel" ng-options="gasto.label for gasto in gastos"
+					ng-change="limpa()" required style='font-size: 130%;''>
+					<option value="Selecione">
+				</select>
+			</div>
+
+
+			<div class="form-group">
+				<label>Data do Pagamento</label> <input name='edt_data' type="text"
+					class="form-control" ng-model="data" data-role="date" required
+					style='font-size: 130%;' />
+			</div>
+
+			<div class="form-group">
+				<label>Descrição</label> <input name='edt_descricao'
+					class="form-control" type="text" ng-model="descricao"
+					style='font-weight: bold; font-size: 130%;' />
+			</div>
+
+			<div class="form-group">
+				<label>Valor</label> <input name='edt_valor' type="text"
+					ui-number-mask class="form-control" ng-model="valor" required
+					style='font-weight: bold; font-size: 130%;' />
+			</div>
+
+
+
+			<button class="btn btn-primary" ng-click="paga()">Registra</button>
+			<button class="btn btn-warning" ng-click="logoff()">Logoff</button>
+			<div class="form-group">
+				<span class="text-success">{{mensagemInfo}}</span> <span
+					class="text-danger">{{mensagemErro}}</span>
+			</div>
+		</form>
+	</div>
+	<br /> <br />
+</div>
