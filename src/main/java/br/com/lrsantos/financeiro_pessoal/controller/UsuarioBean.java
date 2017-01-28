@@ -29,13 +29,13 @@ public class UsuarioBean {
 		try {
 			if (this.login==null || this.login.equals("")) {
 				context.addMessage( null,
-						new FacesMessage(FacesMessage.SEVERITY_ERROR,"Login inv�lido","" ));
+						new FacesMessage(FacesMessage.SEVERITY_ERROR,"Login invalido","" ));
 				return null;
 			}
 			
 			if (this.senha==null || this.senha.equals("")) {
 				context.addMessage( null, 
-						new FacesMessage(FacesMessage.SEVERITY_ERROR,"Senha inv�lido",""));
+						new FacesMessage(FacesMessage.SEVERITY_ERROR,"Senha invalida",""));
 				return null;
 			}
 			Usuario usuario = usuarioService.valida(login, senha);

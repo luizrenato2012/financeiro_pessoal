@@ -31,7 +31,7 @@ public class SessaoBeanImpl implements SessaoBean, Serializable{
 	
 	@SuppressWarnings("unused")
 	public SessaoBeanImpl() {
-	//	log.info("Criando sessao");
+		log.info(">>> Criando sessao");
 		 sessao = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true); 
 
 	}
@@ -79,10 +79,9 @@ public class SessaoBeanImpl implements SessaoBean, Serializable{
 		return orcamentoService.getValorTotalGastos(this.getIdOrcamentoAtual());
 	}
 	
-	public String logoff() {
+	public void logoff() {
 		this.sessao.removeAttribute(ConfiguracaoWeb.USUARIO_SESSAO.getDescricao());
 		this.sessao.invalidate();
-		return "login.xhtml";
 	}
 	
 	public void registraUsuario(String usuario) {

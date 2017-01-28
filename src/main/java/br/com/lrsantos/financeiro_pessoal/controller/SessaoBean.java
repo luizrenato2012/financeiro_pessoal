@@ -15,7 +15,7 @@ public interface SessaoBean {
 	
 	public double getValorTotalGastos() ;
 	
-	public String logoff() ;
+	public void logoff() ;
 	
 	public void registraUsuario(String usuario) ;
 
