@@ -8,8 +8,10 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -31,6 +33,7 @@ import br.com.lrsantos.financeiro_pessoal.model.bean.Orcamento;
 import br.com.lrsantos.financeiro_pessoal.model.bean.Recebimento;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -50,13 +53,50 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 
 	private NumberFormat numFormat;
 	private DateFormat dtFormat;
+	private static String QRY_DESPESAS_PENDENTES_TIPO;
+	private static String QRY_DESPESAS_PENDENTES_TODOS;
+	private static String QRY_CONTA_PENDENTE = "select ct.descricao,ct.data_vencimento, ct.valor, case when data_vencimento <= current_date then 'Vencida' else 'A Vencer' end as status from financ.conta ct  inner join financ.orcamento orc on ct.id_orcamento = orc.id  where ct.situacao = 'PENDENTE' and ct.tipo_conta='Conta' and orc.ativo=true";
 
 	@PostConstruct
+	private void init() {
+		this.configFormat();
+		this.initSQL();
+	}
+	
 	private void configFormat() {
 		numFormat = NumberFormat.getNumberInstance(new Locale("pt", "BR"));
 		numFormat.setMinimumFractionDigits(2);
 		dtFormat = new SimpleDateFormat("dd/MM/yyyy");
 	}
+
+	private void initSQL() {
+		StringBuilder strb = new StringBuilder();
+		strb.append("select gt.descricao, ")
+			.append("gt.tipo_conta, ")
+			.append("gt.data_vencimento, ")
+			.append("case when gt.tipo_conta ='Conta' then gt.valor else gt.valor_pendente end as valor ")
+			.append("from financ.conta gt ")
+			.append("inner join financ.orcamento orc on gt.id_orcamento = orc.id  ")
+			.append("where gt.situacao in ('ABERTO','PENDENTE') and ")
+			.append("gt.tipo_conta = ?  and ")
+			.append("orc.ativo=true " )
+			.append("order by gt.tipo_conta, gt.data_vencimento");
+		QRY_DESPESAS_PENDENTES_TIPO = strb.toString();
+		
+		strb = new StringBuilder();
+		strb.append("select gt.descricao, ")
+		.append("gt.tipo_conta, ")
+		.append("gt.data_vencimento, ")
+		.append("case when gt.tipo_conta ='Conta' then gt.valor else gt.valor_pendente end as valor ")
+		.append("from financ.conta gt ")
+		.append("inner join financ.orcamento orc on gt.id_orcamento = orc.id  ")
+		.append("where gt.situacao in ('ABERTO','PENDENTE') and ")
+		.append("gt.tipo_conta in ('Conta','Gasto') and ")
+		.append("orc.ativo=true " )
+		.append("order by gt.tipo_conta, gt.data_vencimento");
+		QRY_DESPESAS_PENDENTES_TODOS = strb.toString();
+	}
+
 
 	public void recebe(Recebimento recebimento, Orcamento orcamento) {
 		try {
@@ -238,11 +278,11 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 	public Orcamento getOrcamentoAtivo() {
 		Query query = this.entityManager.createNamedQuery("Orcamento.findOrcamentoAtivo");
 		List<Orcamento> orcamentos = query.getResultList();
-//		this.log.info("Total de orcamentos "+ orcamentos.size());
+		//		this.log.info("Total de orcamentos "+ orcamentos.size());
 		if (orcamentos==null || orcamentos.size()==0) {
 			throw new RuntimeException("Nao foi encontrado oramento ativo");
 		}
-//		this.log.info("Orcamento ativo "+ orcamentos.get(0));
+		//		this.log.info("Orcamento ativo "+ orcamentos.get(0));
 		return orcamentos.get(0);
 	}
 
@@ -333,5 +373,78 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 		jsObj.add("resumo", new JsonParser().parse(new Gson().toJson(listaDTO)));
 		return jsObj;
 	}
+	
+	/** TODO mudar implementacao similar gasto */
+	public String listaContasPendentesOrcamentoAtivo()   {
+		return this.listaPendenciasOrcamentoAtivo("Conta");
+//		Query query = this.entityManager.createNativeQuery(QRY_CONTA_PENDENTE);
+
+//		List<Object[]> listaPendencias = query.getResultList();
+//		List<LabelValueDTO> listaDTO = new ArrayList();
+
+//		JsonArray jsonAr = new JsonArray();
+//		SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+//		for (Object[] ar : listaPendencias)    {
+//			JsonObject jsObj = new JsonObject();
+//			jsObj.add("descricao", new JsonParser().parse(new Gson().toJson(ar[0])));
+//			jsObj.add("vencimento", new JsonParser().parse(new Gson().toJson(
+//					fmt.format((Date)ar[1]))));
+//			jsObj.add("valor", new JsonParser().parse(new Gson().toJson(ar[2])));
+//			jsObj.add("situacao", new JsonParser().parse(new Gson().toJson(ar[3])));
+//			jsonAr.add(jsObj);
+//		}
+
+//		JsonObject jsObjRet = new JsonObject();
+//		jsObjRet.add("listaContasPendentes", jsonAr);
+//		return jsObjRet;
+	}
+	
+	public String listaGastosPendentesOrcamentoAtivo()   {
+		return this.listaPendenciasOrcamentoAtivo("Gasto");
+//		Query query = this.entityManager.createNativeQuery(QRY_DESPESAS_PENDENTES);
+//		query.setParameter(1, "Gasto");
+//		List<Object[]> listaPendencias = query.getResultList();
+//		List<LabelValueDTO> listaDTO = new ArrayList();
+
+//		Gson gson = new Gson();
+//		ListaPendenciasJSon lista = new ListaPendenciasJSon();
+//		Map<String,Object> map = null;
+//		for (Object[] ar : listaPendencias)    {
+//			map =new LinkedHashMap<String, Object>();
+//			map.put("descricao", (String)ar[0]);
+//			map.put("tipo", (String)ar[1]);
+//			map.put("vencimento", JSonUtil.parseDateToString(ar[1]));
+//			map.put("valor", ar[2]);
+//			lista.add(map);
+//		}
+//		return gson.toJson(lista);
+	}
+	
+	public String listaGastoContasPendentesOrcamentoAtivo() {
+		return this.listaPendenciasOrcamentoAtivo("todos");
+	}
+
+	public String listaPendenciasOrcamentoAtivo(String tipo) {
+		Query query = this.entityManager.createNativeQuery(tipo.equals("todos")? QRY_DESPESAS_PENDENTES_TODOS  : QRY_DESPESAS_PENDENTES_TIPO);
+		if (!tipo.equals("todos")) {
+			query.setParameter(1, tipo);
+		}
+		List<Object[]> listaPendencias = query.getResultList();
+		List<LabelValueDTO> listaDTO = new ArrayList();
+
+		Gson gson = new Gson();
+		ListaPendenciasJSon lista = new ListaPendenciasJSon();
+		Map<String,Object> map = null;
+		for (Object[] ar : listaPendencias)    {
+			map =new LinkedHashMap<String, Object>();
+			map.put("descricao", (String)ar[0]);
+			map.put("tipo", (String)ar[1]);
+			map.put("vencimento", JSonUtil.parseDateToString(ar[2]));
+			map.put("valor", ar[3]);
+			lista.add(map);
+		}
+		return gson.toJson(lista);
+	}
+
 
 }

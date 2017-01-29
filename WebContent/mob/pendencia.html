@@ -5,17 +5,17 @@
 		<thead>
 			<tr>
 				<th>Descri&ccedil;&atilde;o</th>
+				<th>Tipo</th>
 				<th>Vencimento</th>
 				<th>Valor</th>
-				<th>Situa&ccedil;&atilde;o</th>
 			</tr>
 		<thead>
 		<tbody>
 			<tr ng-repeat="pendencia in listaContasPendentes ">
 				<td>{{pendencia.descricao}}</td>
+				<td>{{pendencia.tipo}}</td>
 				<td>{{pendencia.vencimento | date:'dd/MM/yyyy' }}</td>
 				<td>{{pendencia.valor | number:2}}</td>
-				<td>{{pendencia.situacao}}</td>
 			</tr>
 		<tbody>
 		<tfoot>

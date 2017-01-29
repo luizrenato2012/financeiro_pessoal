@@ -58,10 +58,10 @@ public class OrcamentoServlet extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		processa(request,response);
+		processaGet(request,response);
 	}
 
-	private void processa(HttpServletRequest request,HttpServletResponse response) throws IOException {
+	private void processaGet(HttpServletRequest request,HttpServletResponse response) throws IOException {
 		String acao = request.getParameter("acao");
 		switch (acao) {
 
@@ -83,6 +83,12 @@ public class OrcamentoServlet extends HttpServlet {
 		case "listaPendenciaConta":
 			this.listaContasPendentes(request, response);
 			break;
+		case "listaPendenciaGasto":
+			this.listaGastosPendentes(request, response);
+			break;	
+		case "listaPendenciaContaGastos":
+			this.listaContasGastosPendentes(request, response);;
+			break;		
 		case "reinicia":
 			this.reinicia(request);
 			break;
@@ -94,6 +100,26 @@ public class OrcamentoServlet extends HttpServlet {
 			break;
 		}
 
+	}
+
+	private void listaGastosPendentes(HttpServletRequest request,
+			HttpServletResponse response) {
+		try  {
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().println(this.orcamentoService.listaGastosPendentesOrcamentoAtivo());
+		}  catch (Exception e)   {
+			e.printStackTrace();
+		}
+	}
+	
+	private void listaContasGastosPendentes(HttpServletRequest request,
+			HttpServletResponse response) {
+		try  {
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().println(this.orcamentoService.listaGastoContasPendentesOrcamentoAtivo());
+		}  catch (Exception e)   {
+			e.printStackTrace();
+		}
 	}
 
 	private void listaGasto(HttpServletRequest request,
@@ -284,10 +310,8 @@ public class OrcamentoServlet extends HttpServlet {
 
 	private void listaContasPendentes(HttpServletRequest request, HttpServletResponse response)   {
 		try  {
-			JsonObject obj = this.contaService.listaContasPendentes();
 			response.setCharacterEncoding("UTF-8");
-
-			response.getWriter().println(obj);
+			response.getWriter().println(this.orcamentoService.listaContasPendentesOrcamentoAtivo());
 		}  catch (Exception e)   {
 			e.printStackTrace();
 		}

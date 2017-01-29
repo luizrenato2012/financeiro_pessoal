@@ -155,7 +155,7 @@ app.controller('contaController',['$scope','logService','contaService', function
 		//	logService.loga('Criando contaController');
 		contaService.listaPendencia().then(
 				function(response) {
-					$scope.listaContasPendentes = response.listaContasPendentes;
+					$scope.listaContasPendentes = response.listaPendencias;
 					$scope.msg='';
 				},
 				function(error) {
