@@ -86,7 +86,7 @@ public class OrcamentoServlet extends HttpServlet {
 		case "listaPendenciaGasto":
 			this.listaGastosPendentes(request, response);
 			break;	
-		case "listaPendenciaContaGastos":
+		case "listaPendenciaContaGasto":
 			this.listaContasGastosPendentes(request, response);;
 			break;		
 		case "reinicia":

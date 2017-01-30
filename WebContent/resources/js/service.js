@@ -107,12 +107,12 @@ app.service('gastoService', ['$http', 'PATH_APP', 'APPLICATION_JSON' , '$q','log
 app.service('contaService', ['$http','$q','PATH_APP','APPLICATION_JSON', function($http, $q,
 		PATH_APP,APPLICATION_JSON) {
 
-	this.listaPendencia = function() {
+	this.listaPendencia = function(tipoPendencia) {
 		var defer = $q.defer();
-
 		$http({
 			method: 'GET',
-			url: PATH_APP + 'orcamento?acao=listaPendenciaConta',
+		//	url: PATH_APP + 'orcamento?acao=listaPendenciaConta',
+			url: PATH_APP + 'orcamento?acao=listaPendencia'+tipoPendencia,
 			headers: {'Content-type' : APPLICATION_JSON}
 		}).success( function(data,status,headers, config, params) {
 			defer.resolve(data);

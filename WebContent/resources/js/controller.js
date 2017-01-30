@@ -144,17 +144,18 @@ app.controller('pagamentoController',['$scope','gastoService','dateService','log
 
 }]);
 
-app.controller('contaController',['$scope','logService','contaService', function($scope,logService, 
-		contaService) {
+app.controller('pendenciaController',['$scope','logService','contaService', function($scope,logService, contaService) {
 
 	$scope.titulo='Pagamento de Conta';
 	$scope.listaContasPendentes = [];
 	$scope.msg = 'Pesquisando pendencias';
+	$scope.tipoPendencia = {}; 
+	logService.loga('Criando pendenciaController');
 	
 	$scope.listaPendencia = function() {
-		//	logService.loga('Criando contaController');
-		contaService.listaPendencia().then(
+		contaService.listaPendencia($scope.tipoPendencia).then(
 				function(response) {
+					logService.loga('Tipo de pendencia '+ $scope.tipoPendencia);
 					$scope.listaContasPendentes = response.listaPendencias;
 					$scope.msg='';
 				},
@@ -164,8 +165,10 @@ app.controller('contaController',['$scope','logService','contaService', function
 				}
 		);
 	}
-
-	$scope.listaPendencia();
+	
+	$scope.teste = function () {
+		console.log('Acionado ' + $scope.tipoPendencia);
+	}
 
 	$scope.totalizaContasPendentes = function() {
 		if ($scope.listaContasPendentes != undefined && $scope.listaContasPendentes !=null){
@@ -244,6 +247,7 @@ app.controller('redirectController',['$scope','$window',function($scope,$window)
 	$scope.logoff();
 }]);
 
+
 app.controller('testeController',['$scope','dateService','testeService','resumoService','logService','PATH_APP','$http', '$q',
                                   function($scope,dateService,testeService,resumoService,
                                 		  logService, PATH_APP, $http, $q) {
@@ -315,7 +319,7 @@ app.config(['$routeProvider','$locationProvider', function($routeProvider,$locat
 		templateUrl: 'config.html', controller: 'configController' 
 	})
 	.when('/pendencias', {
-		templateUrl: 'pendencia.html', controller: 'contaController' 
+		templateUrl: 'lista_pendencia.html', controller: 'pendenciaController' 
 	})
 	.when('/redirect', {
 		templateUrl: 'redirect.html', controller: 'redirectController' 

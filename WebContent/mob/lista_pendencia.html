@@ -1,6 +1,17 @@
 <div class="panel panel-danger">
 	<div class="panel-heading">Contas Pendentes</div>
 	<span class="text-success">{{msg}}</span>
+	<form role="form">
+		<div class="form-group">
+		<select type="select" name='tipoPendencia' ng-model="tipoPendencia" class="form-control" ng-change="listaPendencia()">
+			<option value="ContaGasto">Todos</option>
+			<option value="Conta">Conta</option>
+			<option value="Gasto">Gasto</option>
+		</select>
+		</div>
+		<button ng-click="teste()">Testa 2</button>
+	</form>
+	
 	<table class="table">
 		<thead>
 			<tr>
