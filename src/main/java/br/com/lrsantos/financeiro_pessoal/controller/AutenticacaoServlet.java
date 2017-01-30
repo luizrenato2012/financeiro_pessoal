@@ -50,7 +50,7 @@ public class AutenticacaoServlet extends HttpServlet {
 			HttpServletResponse response) {
 		String usuario = (String) request.getSession().getAttribute("usuario");
 		request.setAttribute(ConfiguracaoWeb.USUARIO_SESSAO_MOB.getDescricao(), 
-				usuario!=null ? usuario : "Usu�rio nao logado");
+				usuario!=null ? usuario : "Usuario nao logado");
 	}
 	
 	private void processLogoff(HttpServletRequest request,

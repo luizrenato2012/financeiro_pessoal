@@ -7,14 +7,24 @@ var app = angular.module('gastoApp',['ngRoute','UtilMdl','ServiceMdl']);
 app.constant('PATH_APP' ,'http://localhost:8080/financeiro_pessoal/' );
 app.constant('APPLICATION_JSON' ,'application/json' );
 
+app.run(function($rootScope,resumoService,gastoService){
+	console.log('Iniciando a aplicacao');
+	resumoService.carregaResumo();
+	gastoService.carregaGastos();
+	console.log('Finalizada inicialização');
+	
+});
+
 /** Controllers          **/
 app.controller('gastoController',['$scope', '$http', 'PATH_APP', 'APPLICATION_JSON','gastoService',
                                   'resumoService', 'dateService','logService','$window',
                                   function($scope, $http, PATH_APP, APPLICATION_JSON, gastoService,
                                 		  resumoService,dateService, logService,$window) {
-
+	
+	console.log('Criando gasto controller');
 	$scope.init =  function () {
 		try {
+			console.log('Criando gasto controller');
 			var infOrcamento = resumoService.getIdDescricaoOrcamento();
 			$scope.descOrcamento = infOrcamento.descOrcamento;
 			$scope.idOrcamento = infOrcamento.idOrcamento

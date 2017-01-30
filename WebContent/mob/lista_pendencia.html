@@ -1,5 +1,5 @@
 <div class="panel panel-danger">
-	<div class="panel-heading">Contas Pendentes</div>
+	<div class="panel-heading">Pendencias</div>
 	<span class="text-success">{{msg}}</span>
 	<form role="form">
 		<div class="form-group">
@@ -9,7 +9,6 @@
 			<option value="Gasto">Gasto</option>
 		</select>
 		</div>
-		<button ng-click="teste()">Testa 2</button>
 	</form>
 	
 	<table class="table">
@@ -32,9 +31,9 @@
 		<tfoot>
 			<tr>
 				<td></td>
+				<td></td>
 				<td style="font-weight: bold;">Total</td>
 				<td style="font-weight: bold;">{{totalizaContasPendentes() | number :2}}</td>
-				<td></td>
 			</tr>
 		<tfoot>
 	</table>
