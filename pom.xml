@@ -89,7 +89,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>lrfinanceiro</finalName>
+		<finalName>financeiro_pessoal</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

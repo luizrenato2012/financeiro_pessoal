@@ -186,7 +186,7 @@ public class ContaBean implements Serializable {
 		}catch (Exception e ) { 
 			FacesContext.getCurrentInstance().addMessage("frm_tab_conta:msg_conta", 
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
-							"N�o foi poss�vel pagar conta", e.getMessage()));
+							"Nao foi possivel pagar conta", e.getMessage()));
 		}
 	}
 	

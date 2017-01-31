@@ -20,6 +20,7 @@ import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.jdbc.Work;
 import org.jboss.logging.Logger;
@@ -55,8 +56,8 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 	private DateFormat dtFormat;
 	private static String QRY_DESPESAS_PENDENTES_TIPO;
 	private static String QRY_DESPESAS_PENDENTES_TODOS;
-	private static String QRY_CONTA_PENDENTE = "select ct.descricao,ct.data_vencimento, ct.valor, case when data_vencimento <= current_date then 'Vencida' else 'A Vencer' end as status from financ.conta ct  inner join financ.orcamento orc on ct.id_orcamento = orc.id  where ct.situacao = 'PENDENTE' and ct.tipo_conta='Conta' and orc.ativo=true";
-
+	private static String QRY_CONTA_PENDENTE;
+	
 	@PostConstruct
 	private void init() {
 		this.configFormat();
@@ -95,6 +96,12 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 		.append("orc.ativo=true " )
 		.append("order by gt.tipo_conta, gt.data_vencimento");
 		QRY_DESPESAS_PENDENTES_TODOS = strb.toString();
+		
+		strb = new StringBuilder();
+		strb.append("select new br.com.lrsantos.financeiro_pessoal.model.service.ContaDTO(ct.id,ct.descricao, ct.valor,ct.dataVencimento) from Conta ct ")
+			.append("where ct.situacao = br.com.lrsantos.financeiro_pessoal.model.bean.SituacaoDespesa.PENDENTE and ")
+			.append("ct.orcamento.ativo=true");
+		QRY_CONTA_PENDENTE = strb.toString();
 	}
 
 
@@ -377,26 +384,16 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 	/** TODO mudar implementacao similar gasto */
 	public String listaContasPendentesOrcamentoAtivo()   {
 		return this.listaPendenciasOrcamentoAtivo("Conta");
-//		Query query = this.entityManager.createNativeQuery(QRY_CONTA_PENDENTE);
+	}
+	
+	/** usado pra retornar DTO de conta pendentes*/
+	public String listaContasDTOPendentesOrcamentoAtivo()   {
+		Query query = this.entityManager.createQuery(QRY_CONTA_PENDENTE);
+		
+		List<ContaDTO> listaPendencias = query.getResultList();
 
-//		List<Object[]> listaPendencias = query.getResultList();
-//		List<LabelValueDTO> listaDTO = new ArrayList();
-
-//		JsonArray jsonAr = new JsonArray();
-//		SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
-//		for (Object[] ar : listaPendencias)    {
-//			JsonObject jsObj = new JsonObject();
-//			jsObj.add("descricao", new JsonParser().parse(new Gson().toJson(ar[0])));
-//			jsObj.add("vencimento", new JsonParser().parse(new Gson().toJson(
-//					fmt.format((Date)ar[1]))));
-//			jsObj.add("valor", new JsonParser().parse(new Gson().toJson(ar[2])));
-//			jsObj.add("situacao", new JsonParser().parse(new Gson().toJson(ar[3])));
-//			jsonAr.add(jsObj);
-//		}
-
-//		JsonObject jsObjRet = new JsonObject();
-//		jsObjRet.add("listaContasPendentes", jsonAr);
-//		return jsObjRet;
+		Gson gson = new Gson();
+		return gson.toJson(listaPendencias);
 	}
 	
 	public String listaGastosPendentesOrcamentoAtivo()   {

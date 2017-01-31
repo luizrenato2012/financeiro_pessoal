@@ -60,19 +60,19 @@ public class GastoBean implements Serializable {
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (gastoDTO==null) {
 			context.addMessage("frm_tab_gasto:msg_gasto", new FacesMessage(FacesMessage.SEVERITY_ERROR, 
-					"Erro", "Gasto inv�lido"));
+					"Erro", "Gasto invalido"));
 			return;
 		}
 
 		if (gastoDTO.getDataInicial()==null) {
 			context.addMessage("frm_tab_gasto:msg_gasto", new FacesMessage(FacesMessage.SEVERITY_ERROR, 
-					"Erro",	"Data inicial inv�lida"));
+					"Erro",	"Data inicial invalida"));
 			return;
 		}
 
 		if (gastoDTO.getDataFinal()== null) {
 			context.addMessage("frm_tab_gasto:msg_gosta", new FacesMessage(FacesMessage.SEVERITY_ERROR, 
-					"Erro", "Data final inv�lida"));
+					"Erro", "Data final invalida"));
 			return;
 		}
 

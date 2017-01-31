@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import br.com.lrsantos.financeiro_pessoal.model.bean.Conta;
 import br.com.lrsantos.financeiro_pessoal.model.bean.Gasto;
 import br.com.lrsantos.financeiro_pessoal.model.bean.Orcamento;
 import br.com.lrsantos.financeiro_pessoal.model.bean.Pagamento;
@@ -77,6 +78,9 @@ public class OrcamentoServlet extends HttpServlet {
 		case "pagaGasto":
 			pagaGasto(request,response);
 			break;
+		case "pagaConta":
+			pagaConta(request,response);
+			break;	
 		case "resumeOrcamento":
 			resumeOrcamento(request,response);
 			break;
@@ -87,8 +91,10 @@ public class OrcamentoServlet extends HttpServlet {
 			this.listaGastosPendentes(request, response);
 			break;	
 		case "listaPendenciaContaGasto":
-			this.listaContasGastosPendentes(request, response);;
-			break;		
+			this.listaContasGastosPendentes(request, response);
+			break;	
+		case "listaContasPagamento" : //usado no combo de contas
+			this.listaContasPagamento(request, response);
 		case "reinicia":
 			this.reinicia(request);
 			break;
@@ -100,6 +106,75 @@ public class OrcamentoServlet extends HttpServlet {
 			break;
 		}
 
+	}
+
+	private void listaContasPagamento(HttpServletRequest request,
+			HttpServletResponse response) {
+		try  {
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().println(this.orcamentoService.listaContasDTOPendentesOrcamentoAtivo());
+		}  catch (Exception e)   {
+			e.printStackTrace();
+		}
+		
+	}
+
+	private void pagaConta(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		 String strIdConta = request.getParameter("id");
+		    if ((strIdConta == null) || (strIdConta.equals(""))) {
+		      throw new RuntimeException("Erro ao pagar conta");
+		    }
+		    String strIdOrcamento = request.getParameter("idOrcamento");
+		    String mensagem = "";
+		    String tipo = "";
+		    Orcamento orcamento = null;
+		    try  {
+		      Integer idConta = Integer.valueOf(Integer.parseInt(strIdConta));
+		      
+		      String strData = request.getParameter("data");
+		      if ((strData == null) || (strData.equals(""))) {
+		        throw new RuntimeException("Data obrigatoria");
+		      }
+		      Date data = new SimpleDateFormat("dd/MM/yyyy").parse(strData);
+		      
+		      
+		      Collection lista = new ArrayList();
+		      Conta conta = (Conta)this.contaService.encontra(idConta, Conta.class);
+		      orcamento = (Orcamento)this.orcamentoService.encontra(Integer.valueOf(Integer.parseInt(strIdOrcamento)), 
+		        Orcamento.class);
+		      conta.setOrcamento(orcamento);
+		      
+		      Pagamento pagamento = new Pagamento();
+		      pagamento.setData(data);
+		      pagamento.setValor(conta.getValor());
+		      pagamento.setObservacao(request.getParameter("descricao"));
+		      
+//		      this.contaService.
+//		      this.contaService.registraPagamento(conta, pagamento);
+		      this.orcamentoService.pagaConta(conta, orcamento);
+//		      this.orcamentoService.efetuaPagamentoGasto(gasto, valor.doubleValue(), data);
+		      request.getSession().setAttribute(ConfiguracaoWeb.RESUMO_ORCAMENTO.getDescricao(), 
+		        this.orcamentoService.getResumoOrcamento());
+		      
+		      tipo = "OK";
+		      mensagem = "Pagamento registrado com sucesso!";
+		    }
+		    catch (Exception e)
+		    {
+		      e.printStackTrace();
+		      tipo = "ERRO";
+		      mensagem = "Erro ao pagar: " + e.getMessage();
+		    }
+		    JsonObject obj = new JsonObject();
+		    obj.add("tipoMensagem", new JsonParser().parse(new Gson().toJson(tipo)));
+		    obj.add("mensagem", new JsonParser().parse(new Gson().toJson(mensagem)));
+		    JsonObject objResumo = (JsonObject)request.getSession().getAttribute(
+		      ConfiguracaoWeb.RESUMO_ORCAMENTO.getDescricao());
+		    obj.add("resumo", objResumo);
+		    
+		    response.getWriter().println(obj);
+		
 	}
 
 	private void listaGastosPendentes(HttpServletRequest request,

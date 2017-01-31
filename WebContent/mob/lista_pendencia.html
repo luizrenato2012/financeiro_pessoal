@@ -3,7 +3,7 @@
 	<span class="text-success">{{msg}}</span>
 	<form role="form">
 		<div class="form-group">
-		<select type="select" name='tipoPendencia' ng-model="tipoPendencia" class="form-control" ng-change="listaPendencia()">
+		<select type="select" name='tipoPendencia' ng-model="tipoPendencia" class="form-control" ng-change="listaPendencia(tipoPendencia)">
 			<option value="ContaGasto">Todos</option>
 			<option value="Conta">Conta</option>
 			<option value="Gasto">Gasto</option>

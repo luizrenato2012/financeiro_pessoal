@@ -3,8 +3,8 @@ var app = angular.module('gastoApp',['ngRoute','UtilMdl','ServiceMdl']);
 
 /** Constantes*/
 //app.constant('PATH_APP' ,  'http://lrsantos.com.br/lr_financeiro/' );
-//app.constant('PATH_APP' ,'http://10.0.20.185:8080/financeiro_pessoal/' );
-app.constant('PATH_APP' ,'http://localhost:8080/financeiro_pessoal/' );
+app.constant('PATH_APP' ,'http://10.0.20.185:8080/financeiro_pessoal/' );
+//app.constant('PATH_APP' ,'http://localhost:8080/financeiro_pessoal/' );
 app.constant('APPLICATION_JSON' ,'application/json' );
 
 app.run(function($rootScope,resumoService,gastoService){
@@ -162,8 +162,8 @@ app.controller('pendenciaController',['$scope','logService','contaService', func
 	$scope.tipoPendencia = {}; 
 	logService.loga('Criando pendenciaController');
 	
-	$scope.listaPendencia = function() {
-		contaService.listaPendencia($scope.tipoPendencia).then(
+	$scope.listaPendencia = function(tipo) {
+		contaService.listaPendencia(tipo).then(
 				function(response) {
 					logService.loga('Tipo de pendencia '+ $scope.tipoPendencia);
 					$scope.listaContasPendentes = response.listaPendencias;
@@ -252,6 +252,7 @@ app.controller('configController',['$scope','resumoService','gastoService',funct
 
 app.controller('redirectController',['$scope','$window',function($scope,$window) {
 	$scope.logoff = function() {
+		console.log('Executando logoff');
 		$window.location.href='../autentica.do?acao=logoff';
 	}
 	$scope.logoff();
