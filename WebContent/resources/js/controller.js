@@ -3,19 +3,19 @@ var app = angular.module('gastoApp',['ngRoute','UtilMdl','ServiceMdl']);
 
 /** Constantes*/
 //app.constant('PATH_APP' ,  'http://lrsantos.com.br/lr_financeiro/' );
-app.constant('PATH_APP' ,'http://10.0.20.185:8080/financeiro_pessoal/' );
-//app.constant('PATH_APP' ,'http://localhost:8080/financeiro_pessoal/' );
+//app.constant('PATH_APP' ,'http://10.0.20.185:8080/financeiro_pessoal/' );
+app.constant('PATH_APP' ,'http://localhost:8080/financeiro_pessoal/' );
 app.constant('APPLICATION_JSON' ,'application/json' );
 
-app.run(function($rootScope,resumoService,gastoService){
+app.run(function($rootScope,resumoService,orcamentoService){
 	console.log('Iniciando a aplicacao');
 	resumoService.carregaResumo();
-	gastoService.carregaGastos();
+	orcamentoService.carregaGastosContas();
 	console.log('Finalizada inicialização');
 	
 });
 
-/** Controllers          **/
+/** ----------------  GastoController   ---------------- */
 app.controller('gastoController',['$scope', '$http', 'PATH_APP', 'APPLICATION_JSON','gastoService',
                                   'resumoService', 'dateService','logService','$window',
                                   function($scope, $http, PATH_APP, APPLICATION_JSON, gastoService,
@@ -28,7 +28,7 @@ app.controller('gastoController',['$scope', '$http', 'PATH_APP', 'APPLICATION_JS
 			var infOrcamento = resumoService.getIdDescricaoOrcamento();
 			$scope.descOrcamento = infOrcamento.descOrcamento;
 			$scope.idOrcamento = infOrcamento.idOrcamento
-			$scope.gastos =	   gastoService.getListaGastos($scope.idOrcamento);
+			$scope.gastos =	   orcamentoService.getListaGastos();
 			$scope.data = dateService.getDataFormatada();
 		} catch (err) {
 			console.log('Erro ao iniciar gasto: ' + err.message);
@@ -106,6 +106,97 @@ app.controller('gastoController',['$scope', '$http', 'PATH_APP', 'APPLICATION_JS
 
 }]);
 
+/** ---------------------- ContaController ---------------------- */
+app.controller('contaController',['$scope', '$http', 'PATH_APP', 'APPLICATION_JSON','gastoService',
+                                  'resumoService', 'dateService','logService','$window',
+                                  function($scope, $http, PATH_APP, APPLICATION_JSON, gastoService,
+                                		  resumoService,dateService, logService,$window) {
+	
+	//console.log('Criando conta controller');
+	$scope.init =  function () {
+		try {
+		//	console.log('Criando gasto controller');
+			var infOrcamento = resumoService.getIdDescricaoOrcamento();
+			$scope.descOrcamento = infOrcamento.descOrcamento;
+			$scope.idOrcamento = infOrcamento.idOrcamento
+			$scope.contas =	   orcamentoService.getListaContas($scope.idOrcamento);
+			$scope.data = dateService.getDataFormatada();
+		} catch (err) {
+			logService.loga('Erro ao iniciar conta: ' + err.message);
+		}
+	}
+	//executa init() ao criar o controller 
+	$scope.init();
+
+	$scope.paga = function() {
+		$scope.mensagemInfo='Enviando...';
+		$scope.mensagemErro='';
+		var resValidacao = $scope.validaCampos($scope.idOrcamento, $scope.contaSel, $scope.data, $scope.valor);
+		if (resValidacao!='') {
+			logService.loga('erro validacao '+ resValidacao);
+			$scope.mensagemInfo='';
+			$scope.mensagemErro=resValidacao;
+
+		} else {
+			contaService.paga($scope.gastoSel,$scope.data, $scope.valor, $scope.idOrcamento, 
+				$scope.descricao).then(
+					function(response) {
+						$scope.mensagem=response.mensagem;
+						logService.loga('Resultado paga conta:' + response.tipoMensagem+ ' '+ response.mensagem);
+						if (response.tipoMensagem=='OK') {
+							$scope.limpa();
+							$scope.mensagemInfo=response.mensagem;
+							resumoService.carregaResumo(response.resumo);
+						} else {
+							$scope.mensagemInfo='';
+							$scope.mensagemErro=response.mensagem;
+						}
+					},
+					function(error) {
+						logService.loga('Erro ao pagar ' + error);
+						$scope.mensagemInfo='';
+						$scope.mensagemErro=response.mensagem;
+					}
+				);
+		}}
+
+	$scope.limpa = function() {
+		$scope.data='';
+		$scope.valor='';
+		$scope.descricao='';
+		$scope.mensagemInfo='';
+		$scope.mensagemErro='';
+		$scope.data = dateService.getDataFormatada();
+	}
+
+	$scope.limpaMensagens = function() {
+		$scope.mensagemInfo='';
+		$scope.mensagemErro='';
+	}
+
+	$scope.validaCampos = function(idOrcamento, contaSel, data, valor) {
+		var msg='';
+		if (idOrcamento== undefined || idOrcamento==null || idOrcamento==0) {
+			msg='Orçamento invalido';
+		} else if (contaSel== undefined || contaSel=='') {
+			msg='Selecione um gasto';
+		} else if (data== undefined || data=='') {
+			msg='Digite a data';
+		} else if (valor== undefined || valor=='' || valor== 0) {
+			msg='Digite um valor';
+		}
+		return msg;
+	}
+
+	//redireciona p/ pagina de login
+	$scope.logoff = function() {
+		$window.location.href='../autentica.do?acao=logoff';
+	}
+
+
+}]);
+
+/** ----------------  PagamentoController ----------------  */
 app.controller('pagamentoController',['$scope','gastoService','dateService','logService', function($scope, 
 		gastoService, dateService, logService) {
 
@@ -154,6 +245,7 @@ app.controller('pagamentoController',['$scope','gastoService','dateService','log
 
 }]);
 
+/** ----------------  PendenciaController ---------------- */
 app.controller('pendenciaController',['$scope','logService','contaService', function($scope,logService, contaService) {
 
 	$scope.titulo='Pagamento de Conta';
@@ -198,6 +290,7 @@ app.controller('pendenciaController',['$scope','logService','contaService', func
 
 }]);
 
+/** ---------------- ResumoController ---------------- */
 app.controller('resumoController',['$scope','resumoService','logService','$window', 
                                    function($scope,resumoService, logService, $window) {
 
@@ -226,6 +319,7 @@ app.controller('resumoController',['$scope','resumoService','logService','$windo
 }]);
 
 /** carga de dados em cache : resumo, dados do orcamento atual */
+/* ---------------- ConfigController ----------------  */
 app.controller('configController',['$scope','resumoService','gastoService',function($scope,resumoService, gastoService) {
 	
 	$scope.msgCarga='';
@@ -250,6 +344,7 @@ app.controller('configController',['$scope','resumoService','gastoService',funct
 
 }]);
 
+/**----------------  RedirectController ---------------- */
 app.controller('redirectController',['$scope','$window',function($scope,$window) {
 	$scope.logoff = function() {
 		console.log('Executando logoff');
