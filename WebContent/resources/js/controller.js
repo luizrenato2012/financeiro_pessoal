@@ -1,5 +1,5 @@
 
-var app = angular.module('gastoApp',['ngRoute','UtilMdl','ServiceMdl']);
+var app = angular.module('gastoApp',['ngRoute','UtilMdl','ServiceMdl','OrcamentoServiceMdl']);
 
 /** Constantes*/
 //app.constant('PATH_APP' ,  'http://lrsantos.com.br/lr_financeiro/' );
@@ -7,25 +7,25 @@ var app = angular.module('gastoApp',['ngRoute','UtilMdl','ServiceMdl']);
 app.constant('PATH_APP' ,'http://localhost:8080/financeiro_pessoal/' );
 app.constant('APPLICATION_JSON' ,'application/json' );
 
-app.run(function($rootScope,resumoService,orcamentoService){
+app.run(function($rootScope,orcamentoService,orcamentoService){
 	console.log('Iniciando a aplicacao');
-	resumoService.carregaResumo();
-	orcamentoService.carregaGastosContas();
+	orcamentoService.carregaResumo();
+	orcamentoService.carregaOrcamento();
 	console.log('Finalizada inicialização');
 	
 });
 
 /** ----------------  GastoController   ---------------- */
 app.controller('gastoController',['$scope', '$http', 'PATH_APP', 'APPLICATION_JSON','gastoService',
-                                  'resumoService', 'dateService','logService','$window',
+                                  'orcamentoService','dateService','logService','$window',
                                   function($scope, $http, PATH_APP, APPLICATION_JSON, gastoService,
-                                		  resumoService,dateService, logService,$window) {
+                                		  orcamentoService,dateService, logService,$window) {
 	
 	console.log('Criando gasto controller');
 	$scope.init =  function () {
 		try {
 			console.log('Criando gasto controller');
-			var infOrcamento = resumoService.getIdDescricaoOrcamento();
+			var infOrcamento = orcamentoService.getIdDescricaoOrcamento();
 			$scope.descOrcamento = infOrcamento.descOrcamento;
 			$scope.idOrcamento = infOrcamento.idOrcamento
 			$scope.gastos =	   orcamentoService.getListaGastos();
@@ -56,7 +56,7 @@ app.controller('gastoController',['$scope', '$http', 'PATH_APP', 'APPLICATION_JS
 						if (response.tipoMensagem=='OK') {
 							$scope.limpa();
 							$scope.mensagemInfo=response.mensagem;
-							resumoService.carregaResumo(response.resumo);
+							orcamentoService.carregaResumo(response.resumo);
 						} else {
 							$scope.mensagemInfo='';
 							$scope.mensagemErro=response.mensagem;
@@ -102,21 +102,19 @@ app.controller('gastoController',['$scope', '$http', 'PATH_APP', 'APPLICATION_JS
 	$scope.logoff = function() {
 		$window.location.href='../autentica.do?acao=logoff';
 	}
-
-
 }]);
 
 /** ---------------------- ContaController ---------------------- */
 app.controller('contaController',['$scope', '$http', 'PATH_APP', 'APPLICATION_JSON','gastoService',
-                                  'resumoService', 'dateService','logService','$window',
+                                  'orcamentoService', 'dateService','logService','$window',
                                   function($scope, $http, PATH_APP, APPLICATION_JSON, gastoService,
-                                		  resumoService,dateService, logService,$window) {
+                                		  orcamentoService,dateService, logService,$window) {
 	
 	//console.log('Criando conta controller');
 	$scope.init =  function () {
 		try {
 		//	console.log('Criando gasto controller');
-			var infOrcamento = resumoService.getIdDescricaoOrcamento();
+			var infOrcamento = orcamentoService.getIdDescricaoOrcamento();
 			$scope.descOrcamento = infOrcamento.descOrcamento;
 			$scope.idOrcamento = infOrcamento.idOrcamento
 			$scope.contas =	   orcamentoService.getListaContas($scope.idOrcamento);
@@ -146,7 +144,7 @@ app.controller('contaController',['$scope', '$http', 'PATH_APP', 'APPLICATION_JS
 						if (response.tipoMensagem=='OK') {
 							$scope.limpa();
 							$scope.mensagemInfo=response.mensagem;
-							resumoService.carregaResumo(response.resumo);
+							orcamentoService.carregaResumo(response.resumo);
 						} else {
 							$scope.mensagemInfo='';
 							$scope.mensagemErro=response.mensagem;
@@ -291,13 +289,13 @@ app.controller('pendenciaController',['$scope','logService','contaService', func
 }]);
 
 /** ---------------- ResumoController ---------------- */
-app.controller('resumoController',['$scope','resumoService','logService','$window', 
-                                   function($scope,resumoService, logService, $window) {
+app.controller('resumoController',['$scope','orcamentoService','logService','$window', 
+                                   function($scope,orcamentoService, logService, $window) {
 
 	//logService.loga('Criando resumeController');
 
 	$scope.resumeOrcamento = function() {
-		var resumo = resumoService.getResumoOrcamento();
+		var resumo = orcamentoService.getResumoOrcamento();
 
 		$scope.valorDisponivel = resumo.valorDisponivel;
 		$scope.valorPendente   = resumo.valorPendente;
@@ -320,14 +318,14 @@ app.controller('resumoController',['$scope','resumoService','logService','$windo
 
 /** carga de dados em cache : resumo, dados do orcamento atual */
 /* ---------------- ConfigController ----------------  */
-app.controller('configController',['$scope','resumoService','gastoService',function($scope,resumoService, gastoService) {
+app.controller('configController',['$scope','orcamentoService','gastoService',function($scope,orcamentoService, gastoService) {
 	
 	$scope.msgCarga='';
 	console.log('criando configController');
 	
 	$scope.carregaResumo = function() {
 		$scope.msgCarga='Carregando resumo...';
-		resumoService.carregaResumo();
+		orcamentoService.carregaResumo();
 		$scope.msgCarga='Resumo carregado.';
 	}
 	
@@ -354,8 +352,8 @@ app.controller('redirectController',['$scope','$window',function($scope,$window)
 }]);
 
 
-app.controller('testeController',['$scope','dateService','testeService','resumoService','logService','PATH_APP','$http', '$q',
-                                  function($scope,dateService,testeService,resumoService,
+app.controller('testeController',['$scope','dateService','testeService','orcamentoService','logService','PATH_APP','$http', '$q',
+                                  function($scope,dateService,testeService,orcamentoService,
                                 		  logService, PATH_APP, $http, $q) {
 	logService.loga("Criando testeController");
 
@@ -393,11 +391,11 @@ app.controller('testeController',['$scope','dateService','testeService','resumoS
 	}
 
 	$scope.carregaResumo = function() {
-		resumoService.carregaResumo();
+		orcamentoService.carregaResumo();
 	}
 
 	$scope.getResumo = function() {
-		$scope.resumo = resumoService.getResumoOrcamento();
+		$scope.resumo = orcamentoService.getResumoOrcamento();
 		console.log('getResumo' + $scope.resumo);
 	}
 
@@ -412,9 +410,9 @@ app.config(['$routeProvider','$locationProvider', function($routeProvider,$locat
 	.when('/gasto',{
 		templateUrl: 'gasto.html', controller: 'gastoController'
 	})
-	//	.when('/conta', {
-	//		templateUrl: 'conta.html', controller: 'contaController'
-	//	})
+		.when('/conta', {
+			templateUrl: 'conta.html', controller: 'contaController'
+		})
 	.when('/resumo', {
 		templateUrl: 'resumo.html',controller: 'resumoController'
 	})

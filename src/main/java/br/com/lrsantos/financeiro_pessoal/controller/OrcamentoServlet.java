@@ -66,17 +66,17 @@ public class OrcamentoServlet extends HttpServlet {
 		String acao = request.getParameter("acao");
 		switch (acao) {
 
-		case "iniciaOrcamento" :
-			iniciaOrcamento(response, request);
-			break;
+//		case "iniciaOrcamento" :
+//			iniciaOrcamento(response, request);
+//			break;
 		case "listaOrcamento" :
 			listaOrcamento(response);
 			break;
 		case "listaGasto": // lista usada no comob de pagamento de gastos
 			listaGasto(request,response);
 			break;
-		case "listaGastoConta": //lista usada no combo de pagamento de gastos e contas
-			listaGastoConta(request,response);
+		case "orcamento": //lista usada no combo de pagamento de gastos e contas
+			listaGastoContaResumo(request,response);
 			break;	
 		case "pagaGasto":
 			pagaGasto(request,response);
@@ -111,26 +111,40 @@ public class OrcamentoServlet extends HttpServlet {
 
 	}
 
-	private void listaGastoConta(HttpServletRequest request,
+	/** retorna resumo, lista de gastos e contas pendentes */
+	private void listaGastoContaResumo(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-		Orcamento orcamento = (Orcamento)request.getSession().getAttribute(ConfiguracaoWeb.ORCAMENTO_ATIVO.getDescricao());
-	    if (orcamento == null) {
-	      throw new RuntimeException("Orcamento nao encontrado ");
-	    }
-	    Collection listaGastos = new ArrayList();
-	    List<Gasto> gastos = this.gastoService.listaPorOrcamento(orcamento.getId());
-	    for (Gasto gasto : gastos) {
-	      listaGastos.add(new LabelValueDTO(gasto.getId(), gasto.getDescricao() + ": R$ " + 
-	        this.numberFormat.format(gasto.getValor())));
-	    }
-	    JsonObject obj = new JsonObject();
-	    obj.add("gastos", new JsonParser().parse(new Gson().toJson(listaGastos)));
-	    
-	    String strContas = this.orcamentoService.listaContasPendentesOrcamentoAtivo();
-	    obj.add("contas", new JsonParser().parse(new Gson().toJson(strContas)));
-	    response.setCharacterEncoding("UTF-8");
-	    response.getWriter().println(obj);
-		
+		String mensagem = "";
+		String tipo = "";
+
+		Orcamento orcamento = null;
+		JsonObject obj = new JsonObject();
+		try {
+			orcamento = (Orcamento)request.getSession().getAttribute(ConfiguracaoWeb.ORCAMENTO_ATIVO.getDescricao());
+			if (orcamento == null) {
+				throw new RuntimeException("Orcamento nao encontrado ");
+			}
+			Collection listaGastos = new ArrayList();
+			List<Gasto> gastos = this.gastoService.listaPorOrcamento(orcamento.getId());
+			for (Gasto gasto : gastos) {
+				listaGastos.add(new LabelValueDTO(gasto.getId(), gasto.getDescricao() + ": R$ " + 
+						this.numberFormat.format(gasto.getValor())));
+			}
+			obj.add("gastos", new JsonParser().parse(new Gson().toJson(listaGastos)));
+
+			String strContas = this.orcamentoService.listaContasPendentesOrcamentoAtivo();
+			obj.add("contas", new JsonParser().parse(new Gson().toJson(strContas)));
+
+			obj.add("resumo",new JsonParser().parse(this.orcamentoService.getResumoOrcamento().toString())) ;
+
+			response.addHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+			response.getWriter().println(obj);
+		} catch (Exception e ) {
+			e.printStackTrace();
+			obj.add("erro" ,  new JsonParser().parse("Erro ao listar:"  + e.getMessage()));
+		}
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().println(obj);
 	}
 
 	private void listaContasPagamento(HttpServletRequest request,
@@ -141,61 +155,61 @@ public class OrcamentoServlet extends HttpServlet {
 		}  catch (Exception e)   {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	private void pagaConta(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-		 String strIdConta = request.getParameter("id");
-		    if ((strIdConta == null) || (strIdConta.equals(""))) {
-		      throw new RuntimeException("Erro ao pagar conta");
-		    }
-		    String strIdOrcamento = request.getParameter("idOrcamento");
-		    String mensagem = "";
-		    String tipo = "";
-		    Orcamento orcamento = null;
-		    try  {
-		      Integer idConta = Integer.valueOf(Integer.parseInt(strIdConta));
-		      
-		      String strData = request.getParameter("data");
-		      if ((strData == null) || (strData.equals(""))) {
-		        throw new RuntimeException("Data obrigatoria");
-		      }
-		      Date data = new SimpleDateFormat("dd/MM/yyyy").parse(strData);
-		      
-		      
-		      Conta conta = (Conta)this.contaService.encontra(idConta, Conta.class);
-		      orcamento = (Orcamento)this.orcamentoService.encontra(Integer.valueOf(Integer.parseInt(strIdOrcamento)), 
-		        Orcamento.class);
-		      conta.setOrcamento(orcamento);
-		      
-		      Pagamento pagamento = new Pagamento();
-		      pagamento.setData(data);
-		      pagamento.setValor(conta.getValor());
-		      pagamento.setObservacao(request.getParameter("descricao"));
-		      
-		      this.orcamentoService.pagaConta(conta, orcamento);
-//		      this.orcamentoService.efetuaPagamentoGasto(gasto, valor.doubleValue(), data);
-		      request.getSession().setAttribute(ConfiguracaoWeb.RESUMO_ORCAMENTO.getDescricao(), 
-		        this.orcamentoService.getResumoOrcamento());
-		      
-		      tipo = "OK";
-		      mensagem = "Pagamento registrado com sucesso!";
-		    }
-		    catch (Exception e)   {
-		      e.printStackTrace();
-		      tipo = "ERRO";
-		      mensagem = "Erro ao pagar: " + e.getMessage();
-		    }
-		    JsonObject obj = new JsonObject();
-		    obj.add("tipoMensagem", new JsonParser().parse(new Gson().toJson(tipo)));
-		    obj.add("mensagem", new JsonParser().parse(new Gson().toJson(mensagem)));
-		    JsonObject objResumo = (JsonObject)request.getSession().getAttribute(
-		      ConfiguracaoWeb.RESUMO_ORCAMENTO.getDescricao());
-		    obj.add("resumo", objResumo);
-		    
-		    response.getWriter().println(obj);
-		
+		String strIdConta = request.getParameter("id");
+		if ((strIdConta == null) || (strIdConta.equals(""))) {
+			throw new RuntimeException("Erro ao pagar conta");
+		}
+		String strIdOrcamento = request.getParameter("idOrcamento");
+		String mensagem = "";
+		String tipo = "";
+		Orcamento orcamento = null;
+		try  {
+			Integer idConta = Integer.valueOf(Integer.parseInt(strIdConta));
+
+			String strData = request.getParameter("data");
+			if ((strData == null) || (strData.equals(""))) {
+				throw new RuntimeException("Data obrigatoria");
+			}
+			Date data = new SimpleDateFormat("dd/MM/yyyy").parse(strData);
+
+
+			Conta conta = (Conta)this.contaService.encontra(idConta, Conta.class);
+			orcamento = (Orcamento)this.orcamentoService.encontra(Integer.valueOf(Integer.parseInt(strIdOrcamento)), 
+					Orcamento.class);
+			conta.setOrcamento(orcamento);
+
+			Pagamento pagamento = new Pagamento();
+			pagamento.setData(data);
+			pagamento.setValor(conta.getValor());
+			pagamento.setObservacao(request.getParameter("descricao"));
+
+			this.orcamentoService.pagaConta(conta, orcamento);
+			//		      this.orcamentoService.efetuaPagamentoGasto(gasto, valor.doubleValue(), data);
+			request.getSession().setAttribute(ConfiguracaoWeb.RESUMO_ORCAMENTO.getDescricao(), 
+					this.orcamentoService.getResumoOrcamento());
+
+			tipo = "OK";
+			mensagem = "Pagamento registrado com sucesso!";
+		}
+		catch (Exception e)   {
+			e.printStackTrace();
+			tipo = "ERRO";
+			mensagem = "Erro ao pagar: " + e.getMessage();
+		}
+		JsonObject obj = new JsonObject();
+		obj.add("tipoMensagem", new JsonParser().parse(new Gson().toJson(tipo)));
+		obj.add("mensagem", new JsonParser().parse(new Gson().toJson(mensagem)));
+		JsonObject objResumo = (JsonObject)request.getSession().getAttribute(
+				ConfiguracaoWeb.RESUMO_ORCAMENTO.getDescricao());
+		obj.add("resumo", objResumo);
+
+		response.getWriter().println(obj);
+
 	}
 
 	private void listaGastosPendentes(HttpServletRequest request,
@@ -207,7 +221,7 @@ public class OrcamentoServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void listaContasGastosPendentes(HttpServletRequest request,
 			HttpServletResponse response) {
 		try  {
@@ -221,87 +235,87 @@ public class OrcamentoServlet extends HttpServlet {
 	private void listaGasto(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		Orcamento orcamento = (Orcamento)request.getSession().getAttribute(ConfiguracaoWeb.ORCAMENTO_ATIVO.getDescricao());
-	    if (orcamento == null) {
-	      throw new RuntimeException("Orcamento nao encontrado ");
-	    }
-	    Collection lista = new ArrayList();
-	    List<Gasto> gastos = this.gastoService.listaPorOrcamento(orcamento.getId());
-	    for (Gasto gasto : gastos) {
-	      lista.add(new LabelValueDTO(gasto.getId(), gasto.getDescricao() + ": R$ " + 
-	        this.numberFormat.format(gasto.getValor())));
-	    }
-	    JsonObject obj = new JsonObject();
-	    obj.add("gastos", new JsonParser().parse(new Gson().toJson(lista)));
-	    response.setCharacterEncoding("UTF-8");
-	    response.getWriter().println(obj);
+		if (orcamento == null) {
+			throw new RuntimeException("Orcamento nao encontrado ");
+		}
+		Collection lista = new ArrayList();
+		List<Gasto> gastos = this.gastoService.listaPorOrcamento(orcamento.getId());
+		for (Gasto gasto : gastos) {
+			lista.add(new LabelValueDTO(gasto.getId(), gasto.getDescricao() + ": R$ " + 
+					this.numberFormat.format(gasto.getValor())));
+		}
+		JsonObject obj = new JsonObject();
+		obj.add("gastos", new JsonParser().parse(new Gson().toJson(lista)));
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().println(obj);
 	}
 
 	private void pagaGasto(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-		   String strIdGasto = request.getParameter("id");
-		    if ((strIdGasto == null) || (strIdGasto.equals(""))) {
-		      throw new RuntimeException("Erro ao pagar gasto");
-		    }
-		    String strIdOrcamento = request.getParameter("idOrcamento");
-		    String mensagem = "";
-		    String tipo = "";
-		    Orcamento orcamento = null;
-		    try
-		    {
-		      Integer idGasto = Integer.valueOf(Integer.parseInt(strIdGasto));
-		      
-		      String strData = request.getParameter("data");
-		      if ((strData == null) || (strData.equals(""))) {
-		        throw new RuntimeException("Data obrigatoria");
-		      }
-		      Date data = new SimpleDateFormat("dd/MM/yyyy").parse(strData);
-		      
-		      String strValor = request.getParameter("valor");
-		      if ((strValor == null) || (strValor.equals(""))) {
-		        throw new RuntimeException("Valor obrigatorio");
-		      }
-		      Double valor = Double.valueOf(this.numberFormat.parse(strValor).doubleValue());
-		      
-		      Collection lista = new ArrayList();
-		      Gasto gasto = (Gasto)this.gastoService.encontra(idGasto, Gasto.class);
-		      orcamento = (Orcamento)this.orcamentoService.encontra(Integer.valueOf(Integer.parseInt(strIdOrcamento)), 
-		        Orcamento.class);
-		      gasto.setOrcamento(orcamento);
-		      
-		      Pagamento pagamento = new Pagamento();
-		      pagamento.setData(data);
-		      pagamento.setValor(valor);
-		      pagamento.setObservacao(request.getParameter("descricao"));
-		      
-		      this.gastoService.registraPagamento(gasto, pagamento);
-		      this.orcamentoService.efetuaPagamentoGasto(gasto, valor.doubleValue(), data);
-		      request.getSession().setAttribute(ConfiguracaoWeb.RESUMO_ORCAMENTO.getDescricao(), 
-		        this.orcamentoService.getResumoOrcamento());
-		      
-		      tipo = "OK";
-		      mensagem = "Pagamento registrado com sucesso!";
-		    }
-		    catch (Exception e)
-		    {
-		      e.printStackTrace();
-		      tipo = "ERRO";
-		      mensagem = "Erro ao pagar: " + e.getMessage();
-		    }
-		    JsonObject obj = new JsonObject();
-		    obj.add("tipoMensagem", new JsonParser().parse(new Gson().toJson(tipo)));
-		    obj.add("mensagem", new JsonParser().parse(new Gson().toJson(mensagem)));
-		    JsonObject objResumo = (JsonObject)request.getSession().getAttribute(
-		      ConfiguracaoWeb.RESUMO_ORCAMENTO.getDescricao());
-		    obj.add("resumo", objResumo);
-		    
-		    response.getWriter().println(obj);
-	}
+		String strIdGasto = request.getParameter("id");
+		if ((strIdGasto == null) || (strIdGasto.equals(""))) {
+			throw new RuntimeException("Erro ao pagar gasto");
+		}
+		String strIdOrcamento = request.getParameter("idOrcamento");
+		String mensagem = "";
+		String tipo = "";
+		Orcamento orcamento = null;
+		try
+		{
+			Integer idGasto = Integer.valueOf(Integer.parseInt(strIdGasto));
 
-	private void iniciaOrcamento(HttpServletResponse response, HttpServletRequest request) throws IOException {
-		JsonObject obj = (JsonObject) request.getSession().getAttribute(ConfiguracaoWeb.ORCAMENTO_ATIVO.getDescricao());
-		response.setCharacterEncoding("UTF-8");
+			String strData = request.getParameter("data");
+			if ((strData == null) || (strData.equals(""))) {
+				throw new RuntimeException("Data obrigatoria");
+			}
+			Date data = new SimpleDateFormat("dd/MM/yyyy").parse(strData);
+
+			String strValor = request.getParameter("valor");
+			if ((strValor == null) || (strValor.equals(""))) {
+				throw new RuntimeException("Valor obrigatorio");
+			}
+			Double valor = Double.valueOf(this.numberFormat.parse(strValor).doubleValue());
+
+			Collection lista = new ArrayList();
+			Gasto gasto = (Gasto)this.gastoService.encontra(idGasto, Gasto.class);
+			orcamento = (Orcamento)this.orcamentoService.encontra(Integer.valueOf(Integer.parseInt(strIdOrcamento)), 
+					Orcamento.class);
+			gasto.setOrcamento(orcamento);
+
+			Pagamento pagamento = new Pagamento();
+			pagamento.setData(data);
+			pagamento.setValor(valor);
+			pagamento.setObservacao(request.getParameter("descricao"));
+
+			this.gastoService.registraPagamento(gasto, pagamento);
+			this.orcamentoService.efetuaPagamentoGasto(gasto, valor.doubleValue(), data);
+			request.getSession().setAttribute(ConfiguracaoWeb.RESUMO_ORCAMENTO.getDescricao(), 
+					this.orcamentoService.getResumoOrcamento());
+
+			tipo = "OK";
+			mensagem = "Pagamento registrado com sucesso!";
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			tipo = "ERRO";
+			mensagem = "Erro ao pagar: " + e.getMessage();
+		}
+		JsonObject obj = new JsonObject();
+		obj.add("tipoMensagem", new JsonParser().parse(new Gson().toJson(tipo)));
+		obj.add("mensagem", new JsonParser().parse(new Gson().toJson(mensagem)));
+		JsonObject objResumo = (JsonObject)request.getSession().getAttribute(
+				ConfiguracaoWeb.RESUMO_ORCAMENTO.getDescricao());
+		obj.add("resumo", objResumo);
+
 		response.getWriter().println(obj);
 	}
+
+//	private void iniciaOrcamento(HttpServletResponse response, HttpServletRequest request) throws IOException {
+//		JsonObject obj = (JsonObject) request.getSession().getAttribute(ConfiguracaoWeb.ORCAMENTO_ATIVO.getDescricao());
+//		response.setCharacterEncoding("UTF-8");
+//		response.getWriter().println(obj);
+//	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void listaOrcamento(HttpServletResponse response) throws IOException {
@@ -405,7 +419,7 @@ public class OrcamentoServlet extends HttpServlet {
 		response.setContentType("application/json");
 		response.getWriter().print(obj);
 	}
-	
+
 	private Collection convertListaGasto(List<Gasto> gastos){
 		Collection listaGasto = new ArrayList();
 		for (Gasto gasto : gastos) {
@@ -414,37 +428,37 @@ public class OrcamentoServlet extends HttpServlet {
 		}
 		return listaGasto;
 	}
-	
-	 private void listaPagamentos(HttpServletRequest request, HttpServletResponse response)  {
-	    try  {
-	      String strDataInicial = request.getParameter("dataInicial");
-	      String strDataFinal = request.getParameter("dataFinal");
-	      if ((strDataInicial == null) || (strDataInicial.trim().equals(""))) {
-	        throw new RuntimeException("Data inicial invalida");
-	      }
-	      if ((strDataFinal == null) || (strDataFinal.trim().equals(""))) {
-	        throw new RuntimeException("Data final invalida");
-	      }
-	      String tipoPagamento = request.getParameter("tipo");
-	      
-	      Date dataInicial = this.df.parse(strDataInicial);
-	      Date dataFinal = this.df.parse(strDataFinal);
-	      
-	      JsonObject pagamentos = this.pagamentoService.listaPagamentos(dataInicial, 
-	        dataFinal, this.orcamentoService.getIdOrcamentoAtivo(request), tipoPagamento);
-	      System.out.println(pagamentos);
-	      response.setContentType("application/json");
-	      
-	      response.getWriter().println(pagamentos.toString());
-	    }
-	    catch (ParseException e)  {
-	      e.printStackTrace();
-	    }
-	    catch (IOException e)  {
-	      e.printStackTrace();
-	    }
-	    catch (Exception e)  {
-	      e.printStackTrace();
-	    }
-	  }
+
+	private void listaPagamentos(HttpServletRequest request, HttpServletResponse response)  {
+		try  {
+			String strDataInicial = request.getParameter("dataInicial");
+			String strDataFinal = request.getParameter("dataFinal");
+			if ((strDataInicial == null) || (strDataInicial.trim().equals(""))) {
+				throw new RuntimeException("Data inicial invalida");
+			}
+			if ((strDataFinal == null) || (strDataFinal.trim().equals(""))) {
+				throw new RuntimeException("Data final invalida");
+			}
+			String tipoPagamento = request.getParameter("tipo");
+
+			Date dataInicial = this.df.parse(strDataInicial);
+			Date dataFinal = this.df.parse(strDataFinal);
+
+			JsonObject pagamentos = this.pagamentoService.listaPagamentos(dataInicial, 
+					dataFinal, this.orcamentoService.getIdOrcamentoAtivo(request), tipoPagamento);
+			System.out.println(pagamentos);
+			response.setContentType("application/json");
+
+			response.getWriter().println(pagamentos.toString());
+		}
+		catch (ParseException e)  {
+			e.printStackTrace();
+		}
+		catch (IOException e)  {
+			e.printStackTrace();
+		}
+		catch (Exception e)  {
+			e.printStackTrace();
+		}
+	}
 }
