@@ -427,7 +427,7 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 			query.setParameter(1, tipo);
 		}
 		List<Object[]> listaPendencias = query.getResultList();
-		List<LabelValueDTO> listaDTO = new ArrayList();
+	//	List<LabelValueDTO> listaDTO = new ArrayList();
 
 		Gson gson = new Gson();
 		ListaPendenciasJSon lista = new ListaPendenciasJSon();

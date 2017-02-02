@@ -132,10 +132,11 @@ public class OrcamentoServlet extends HttpServlet {
 			}
 			obj.add("gastos", new JsonParser().parse(new Gson().toJson(listaGastos)));
 
+			List<Conta> contas = this.contaService.listaPendentesPorOrcamento(orcamento.getId());
 			String strContas = this.orcamentoService.listaContasPendentesOrcamentoAtivo();
 			obj.add("contas", new JsonParser().parse(new Gson().toJson(strContas)));
 
-			obj.add("resumo",new JsonParser().parse(this.orcamentoService.getResumoOrcamento().toString())) ;
+		//	obj.add("resumo",new JsonParser().parse(this.orcamentoService.getResumoOrcamento().toString())) ;
 
 			response.addHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 			response.getWriter().println(obj);

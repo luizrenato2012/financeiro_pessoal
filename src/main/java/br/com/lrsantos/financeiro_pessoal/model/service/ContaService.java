@@ -28,7 +28,13 @@ public class ContaService extends ServiceGeneric<Conta, Integer> {
 	    List<Conta> contas = query.getResultList();
 	    return contas;
 	  }
-	  
+	 
+	 //listByOrcamentoPendente
+	 public List<Conta> listaPendentesPorOrcamento(Integer idOrcamento) {
+			Map<String,Object> params = new HashMap<String,Object>();
+			params.put("idOrcamento", idOrcamento);
+			return this.lista("Conta.listByOrcamentoPendente", params);
+		}
 
 
 }

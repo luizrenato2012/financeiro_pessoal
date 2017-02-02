@@ -36,7 +36,9 @@ import br.com.lrsantos.financeiro_pessoal.util.DataUtils;
 @SequenceGenerator(name="SEQ_ID_CONTA", sequenceName="financ.seq_id_conta",allocationSize=1)
 @NamedQueries( {
 	@NamedQuery(name="Conta.listByOrcamento",query="select c from Conta c inner join c.orcamento o " +
-			" where o.id = :idOrcamento and TYPE (c) = Conta")
+			" where o.id = :idOrcamento and TYPE (c) = Conta"),
+	@NamedQuery(name="Conta.listByOrcamentoPendente",query="select c from Conta c inner join c.orcamento o " +
+			" where o.id = :idOrcamento and TYPE (c) = Conta and c.situacao = br.com.lrsantos.financeiro_pessoal.model.bean.SituacaoDespesa.PENDENTE")		
 })
 @DiscriminatorValue("Conta")
 @DiscriminatorOptions(force=true)
