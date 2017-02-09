@@ -52,24 +52,16 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 
 	private Logger log = Logger.getLogger(this.getClass());
 
-	private NumberFormat numFormat;
-	private DateFormat dtFormat;
+	
 	private static String QRY_DESPESAS_PENDENTES_TIPO;
 	private static String QRY_DESPESAS_PENDENTES_TODOS;
 	private static String QRY_CONTA_PENDENTE;
 	
 	@PostConstruct
 	private void init() {
-		this.configFormat();
 		this.initSQL();
 	}
 	
-	private void configFormat() {
-		numFormat = NumberFormat.getNumberInstance(new Locale("pt", "BR"));
-		numFormat.setMinimumFractionDigits(2);
-		dtFormat = new SimpleDateFormat("dd/MM/yyyy");
-	}
-
 	private void initSQL() {
 		StringBuilder strb = new StringBuilder();
 		strb.append("select gt.descricao, ")
@@ -321,7 +313,7 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 	}
 
 
-	public JsonObject getResumoOrcamento() 	{
+	public List<Object[]>  getResumoOrcamento() 	{
 		StringBuilder strb = new StringBuilder();
 		strb.append("select orc.id as idOrcamento,")
 		.append("orc.data_inicial \t\t\tas dataInicial,")
@@ -341,50 +333,10 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 		.append("order by ct.descricao");
 		Query query = this.entityManager.createNativeQuery(strb.toString());
 
-		List<Object[]> lista = query.getResultList();
-		JsonObject jsObj = new JsonObject();
-		List<LabelValueDTO> listaDTO = new ArrayList();
-		LabelValueDTO labelDTo = null;
-		int count = 1;
-		java.util.Date d1 = null;
-		java.util.Date d2 = null;
-		Double valorDisponivel = null;
-		Double valorPendente = null;
-		Double valorSobrante = null;
-		Double contaPendente = null;
-		Double gastoPendente = null;
-		for (Object[] ar : lista) {
-			if (count == 1)
-			{
-				jsObj.add("idOrcamento", new JsonParser().parse(new Gson().toJson(ar[0])));
-				d1 = new java.util.Date(((java.sql.Date)ar[1]).getTime());
-				d2 = new java.util.Date(((java.sql.Date)ar[2]).getTime());
-				jsObj.add("descOrcamento", new JsonParser().parse(new Gson().toJson(ar[0] + 
-						" - " + this.dtFormat.format(d1) + " a " + 
-						this.dtFormat.format(d2))));
-
-				valorDisponivel = Double.valueOf((Double)ar[3] == null ? 0.0D : ((Double)ar[3]).doubleValue());
-				valorPendente = Double.valueOf((Double)ar[4] == null ? 0.0D : ((Double)ar[4]).doubleValue());
-				valorSobrante = Double.valueOf((Double)ar[5] == null ? 0.0D : ((Double)ar[5]).doubleValue());
-				contaPendente = Double.valueOf((Double)ar[6] == null ? 0.0D : ((Double)ar[6]).doubleValue());
-				gastoPendente = Double.valueOf((Double)ar[7] == null ? 0.0D : ((Double)ar[7]).doubleValue());
-
-				jsObj.add("valorDisponivel", new JsonParser().parse(new Gson().toJson(valorDisponivel)));
-				jsObj.add("valorPendente", new JsonParser().parse(new Gson().toJson(valorPendente)));
-				jsObj.add("valorSobrante", new JsonParser().parse(new Gson().toJson(valorSobrante)));
-				jsObj.add("contaPendente", new JsonParser().parse(new Gson().toJson(contaPendente)));
-				jsObj.add("gastoPendente", new JsonParser().parse(new Gson().toJson(gastoPendente)));
-				count++;
-			}
-		}
-		jsObj.add("resumo", new JsonParser().parse(new Gson().toJson(listaDTO)));
-		return jsObj;
+		return query.getResultList();
+		
 	}
 	
-	/** TODO mudar implementacao similar gasto */
-	public String listaContasPendentesOrcamentoAtivo()   {
-		return this.listaPendenciasOrcamentoAtivo("Conta");
-	}
 	
 	/** usado pra retornar DTO de conta pendentes*/
 	public String listaContasDTOPendentesOrcamentoAtivo()   {
@@ -396,51 +348,40 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 		return gson.toJson(listaPendencias);
 	}
 	
-	public String listaGastosPendentesOrcamentoAtivo()   {
-		return this.listaPendenciasOrcamentoAtivo("Gasto");
-//		Query query = this.entityManager.createNativeQuery(QRY_DESPESAS_PENDENTES);
-//		query.setParameter(1, "Gasto");
-//		List<Object[]> listaPendencias = query.getResultList();
-//		List<LabelValueDTO> listaDTO = new ArrayList();
-
-//		Gson gson = new Gson();
-//		ListaPendenciasJSon lista = new ListaPendenciasJSon();
-//		Map<String,Object> map = null;
-//		for (Object[] ar : listaPendencias)    {
-//			map =new LinkedHashMap<String, Object>();
-//			map.put("descricao", (String)ar[0]);
-//			map.put("tipo", (String)ar[1]);
-//			map.put("vencimento", JSonUtil.parseDateToString(ar[1]));
-//			map.put("valor", ar[2]);
-//			lista.add(map);
-//		}
-//		return gson.toJson(lista);
+	/** TODO mudar implementacao similar gasto */
+	public  List<Object[]> listaContasPendentesOrcamentoAtivo()   {
+		return this.listaPendenciasOrcamentoAtivo("Conta");
 	}
 	
-	public String listaGastoContasPendentesOrcamentoAtivo() {
+	public List<Object[]> listaGastosPendentesOrcamentoAtivo()   {
+		return this.listaPendenciasOrcamentoAtivo("Gasto");
+	}
+	
+	public List<Object[]> listaGastosContasPendentesOrcamentoAtivo() {
 		return this.listaPendenciasOrcamentoAtivo("todos");
 	}
 
-	public String listaPendenciasOrcamentoAtivo(String tipo) {
+	public List<Object[]> listaPendenciasOrcamentoAtivo(String tipo) {
 		Query query = this.entityManager.createNativeQuery(tipo.equals("todos")? QRY_DESPESAS_PENDENTES_TODOS  : QRY_DESPESAS_PENDENTES_TIPO);
 		if (!tipo.equals("todos")) {
 			query.setParameter(1, tipo);
 		}
 		List<Object[]> listaPendencias = query.getResultList();
+		return listaPendencias;
 	//	List<LabelValueDTO> listaDTO = new ArrayList();
 
-		Gson gson = new Gson();
-		ListaPendenciasJSon lista = new ListaPendenciasJSon();
-		Map<String,Object> map = null;
-		for (Object[] ar : listaPendencias)    {
-			map =new LinkedHashMap<String, Object>();
-			map.put("descricao", (String)ar[0]);
-			map.put("tipo", (String)ar[1]);
-			map.put("vencimento", JSonUtil.parseDateToString(ar[2]));
-			map.put("valor", ar[3]);
-			lista.add(map);
-		}
-		return gson.toJson(lista);
+	//	Gson gson = new Gson();
+	//	ListaPendenciasJSon lista = new ListaPendenciasJSon();
+	//	Map<String,Object> map = null;
+	//	for (Object[] ar : listaPendencias)    {
+	//		map =new LinkedHashMap<String, Object>();
+	//		map.put("descricao", (String)ar[0]);
+	//		map.put("tipo", (String)ar[1]);
+	//		map.put("vencimento", JSonUtil.parseDateToString(ar[2]));
+	//		map.put("valor", ar[3]);
+	//		lista.add(map);
+	//	}
+	//	return gson.toJson(lista);
 	}
 
 

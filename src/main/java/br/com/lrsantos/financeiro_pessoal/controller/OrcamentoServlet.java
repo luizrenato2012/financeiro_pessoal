@@ -23,6 +23,7 @@ import br.com.lrsantos.financeiro_pessoal.model.bean.Orcamento;
 import br.com.lrsantos.financeiro_pessoal.model.bean.Pagamento;
 import br.com.lrsantos.financeiro_pessoal.model.service.ContaService;
 import br.com.lrsantos.financeiro_pessoal.model.service.GastoService;
+import br.com.lrsantos.financeiro_pessoal.model.service.OrcamentoFacade;
 import br.com.lrsantos.financeiro_pessoal.model.service.OrcamentoService;
 import br.com.lrsantos.financeiro_pessoal.model.service.PagamentoService;
 
@@ -46,7 +47,11 @@ public class OrcamentoServlet extends HttpServlet {
 
 	@EJB
 	private PagamentoService pagamentoService;
-	SimpleDateFormat df;
+	
+	@EJB
+	private OrcamentoFacade orcamentoFacade;
+	
+	private SimpleDateFormat df;
 
 	@Override
 	public void init() throws ServletException {
@@ -69,9 +74,9 @@ public class OrcamentoServlet extends HttpServlet {
 //		case "iniciaOrcamento" :
 //			iniciaOrcamento(response, request);
 //			break;
-		case "listaOrcamento" :
-			listaOrcamento(response);
-			break;
+//		case "listaOrcamento" :
+//			listaOrcamento(response);
+//			break;
 		case "listaGasto": // lista usada no comob de pagamento de gastos
 			listaGasto(request,response);
 			break;
@@ -114,36 +119,9 @@ public class OrcamentoServlet extends HttpServlet {
 	/** retorna resumo, lista de gastos e contas pendentes */
 	private void listaGastoContaResumo(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-		String mensagem = "";
-		String tipo = "";
-
-		Orcamento orcamento = null;
-		JsonObject obj = new JsonObject();
-		try {
-			orcamento = (Orcamento)request.getSession().getAttribute(ConfiguracaoWeb.ORCAMENTO_ATIVO.getDescricao());
-			if (orcamento == null) {
-				throw new RuntimeException("Orcamento nao encontrado ");
-			}
-			Collection listaGastos = new ArrayList();
-			List<Gasto> gastos = this.gastoService.listaPorOrcamento(orcamento.getId());
-			for (Gasto gasto : gastos) {
-				listaGastos.add(new LabelValueDTO(gasto.getId(), gasto.getDescricao() + ": R$ " + 
-						this.numberFormat.format(gasto.getValor())));
-			}
-			obj.add("gastos", new JsonParser().parse(new Gson().toJson(listaGastos)));
-
-			List<Conta> contas = this.contaService.listaPendentesPorOrcamento(orcamento.getId());
-			String strContas = this.orcamentoService.listaContasPendentesOrcamentoAtivo();
-			obj.add("contas", new JsonParser().parse(new Gson().toJson(strContas)));
-
-		//	obj.add("resumo",new JsonParser().parse(this.orcamentoService.getResumoOrcamento().toString())) ;
-
-			response.addHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-			response.getWriter().println(obj);
-		} catch (Exception e ) {
-			e.printStackTrace();
-			obj.add("erro" ,  new JsonParser().parse("Erro ao listar:"  + e.getMessage()));
-		}
+		
+		JsonObject obj = this.orcamentoFacade.listaGastoContaResumo() ;
+		response.addHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().println(obj);
 	}
@@ -177,7 +155,7 @@ public class OrcamentoServlet extends HttpServlet {
 				throw new RuntimeException("Data obrigatoria");
 			}
 			Date data = new SimpleDateFormat("dd/MM/yyyy").parse(strData);
-
+;
 
 			Conta conta = (Conta)this.contaService.encontra(idConta, Conta.class);
 			orcamento = (Orcamento)this.orcamentoService.encontra(Integer.valueOf(Integer.parseInt(strIdOrcamento)), 
@@ -217,7 +195,7 @@ public class OrcamentoServlet extends HttpServlet {
 			HttpServletResponse response) {
 		try  {
 			response.setCharacterEncoding("UTF-8");
-			response.getWriter().println(this.orcamentoService.listaGastosPendentesOrcamentoAtivo());
+			response.getWriter().println(this.orcamentoFacade.listaGastosPendentesOrcamentoAtivo());
 		}  catch (Exception e)   {
 			e.printStackTrace();
 		}
@@ -227,7 +205,7 @@ public class OrcamentoServlet extends HttpServlet {
 			HttpServletResponse response) {
 		try  {
 			response.setCharacterEncoding("UTF-8");
-			response.getWriter().println(this.orcamentoService.listaGastoContasPendentesOrcamentoAtivo());
+			response.getWriter().println(this.orcamentoFacade.listaGastosContasPendentesOrcamentoAtivo());
 		}  catch (Exception e)   {
 			e.printStackTrace();
 		}
@@ -318,71 +296,76 @@ public class OrcamentoServlet extends HttpServlet {
 //		response.getWriter().println(obj);
 //	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void listaOrcamento(HttpServletResponse response) throws IOException {
+//	@SuppressWarnings({ "rawtypes", "unchecked" })
+//	private void listaOrcamento(HttpServletResponse response) throws IOException {
 		//System.out.println("Listando orcamentos" );
-		List<Orcamento> orcamentos = orcamentoService.listaTodos(Orcamento.class);
-		if (orcamentos.size()==0) {
-			throw new RuntimeException("Lista de orcamentos vazia");
-		}
+//		List<Orcamento> orcamentos = orcamentoService.listaTodos(Orcamento.class);
+//	/	if (orcamentos.size()==0) {
+//			throw new RuntimeException("Lista de orcamentos vazia");
+//		}
 
 
 
-		Collection c = new ArrayList();
-		for(Orcamento orcamento : orcamentos){
-			c.add(new LabelValueDTO(orcamento.getId(),  orcamento.getId()+ " - "+
-					df.format(orcamento.getDataInicial() ) +
-					" a " + df.format(orcamento.getDataFinal())));
-		}
+//		Collection c = new ArrayList();
+//		for(Orcamento orcamento : orcamentos){
+//			c.add(new LabelValueDTO(orcamento.getId(),  orcamento.getId()+ " - "+
+//					df.format(orcamento.getDataInicial() ) +
+//					" a " + df.format(orcamento.getDataFinal())));
+//		}
 
-		JsonObject obj  = new JsonObject();
-		new JsonParser().parse( new Gson().toJson(c));
+//		JsonObject obj  = new JsonObject();
+//		new JsonParser().parse( new Gson().toJson(c));
 
-		JsonObject obj2 = new JsonObject();
-		obj2.add("orcamentos", new JsonParser().parse( new Gson().toJson(c)));
-		response.setCharacterEncoding("UTF-8");
-		response.getWriter().println(obj2);
-	}
+//		JsonObject obj2 = new JsonObject();
+//		obj2.add("orcamentos", new JsonParser().parse( new Gson().toJson(c)));
+//		response.setCharacterEncoding("UTF-8");
+//		response.getWriter().println(obj2);
+//	}
 
 	private void resumeOrcamento(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		String mensagem = "";
-		String tipo = "";
-
-		JsonObject obj = null;
-		try {
-			obj = this.orcamentoService.getResumoOrcamento();
-		} catch (Exception e) {
-			e.printStackTrace();
-			tipo = "ERRO";
-			mensagem = "Erro ao listar: " + e.getMessage();
-		} 
-		if (mensagem != null) {
-			obj.add("tipoMensagem", new JsonParser().parse(new Gson().toJson(tipo)));
-			obj.add("mensagem", new JsonParser().parse(new Gson().toJson(mensagem)));
-		}
+		JsonObject obj = this.orcamentoFacade.getResumoOrcamento();
 		response.addHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 		response.getWriter().println(obj);
 	}
+	
+//	private JsonObject getResumoOrcamento() {
+//		String mensagem = "";
+//		String tipo = "";
 
-	private JsonObject obtemResumoOrcamento(JsonObject obj,
-			Orcamento orcamento) throws IOException {
-		String mensagem="";
-		String tipo="";
+//		JsonObject obj = null;
+//		try {
+//			obj = this.orcamentoJSonService.getResumoOrcamento();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			tipo = "ERRO";
+//			mensagem = "Erro ao listar: " + e.getMessage();
+//		} 
+//		if (mensagem != null) {
+//			obj.add("tipoMensagem", new JsonParser().parse(new Gson().toJson(tipo)));
+//			obj.add("mensagem", new JsonParser().parse(new Gson().toJson(mensagem)));
+//		}
+//		return obj;
+//	}
 
-		try {
-			setaValoresResumo(obj,orcamento);
-		} catch(Exception e ) {
-			e.printStackTrace();
-			tipo="ERRO";
-			mensagem="Erro ao pagar: "+ e.getMessage();
-		}
+//	private JsonObject obtemResumoOrcamento(JsonObject obj,
+//			Orcamento orcamento) throws IOException {
+//		String mensagem="";
+//		String tipo="";
 
-		if (mensagem!=null){
-			obj.add("tipoMensagem", new JsonParser().parse( new Gson().toJson(tipo)));
-			obj.add("mensagem", new JsonParser().parse( new Gson().toJson(mensagem)));
-		}
-		return obj;
-	}
+//		try {
+//			setaValoresResumo(obj,orcamento);
+//		} catch(Exception e ) {
+//			e.printStackTrace();
+//			tipo="ERRO";
+//			mensagem="Erro ao pagar: "+ e.getMessage();
+//		}
+
+//		if (mensagem!=null){
+//			obj.add("tipoMensagem", new JsonParser().parse( new Gson().toJson(tipo)));
+//			obj.add("mensagem", new JsonParser().parse( new Gson().toJson(mensagem)));
+//		}
+//		return obj;
+//	}
 
 	private void setaValoresResumo(JsonObject obj,Orcamento orcamento) {
 		obj.add("valorDisponivel", new JsonParser().parse(new Gson().toJson(
@@ -397,7 +380,7 @@ public class OrcamentoServlet extends HttpServlet {
 	private void listaContasPendentes(HttpServletRequest request, HttpServletResponse response)   {
 		try  {
 			response.setCharacterEncoding("UTF-8");
-			response.getWriter().println(this.orcamentoService.listaContasPendentesOrcamentoAtivo());
+			response.getWriter().println(this.orcamentoFacade.listaContasPendentesOrcamentoAtivo());
 		}  catch (Exception e)   {
 			e.printStackTrace();
 		}
@@ -410,25 +393,25 @@ public class OrcamentoServlet extends HttpServlet {
 
 
 	private void testa(HttpServletRequest request, HttpServletResponse response) throws IOException  {
-		Orcamento orcamento = (Orcamento)request.getSession().getAttribute(ConfiguracaoWeb.ORCAMENTO_ATIVO.getDescricao());
-		List<Gasto> gastos = orcamento.getGastos();
+	//	Orcamento orcamento = (Orcamento)request.getSession().getAttribute(ConfiguracaoWeb.ORCAMENTO_ATIVO.getDescricao());
+	//	List<Gasto> gastos = orcamento.getGastos();
 
-		convertListaGasto(gastos);
-		JsonObject obj = new JsonObject();
-		obj.add("gastos", new JsonParser().parse(new Gson().toJson(convertListaGasto(gastos))));
+//		convertListaGasto(gastos);
+	//	JsonObject obj = new JsonObject();
+	//	obj.add("gastos", new JsonParser().parse(new Gson().toJson(convertListaGasto(gastos))));
 
-		response.setContentType("application/json");
-		response.getWriter().print(obj);
+	//	response.setContentType("application/json");
+	//	response.getWriter().print(obj);
 	}
 
-	private Collection convertListaGasto(List<Gasto> gastos){
-		Collection listaGasto = new ArrayList();
-		for (Gasto gasto : gastos) {
-			listaGasto.add(new LabelValueDTO(gasto.getId(), 
-					gasto.getDescricao() + ": R$ " + this.numberFormat.format(gasto.getValor())));
-		}
-		return listaGasto;
-	}
+//	private Collection convertListaGasto(List<Gasto> gastos){
+//		Collection listaGasto = new ArrayList();
+//		for (Gasto gasto : gastos) {
+//			listaGasto.add(new LabelValueDTO(gasto.getId(), 
+//					gasto.getDescricao() + ": R$ " + this.numberFormat.format(gasto.getValor())));
+//		}
+//		return listaGasto;
+//	}
 
 	private void listaPagamentos(HttpServletRequest request, HttpServletResponse response)  {
 		try  {

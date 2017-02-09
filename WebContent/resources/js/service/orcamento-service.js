@@ -1,4 +1,4 @@
-var modulo = angular.module('OrcamentoServiceMdl',[]);
+var modulo = angular.module('OrcamentoServiceMdl',['UtilMdl']);
 
 modulo.service('orcamentoService', ['$http', 'PATH_APP', 'APPLICATION_JSON' , '$q','logService','$cacheFactory',
                                     function($http, PATH_APP, APPLICATION_JSON, $q, logService, $cacheFactory) {
@@ -10,8 +10,8 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP', 'APPLICATION_JSON' , '$
 		logService.loga('Carregando orcamento');
 		this.buscaGastosContasResumo().then(
 				function(response) {
-					cache.put('listaGastos',response.gastos);
-					cache.put('listaContas',response.contas);
+					cache.put('listaGastos',response.gastos.listaPendencias);
+					cache.put('listaContas',response.contas.listaPendencias);
 					cache.put('resumo',response.resumo);
 				}, 
 				function(error) {
@@ -123,7 +123,7 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP', 'APPLICATION_JSON' , '$
 					cchResumo.descOrcamento   = response.descOrcamento;
 					cchResumo.contaPendente   = response.contaPendente;
 					cchResumo.gastoPendente   = response.gastoPendente;
-					cacheResumo.put('resumo', cchResumo);
+					cache.put('resumo', cchResumo);
 				},
 				function (error) {
 					console.error ('Erro ao resumir ' + error);
