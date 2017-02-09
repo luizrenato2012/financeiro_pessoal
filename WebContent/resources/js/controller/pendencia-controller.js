@@ -1,4 +1,4 @@
-var app =  angular.module('PendenciaControllerMdl',['UtilMdl']);
+var app =  angular.module('PendenciaControllerMdl',['ServiceUtilMdl']);
 
 app.controller('pendenciaController',['$scope','logService','contaService', function($scope,logService, contaService) {
 

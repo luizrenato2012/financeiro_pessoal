@@ -1,4 +1,4 @@
-var app = angular.module('PagamentoControllerMdl',['UtilMdl']); 
+var app = angular.module('PagamentoControllerMdl',['ServiceUtilMdl']); 
 
 app.controller('pagamentoController',['$scope','gastoService','dateService','logService', function($scope, 
 		gastoService, dateService, logService) {

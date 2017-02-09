@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="gastoApp" lang="pt-BR">
+<html ng-app="financApp" lang="pt-BR">
 <head>
 <!--  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">  -->
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -17,12 +17,21 @@
 <script src="../resources/lib/angular-locale_pt-br.js"></script>
 <script src="../resources/lib/masks.min.js"></script>
 <script src="../resources/lib/ui-utils.js"></script>
-<script src="../resources/js/controller/controller.js"></script>
+<!-- controlles -->
+<script src="../resources/js/controller/app.js"></script>
+<script src="../resources/js/controller/config-controller.js"></script>
+<script src="../resources/js/controller/conta-controller.js"></script>
+<script src="../resources/js/controller/gasto-controller.js"></script>
+<script src="../resources/js/controller/pagamento-controller.js"></script>
+<script src="../resources/js/controller/pendencia-controller.js"></script>
+<script src="../resources/js/controller/redirect-controller.js"></script>
+<script src="../resources/js/controller/resumo-controller.js"></script>
+<!-- services -->
+<script src="../resources/js/service/constants-service.js"></script>
 <script src="../resources/js/service/service-util.js"></script>
 <script src="../resources/js/service/orcamento-service.js"></script>
 <script src="../resources/js/service/gasto-service.js"></script>
 <script src="../resources/js/service/conta-service.js"></script>
-<!--  <script src="../resources/js/service/service.js"></script>  -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body ng-app="gastoApp">

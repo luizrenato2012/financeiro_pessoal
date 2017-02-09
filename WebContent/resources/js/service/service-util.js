@@ -1,4 +1,4 @@
-var UtilService  = angular.module('UtilMdl',[]);
+var UtilService  = angular.module('ServiceUtilMdl',[]);
 
 UtilService.service('dateService', function() {
 	

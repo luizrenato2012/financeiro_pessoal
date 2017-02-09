@@ -1,7 +1,7 @@
-var app  =angular.module('GastoServiceMdl',['UtilMdl']);
+var app  =angular.module('GastoServiceMdl',['ServiceUtilMdl','ConstantsServiceMdl']);
 
-app.service('gastoService', ['$http', 'PATH_APP', 'APPLICATION_JSON' , '$q','logService','$cacheFactory',
-                             function($http, PATH_APP, APPLICATION_JSON, $q, logService, $cacheFactory) {
+app.service('gastoService', ['$http', 'PATH_APP' , '$q','logService','$cacheFactory',
+                             function($http, PATH_APP, $q, logService, $cacheFactory) {
 	logService.loga('criando gastoService ');
 	var cache = $cacheFactory('cacheGasto');
 	
@@ -28,7 +28,7 @@ app.service('gastoService', ['$http', 'PATH_APP', 'APPLICATION_JSON' , '$q','log
 //		$http({
 //			method: 'GET',
 //			url: PATH_APP + 'orcamento?acao=iniciaOrcamento',
-//			headers: {'Content-type' : APPLICATION_JSON}
+//			headers: {'Content-type' : application/json}
 //		}).success (function(data,status,headers,config,params) {
 //			defer.resolve(data);
 //		}).error(function(data,status,headers,config,params) {
@@ -44,7 +44,7 @@ app.service('gastoService', ['$http', 'PATH_APP', 'APPLICATION_JSON' , '$q','log
 			method: 'GET',
 			url: PATH_APP + 'orcamento?acao=listaPagamento&dataInicial='+ dataInicial +
 			'&dataFinal='+ dataFinal + '&tipo='+ tipoPagamento,
-			headers: {'Content-type': APPLICATION_JSON}	
+			headers: {'Content-type': application/json}	
 		}).success(function(data,status,headers,config,params) {
 			defer.resolve(data);
 		}).error(function(data,status,headers,config,params) {
@@ -62,7 +62,7 @@ app.service('gastoService', ['$http', 'PATH_APP', 'APPLICATION_JSON' , '$q','log
 			+ gastoSel.value+"&data="+ data + 
 			'&valor='+valor+"&idOrcamento="+idOrcamento +
 			'&descricao='+descricao,
-			headers: {'Content-type' : APPLICATION_JSON}
+			headers: {'Content-type' : application/json}
 		}).success (function(data,status,headers,config,params) {
 			defer.resolve(data);
 		}).error(function(data,status,headers,config,params) {
@@ -77,7 +77,7 @@ app.service('gastoService', ['$http', 'PATH_APP', 'APPLICATION_JSON' , '$q','log
 //		$http({
 //			method: 'GET',
 //			url: PATH_APP + 'orcamento?acao=listaGasto'
-			//	headers: {'Content-type' : APPLICATION_JSON}
+			//	headers: {'Content-type' : application/json}
 //		}).success(function(data,status,headers,config,params){
 			//console.log(data.gastos);
 //			defer.resolve(data);

@@ -1,10 +1,10 @@
 
 /** ---------------------- ContaController ---------------------- */
-var app = angular.module('ContaControllerMdl',[]);
+var app = angular.module('ContaControllerMdl',['ConstantsServiceMdl']);
 
-app.controller('contaController',['$scope', '$http', 'PATH_APP', 'APPLICATION_JSON','gastoService',
+app.controller('contaController',['$scope', '$http', 'PATH_APP', 'gastoService',
                                   'orcamentoService', 'dateService','logService','$window',
-                                  function($scope, $http, PATH_APP, APPLICATION_JSON, gastoService,
+                                  function($scope, $http, PATH_APP, gastoService,
                                 		  orcamentoService,dateService, logService,$window) {
 	
 	//console.log('Criando conta controller');

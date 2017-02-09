@@ -430,7 +430,7 @@ public class OrcamentoServlet extends HttpServlet {
 
 			JsonObject pagamentos = this.pagamentoService.listaPagamentos(dataInicial, 
 					dataFinal, this.orcamentoService.getIdOrcamentoAtivo(request), tipoPagamento);
-			System.out.println(pagamentos);
+//			System.out.println(pagamentos);
 			response.setContentType("application/json");
 
 			response.getWriter().println(pagamentos.toString());

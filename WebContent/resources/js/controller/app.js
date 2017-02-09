@@ -1,13 +1,7 @@
 
-var app = angular.module('gastoApp',['ngRoute','UtilMdl','ContaControllerMdl','GastoControllerMdl',
+var app = angular.module('financApp',['ngRoute','ServiceUtilMdl','ContaControllerMdl','GastoControllerMdl',
                                      'ConfigControllerMdl','PagamentoControllerMdl','PendenciaControllerMdl',
-                                     'RedirectControllerMdl','ResumoControllerMdl']);
-
-/** Constantes*/
-//app.constant('PATH_APP' ,  'http://lrsantos.com.br/lr_financeiro/' );
-//app.constant('PATH_APP' ,'http://10.0.20.185:8080/financeiro_pessoal/' );
-app.constant('PATH_APP' ,'http://localhost:8080/financeiro_pessoal/' );
-app.constant('APPLICATION_JSON' ,'application/json' );
+                                     'RedirectControllerMdl','ResumoControllerMdl','ConstantsServiceMdl']);
 
 app.run(function($rootScope,orcamentoService,orcamentoService){
 	console.log('Iniciando a aplicacao');

@@ -1,7 +1,6 @@
-var app = angular.module('ContaServiceMdl', []);
+var app = angular.module('ContaServiceMdl', ['ConstantsServiceMdl']);
 
-app.service('contaService', ['$http','$q','PATH_APP','APPLICATION_JSON', function($http, $q,
-		PATH_APP,APPLICATION_JSON) {
+app.service('contaService', ['$http','$q','PATH_APP', function($http, $q,PATH_APP) {
 
 	this.listaPendencia = function(tipoPendencia) {
 		var defer = $q.defer();
@@ -9,7 +8,7 @@ app.service('contaService', ['$http','$q','PATH_APP','APPLICATION_JSON', functio
 			method: 'GET',
 		//	url: PATH_APP + 'orcamento?acao=listaPendenciaConta',
 			url: PATH_APP + 'orcamento?acao=listaPendencia'+tipoPendencia,
-			headers: {'Content-type' : APPLICATION_JSON}
+			headers: {'Content-type' : application/json}
 		}).success( function(data,status,headers, config, params) {
 			defer.resolve(data);
 		}).error( function(data, status, headers, config, params) {
@@ -27,7 +26,7 @@ app.service('contaService', ['$http','$q','PATH_APP','APPLICATION_JSON', functio
 			+ gastoSel.value+"&data="+ data + 
 			'&valor='+valor+"&idOrcamento="+idOrcamento +
 			'&descricao='+descricao,
-			headers: {'Content-type' : APPLICATION_JSON}
+			headers: {'Content-type' : application/json}
 		}).success (function(data,status,headers,config,params) {
 			defer.resolve(data);
 		}).error(function(data,status,headers,config,params) {

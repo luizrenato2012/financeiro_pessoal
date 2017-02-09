@@ -1,9 +1,9 @@
 /** ----------------  GastoController   ---------------- */
-var app = angular.module('GastoControllerMdl',[]);
+var app = angular.module('GastoControllerMdl',['ConstantsServiceMdl']);
 
-app.controller('gastoController',['$scope', '$http', 'PATH_APP', 'APPLICATION_JSON','gastoService',
+app.controller('gastoController',['$scope', '$http', 'PATH_APP', 'gastoService',
                                   'orcamentoService','dateService','logService','$window',
-                                  function($scope, $http, PATH_APP, APPLICATION_JSON, gastoService,
+                                  function($scope, $http, PATH_APP, gastoService,
                                 		  orcamentoService,dateService, logService,$window) {
 	
 	console.log('Criando gasto controller');

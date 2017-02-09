@@ -1,7 +1,7 @@
-var modulo = angular.module('OrcamentoServiceMdl',['UtilMdl']);
+var modulo = angular.module('OrcamentoServiceMdl',['ServiceUtilMdl','ConstantsServiceMdl']);
 
-modulo.service('orcamentoService', ['$http', 'PATH_APP', 'APPLICATION_JSON' , '$q','logService','$cacheFactory',
-                                    function($http, PATH_APP, APPLICATION_JSON, $q, logService, $cacheFactory) {
+modulo.service('orcamentoService', ['$http', 'PATH_APP',  '$q','logService','$cacheFactory',
+                                    function($http, PATH_APP, $q, logService, $cacheFactory) {
 	logService.loga('criando orcamento service ');
 	var cache = $cacheFactory('cacheOrcamento');
 
@@ -25,7 +25,7 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP', 'APPLICATION_JSON' , '$
 		$http({
 			method: 'GET',
 			url: PATH_APP + 'orcamento?acao=orcamento'
-			//	headers: {'Content-type' : APPLICATION_JSON}
+			//	headers: {'Content-type' : application/json}
 		}).success(function(data,status,headers,config,params){
 			//console.log(data.gastos);
 			defer.resolve(data);
@@ -84,7 +84,7 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP', 'APPLICATION_JSON' , '$
 			method: 'GET',
 			url: PATH_APP + 'orcamento?acao=listaPagamento&dataInicial='+ dataInicial +
 			'&dataFinal='+ dataFinal + '&tipo='+ tipoPagamento,
-			headers: {'Content-type': APPLICATION_JSON}	
+			headers: {'Content-type': application/json}	
 		}).success(function(data,status,headers,config,params) {
 			defer.resolve(data);
 		}).error(function(data,status,headers,config,params) {
@@ -102,7 +102,7 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP', 'APPLICATION_JSON' , '$
 			+ gastoSel.value+"&data="+ data + 
 			'&valor='+valor+"&idOrcamento="+idOrcamento +
 			'&descricao='+descricao,
-			headers: {'Content-type' : APPLICATION_JSON}
+			headers: {'Content-type' : application/json}
 		}).success (function(data,status,headers,config,params) {
 			defer.resolve(data);
 		}).error(function(data,status,headers,config,params) {
@@ -137,7 +137,7 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP', 'APPLICATION_JSON' , '$
 		$http({
 			method: 'GET',
 			url: PATH_APP + 'orcamento?acao=resumeOrcamento',
-			headers: {'Content-type': APPLICATION_JSON}
+			headers: {'Content-type': application/json}
 		}).success ( function(data, status, headers, config, params) {
 			defer.resolve(data);
 		}).error (function (data, status, headers, config, params){
