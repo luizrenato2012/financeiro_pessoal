@@ -1,0 +1,2 @@
+- alterar no OrcamentoServlet metodos http p/ get - consultas, post - criacao e put - alteracoes (pagamenmtos)
+- services assincronos - alterar no services o uso de $http p/ chamadas remotas deixando tratamento callback(success/erro) no controller
