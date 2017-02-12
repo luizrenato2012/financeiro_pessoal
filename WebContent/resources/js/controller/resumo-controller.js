@@ -1,4 +1,4 @@
-var app = angulajs.module('ResumoControllerMdl', ['ServiceUtilMdl']);
+var app = angular.module('ResumoControllerMdl', ['ServiceUtilMdl']);
 
 app.controller('resumoController',['$scope','orcamentoService','logService','$window', 
                                    function($scope,orcamentoService, logService, $window) {

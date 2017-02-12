@@ -2,12 +2,12 @@ var modulo = angular.module('OrcamentoServiceMdl',['ServiceUtilMdl','ConstantsSe
 
 modulo.service('orcamentoService', ['$http', 'PATH_APP',  '$q','logService','$cacheFactory',
                                     function($http, PATH_APP, $q, logService, $cacheFactory) {
-	logService.loga('criando orcamento service ');
+//	logService.loga('criando orcamento service ');
 	var cache = $cacheFactory('cacheOrcamento');
 
 	/** lista de Gastos e Contas pendentes p/ preecnhimento de combo */
 	this.carregaOrcamento = function() {
-		logService.loga('Carregando orcamento');
+	//	logService.loga('Carregando orcamento');
 		this.buscaGastosContasResumo().then(
 				function(response) {
 					cache.put('listaGastos',response.gastos.listaPendencias);
@@ -84,7 +84,7 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP',  '$q','logService','$ca
 			method: 'GET',
 			url: PATH_APP + 'orcamento?acao=listaPagamento&dataInicial='+ dataInicial +
 			'&dataFinal='+ dataFinal + '&tipo='+ tipoPagamento,
-			headers: {'Content-type': application/json}	
+			headers: {'Content-type': 'application/json'}	
 		}).success(function(data,status,headers,config,params) {
 			defer.resolve(data);
 		}).error(function(data,status,headers,config,params) {
@@ -102,7 +102,7 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP',  '$q','logService','$ca
 			+ gastoSel.value+"&data="+ data + 
 			'&valor='+valor+"&idOrcamento="+idOrcamento +
 			'&descricao='+descricao,
-			headers: {'Content-type' : application/json}
+			headers: {'Content-type' : 'application/json'}
 		}).success (function(data,status,headers,config,params) {
 			defer.resolve(data);
 		}).error(function(data,status,headers,config,params) {
@@ -137,7 +137,7 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP',  '$q','logService','$ca
 		$http({
 			method: 'GET',
 			url: PATH_APP + 'orcamento?acao=resumeOrcamento',
-			headers: {'Content-type': application/json}
+			headers: {'Content-type': 'application/json'}
 		}).success ( function(data, status, headers, config, params) {
 			defer.resolve(data);
 		}).error (function (data, status, headers, config, params){

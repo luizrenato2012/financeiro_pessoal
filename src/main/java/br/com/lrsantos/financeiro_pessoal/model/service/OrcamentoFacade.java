@@ -112,10 +112,11 @@ public class OrcamentoFacade implements Serializable {
 		Map<String,Object> map = null;
 		for (Object[] ar : listaPendencias)    {
 			map =new LinkedHashMap<String, Object>();
-			map.put("descricao", (String)ar[0]);
-			map.put("tipo", (String)ar[1]);
-			map.put("vencimento", JSonUtil.parseDateToString(ar[2]));
-			map.put("valor", ar[3]);
+			map.put("id", (Integer)ar[0]);
+			map.put("descricao", (String)ar[1]);
+			map.put("tipo", (String)ar[2]);
+			map.put("vencimento", JSonUtil.parseDateToString(ar[3]));
+			map.put("valor", ar[4]);
 			listaPendencia.add(map);
 		}
 		return gson.toJson(listaPendencia);

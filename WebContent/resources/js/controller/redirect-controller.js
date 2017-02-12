@@ -1,4 +1,4 @@
-var app = angularjs.module('RedirectController',[]);
+var app = angular.module('RedirectControllerMdl',[]);
 
 app.controller('redirectController',['$scope','$window',function($scope,$window) {
 	$scope.logoff = function() {

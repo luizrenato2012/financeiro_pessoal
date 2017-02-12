@@ -8,7 +8,7 @@ app.service('contaService', ['$http','$q','PATH_APP', function($http, $q,PATH_AP
 			method: 'GET',
 		//	url: PATH_APP + 'orcamento?acao=listaPendenciaConta',
 			url: PATH_APP + 'orcamento?acao=listaPendencia'+tipoPendencia,
-			headers: {'Content-type' : application/json}
+			headers: {'Content-type' : 'application/json'}
 		}).success( function(data,status,headers, config, params) {
 			defer.resolve(data);
 		}).error( function(data, status, headers, config, params) {
@@ -26,7 +26,7 @@ app.service('contaService', ['$http','$q','PATH_APP', function($http, $q,PATH_AP
 			+ gastoSel.value+"&data="+ data + 
 			'&valor='+valor+"&idOrcamento="+idOrcamento +
 			'&descricao='+descricao,
-			headers: {'Content-type' : application/json}
+			headers: {'Content-type' : 'application/json'}
 		}).success (function(data,status,headers,config,params) {
 			defer.resolve(data);
 		}).error(function(data,status,headers,config,params) {

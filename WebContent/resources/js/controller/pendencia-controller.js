@@ -1,4 +1,4 @@
-var app =  angular.module('PendenciaControllerMdl',['ServiceUtilMdl']);
+var app =  angular.module('PendenciaControllerMdl',['ServiceUtilMdl','ContaServiceMdl']);
 
 app.controller('pendenciaController',['$scope','logService','contaService', function($scope,logService, contaService) {
 
@@ -6,12 +6,12 @@ app.controller('pendenciaController',['$scope','logService','contaService', func
 	$scope.listaContasPendentes = [];
 	$scope.msg = 'Pesquisando pendencias';
 	$scope.tipoPendencia = {}; 
-	logService.loga('Criando pendenciaController');
+//	logService.loga('Criando pendenciaController');
 	
 	$scope.listaPendencia = function(tipo) {
 		contaService.listaPendencia(tipo).then(
 				function(response) {
-					logService.loga('Tipo de pendencia '+ $scope.tipoPendencia);
+				//	logService.loga('Tipo de pendencia '+ $scope.tipoPendencia);
 					$scope.listaContasPendentes = response.listaPendencias;
 					$scope.msg='';
 				},

@@ -64,7 +64,8 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 	
 	private void initSQL() {
 		StringBuilder strb = new StringBuilder();
-		strb.append("select gt.descricao, ")
+		strb.append("select gt.id, ")
+			.append("gt.descricao, ")
 			.append("gt.tipo_conta, ")
 			.append("gt.data_vencimento, ")
 			.append("case when gt.tipo_conta ='Conta' then gt.valor else gt.valor_pendente end as valor ")
@@ -73,20 +74,21 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 			.append("where gt.situacao in ('ABERTO','PENDENTE') and ")
 			.append("gt.tipo_conta = ?  and ")
 			.append("orc.ativo=true " )
-			.append("order by gt.tipo_conta, gt.data_vencimento");
+			.append("order by gt.tipo_conta, gt.data_vencimento desc");
 		QRY_DESPESAS_PENDENTES_TIPO = strb.toString();
 		
 		strb = new StringBuilder();
-		strb.append("select gt.descricao, ")
-		.append("gt.tipo_conta, ")
-		.append("gt.data_vencimento, ")
-		.append("case when gt.tipo_conta ='Conta' then gt.valor else gt.valor_pendente end as valor ")
-		.append("from financ.conta gt ")
-		.append("inner join financ.orcamento orc on gt.id_orcamento = orc.id  ")
-		.append("where gt.situacao in ('ABERTO','PENDENTE') and ")
-		.append("gt.tipo_conta in ('Conta','Gasto') and ")
-		.append("orc.ativo=true " )
-		.append("order by gt.tipo_conta, gt.data_vencimento");
+		strb.append("select gt.id, ")
+			.append("gt.descricao, ")
+			.append("gt.tipo_conta, ")
+			.append("gt.data_vencimento, ")
+			.append("case when gt.tipo_conta ='Conta' then gt.valor else gt.valor_pendente end as valor ")
+			.append("from financ.conta gt ")
+			.append("inner join financ.orcamento orc on gt.id_orcamento = orc.id  ")
+			.append("where gt.situacao in ('ABERTO','PENDENTE') and ")
+			.append("gt.tipo_conta in ('Conta','Gasto') and ")
+			.append("orc.ativo=true " )
+			.append("order by gt.tipo_conta, gt.data_vencimento desc");
 		QRY_DESPESAS_PENDENTES_TODOS = strb.toString();
 		
 		strb = new StringBuilder();

@@ -5,7 +5,7 @@ var app = angular.module('ConfigControllerMdl',[]);
 app.controller('configController',['$scope','orcamentoService','gastoService',function($scope,orcamentoService, gastoService) {
 	
 	$scope.msgCarga='';
-	console.log('criando configController');
+//	console.log('criando configController');
 	
 	$scope.carregaResumo = function() {
 		$scope.msgCarga='Carregando resumo...';

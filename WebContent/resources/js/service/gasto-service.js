@@ -2,7 +2,7 @@ var app  =angular.module('GastoServiceMdl',['ServiceUtilMdl','ConstantsServiceMd
 
 app.service('gastoService', ['$http', 'PATH_APP' , '$q','logService','$cacheFactory',
                              function($http, PATH_APP, $q, logService, $cacheFactory) {
-	logService.loga('criando gastoService ');
+//	logService.loga('criando gastoService ');
 	var cache = $cacheFactory('cacheGasto');
 	
 	
@@ -44,7 +44,7 @@ app.service('gastoService', ['$http', 'PATH_APP' , '$q','logService','$cacheFact
 			method: 'GET',
 			url: PATH_APP + 'orcamento?acao=listaPagamento&dataInicial='+ dataInicial +
 			'&dataFinal='+ dataFinal + '&tipo='+ tipoPagamento,
-			headers: {'Content-type': application/json}	
+			headers: {'Content-type': 'application/json'}	
 		}).success(function(data,status,headers,config,params) {
 			defer.resolve(data);
 		}).error(function(data,status,headers,config,params) {
@@ -55,21 +55,31 @@ app.service('gastoService', ['$http', 'PATH_APP' , '$q','logService','$cacheFact
 	}
 
 	this.paga = function(gastoSel,data, valor, idOrcamento, descricao) {
-		var defer = $q.defer();
-		$http({
-			method: 'GET',
-			url: PATH_APP + 'orcamento?acao=pagaGasto&id='
-			+ gastoSel.value+"&data="+ data + 
-			'&valor='+valor+"&idOrcamento="+idOrcamento +
-			'&descricao='+descricao,
-			headers: {'Content-type' : application/json}
-		}).success (function(data,status,headers,config,params) {
-			defer.resolve(data);
-		}).error(function(data,status,headers,config,params) {
-			defer.reject(data);
-		});
+	//	var defer = $q.defer();
+//		$http({
+//			method: 'GET',
+//			url: PATH_APP + 'orcamento?acao=pagaGasto&id='
+//			+ gastoSel.id+"&data="+ data + 
+//			'&valor='+valor+"&idOrcamento="+idOrcamento +
+//			'&descricao='+descricao,
+//			headers: {'Content-type' : 'application/json'}
+//		}).success (function(data,status,headers,config,params) {
+//			defer.resolve(data);
+//		}).error(function(data,status,headers,config,params) {
+//			defer.reject(data);
+//		});
+//		return defer.promise;
+		
+		var params =  {
+				acao: 'pagaGasto',
+				id : gastoSel.id,
+				data: data,
+				valor: valor,
+				idOrcamento: idOrcamento ,
+				descricao: descricao
+		};
+		return $http.get(PATH_APP + 'orcamento', {params:params});
 
-		return defer.promise;
 	}
 	
 //	this.buscaGastos = function () {

@@ -25,7 +25,7 @@ public class AutenticacaoFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest requestHttp = (HttpServletRequest) request;
 		String uri = requestHttp.getRequestURI();
-		System.out.println("URI " + uri);
+//		System.out.println("URI " + uri);
 		
 		
 		if ( estaLogado((HttpServletRequest) request) || estaLogando(uri)) {

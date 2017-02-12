@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 
@@ -239,8 +240,7 @@ public class OrcamentoServlet extends HttpServlet {
 		String mensagem = "";
 		String tipo = "";
 		Orcamento orcamento = null;
-		try
-		{
+		try {
 			Integer idGasto = Integer.valueOf(Integer.parseInt(strIdGasto));
 
 			String strData = request.getParameter("data");
@@ -273,9 +273,7 @@ public class OrcamentoServlet extends HttpServlet {
 
 			tipo = "OK";
 			mensagem = "Pagamento registrado com sucesso!";
-		}
-		catch (Exception e)
-		{
+		}	catch (Exception e) {
 			e.printStackTrace();
 			tipo = "ERRO";
 			mensagem = "Erro ao pagar: " + e.getMessage();
@@ -395,13 +393,23 @@ public class OrcamentoServlet extends HttpServlet {
 	private void testa(HttpServletRequest request, HttpServletResponse response) throws IOException  {
 	//	Orcamento orcamento = (Orcamento)request.getSession().getAttribute(ConfiguracaoWeb.ORCAMENTO_ATIVO.getDescricao());
 	//	List<Gasto> gastos = orcamento.getGastos();
-
-//		convertListaGasto(gastos);
-	//	JsonObject obj = new JsonObject();
-	//	obj.add("gastos", new JsonParser().parse(new Gson().toJson(convertListaGasto(gastos))));
-
-	//	response.setContentType("application/json");
-	//	response.getWriter().print(obj);
+		System.out.println("Receendo teste");
+	//	System.out.println("Atributos " + this.imprime(request.getAttributeNames()));
+		System.out.println("Parametros "+ this.imprime(request.getParameterNames()));
+		
+		JsonObject obj = new JsonObject();
+		obj.add("retorno", new JsonParser().parse(new Gson().toJson("retorno ok")));
+		
+		response.setContentType("application/json");
+		response.getWriter().print(obj);
+	}
+	
+	private String imprime(Enumeration<String> enumeration) {
+		StringBuilder strb = new StringBuilder();
+		while(enumeration.hasMoreElements()) {
+			strb.append( (String)enumeration.nextElement() );
+		}
+		return strb.toString();
 	}
 
 //	private Collection convertListaGasto(List<Gasto> gastos){

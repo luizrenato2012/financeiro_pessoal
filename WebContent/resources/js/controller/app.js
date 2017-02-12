@@ -1,7 +1,8 @@
 
 var app = angular.module('financApp',['ngRoute','ServiceUtilMdl','ContaControllerMdl','GastoControllerMdl',
                                      'ConfigControllerMdl','PagamentoControllerMdl','PendenciaControllerMdl',
-                                     'RedirectControllerMdl','ResumoControllerMdl','ConstantsServiceMdl']);
+                                     'RedirectControllerMdl','ResumoControllerMdl','ConstantsServiceMdl',
+                                     'OrcamentoServiceMdl']);
 
 app.run(function($rootScope,orcamentoService,orcamentoService){
 	console.log('Iniciando a aplicacao');
