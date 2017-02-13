@@ -1,4 +1,4 @@
-<div class="panel panel-primary">
+<div class="panel panel-info">
 	<div class="panel-heading">Registra Pagamento Conta</div>
 	<div class="panel-body">
 		<form name='frm_gasto' role="form">
@@ -9,8 +9,9 @@
 			</div>
 
 			<div class="form-group">
-				<label>Conta</label> <select name='slc_conta' class="form-control"
-					ng-model="contaSel" ng-options="conta.label for conta in conta"
+				<label>Conta</label> 
+				<select name='slc_conta' class="form-control"
+					ng-model="contaSel" ng-options="conta.descricao for conta in contas"
 					ng-change="limpa()" required style='font-size: 130%;''>
 					<option value="Selecione">
 				</select>
@@ -23,15 +24,9 @@
 					style='font-size: 130%;' />
 			</div>
 
-	<!--   <div class="form-group">
-				<label>Descrição</label> <input name='edt_descricao'
-					class="form-control" type="text" ng-model="descricao"
-					style='font-weight: bold; font-size: 130%;' />
-			</div>  -->
-
 			<div class="form-group">
 				<label>Valor</label> <input name='edt_valor' type="text"
-					ui-number-mask class="form-control" ng-model="valor" required
+				 class="form-control" ng-model="contaSel.valor | number:2" required
 					style='font-weight: bold; font-size: 130%;' />
 			</div>
 

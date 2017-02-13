@@ -3,23 +3,14 @@ var app = angular.module('ContaServiceMdl', ['ConstantsServiceMdl']);
 app.service('contaService', ['$http','$q','PATH_APP', function($http, $q,PATH_APP) {
 
 	this.listaPendencia = function(tipoPendencia) {
-		var defer = $q.defer();
-		$http({
-			method: 'GET',
-		//	url: PATH_APP + 'orcamento?acao=listaPendenciaConta',
-			url: PATH_APP + 'orcamento?acao=listaPendencia'+tipoPendencia,
-			headers: {'Content-type' : 'application/json'}
-		}).success( function(data,status,headers, config, params) {
-			defer.resolve(data);
-		}).error( function(data, status, headers, config, params) {
-			defer.reject(data);
-		});
-
-		return defer.promise;
+		var params = {
+			acao: 'listaPendencia'+tipoPendencia
+		};
+		return $http.get(PATH_APP + 'orcamento',{params: params});
 	};
 	
-	this.paga = function(gastoSel,data, valor, idOrcamento, descricao) {
-		var defer = $q.defer();
+	this.paga = function(contaSel,data, valor, idOrcamento) {
+		/*var defer = $q.defer();
 		$http({
 			method: 'GET',
 			url: PATH_APP + 'orcamento?acao=pagaConta&id='
@@ -33,7 +24,17 @@ app.service('contaService', ['$http','$q','PATH_APP', function($http, $q,PATH_AP
 			defer.reject(data);
 		});
 
-		return defer.promise;
+		return defer.promise;*/
+		var params = {
+			acao: 'pagaConta',
+			id: contaSel.id,
+			data: data,
+			valor: valor,
+			idOrcamento: idOrcamento
+		};
+		
+		return $http.get(PATH_APP + 'orcamento',{params: params});
+		
 	}
 	
 	// lista de contas a serem pagas

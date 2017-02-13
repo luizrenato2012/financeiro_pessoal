@@ -4,22 +4,18 @@ app.controller('pendenciaController',['$scope','logService','contaService', func
 
 	$scope.titulo='Pagamento de Conta';
 	$scope.listaContasPendentes = [];
-	$scope.msg = 'Pesquisando pendencias';
+	$scope.msg = '';
 	$scope.tipoPendencia = {}; 
-//	logService.loga('Criando pendenciaController');
 	
 	$scope.listaPendencia = function(tipo) {
-		contaService.listaPendencia(tipo).then(
-				function(response) {
-				//	logService.loga('Tipo de pendencia '+ $scope.tipoPendencia);
-					$scope.listaContasPendentes = response.listaPendencias;
-					$scope.msg='';
-				},
-				function(error) {
-					logService.loga('Erro ao lista pendencia conta ' + error);
-					$scope.msg='Erro ao pesquisar';
-				}
-		);
+		contaService.listaPendencia(tipo).success( function(data,status,headers, config, params) {
+			$scope.msg='Pesquisando pendencias';
+			$scope.listaContasPendentes = data.listaPendencias;
+			$scope.msg='';
+		}).error( function(data, status, headers, config, params) {
+			logService.loga('Erro ao lista pendencia conta ' + error);
+			$scope.msg='Erro ao pesquisar';
+		});
 	}
 	
 	$scope.teste = function () {

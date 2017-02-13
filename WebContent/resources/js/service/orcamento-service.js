@@ -25,9 +25,7 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP',  '$q','logService','$ca
 		$http({
 			method: 'GET',
 			url: PATH_APP + 'orcamento?acao=orcamento'
-			//	headers: {'Content-type' : application/json}
 		}).success(function(data,status,headers,config,params){
-			//console.log(data.gastos);
 			defer.resolve(data);
 		}).error(function(data,status,headers,config,params) {
 			console.error('Erro ao buscar gastos ' + data);
@@ -77,8 +75,8 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP',  '$q','logService','$ca
 	}
 
 
-
-	this.listaPagamento = function(dataInicial, dataFinal, tipoPagamento) {
+	//verificar necessidade
+/*	this.listaPagamento = function(dataInicial, dataFinal, tipoPagamento) {
 		var defer = $q.defer();
 		$http({
 			method: 'GET',
@@ -92,7 +90,7 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP',  '$q','logService','$ca
 		});
 
 		return defer.promise;
-	}
+	}*/
 
 	this.paga = function(gastoSel,data, valor, idOrcamento, descricao) {
 		var defer = $q.defer();
@@ -111,8 +109,36 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP',  '$q','logService','$ca
 
 		return defer.promise;
 	}
-
+	
 	this.carregaResumo = function () {
+		var defer = $q.defer();
+		var params = {acao: 'resumeOrcamento'}; 
+		
+		$http.get(PATH_APP + 'orcamento?', {params: params})
+			.success ( function(data, status, headers, config, params) {
+				var cchResumo = {};
+				cchResumo.valorDisponivel = data.valorDisponivel;
+				cchResumo.valorPendente   = data.valorPendente;
+				cchResumo.valorSobrante   = data.valorSobrante;
+				cchResumo.idOrcamento     = data.idOrcamento;
+				cchResumo.descOrcamento   = data.descOrcamento;
+				cchResumo.contaPendente   = data.contaPendente;
+				cchResumo.gastoPendente   = data.gastoPendente;
+				cache.put('resumo', cchResumo);
+				defer.resolve(data);
+			}).error (function (data, status, headers, config, params){
+				defer.reject(data);
+			});
+		return defer.promise;
+	}
+	
+	this.atualizaResumoConta = function (resumo, contas) {
+		cache.put('resumo', resumo);
+		cache.put('listaContas',contas);
+		
+	}
+
+/*	this.carregaResumo = function () {
 		this.findResumo().then(
 				function(response) {
 					var cchResumo = {};
@@ -129,9 +155,9 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP',  '$q','logService','$ca
 					console.error ('Erro ao resumir ' + error);
 				}
 		);
-	}
+	} */
 
-	this.findResumo = function(){
+/*	this.findResumo = function(){
 		var defer = $q.defer();
 
 		$http({
@@ -145,6 +171,6 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP',  '$q','logService','$ca
 		});
 
 		return defer.promise;
-	};
-//	this.init();
+	}; */
+	
 }]);

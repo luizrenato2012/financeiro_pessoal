@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 import org.jboss.logging.Logger;
 
 import br.com.lrsantos.financeiro_pessoal.model.bean.Orcamento;
+import br.com.lrsantos.financeiro_pessoal.model.service.OrcamentoFacade;
 import br.com.lrsantos.financeiro_pessoal.model.service.OrcamentoService;
 
 @Named
@@ -24,6 +25,9 @@ public class SessaoBeanImpl implements SessaoBean, Serializable{
 	private static final Logger log = Logger.getLogger(SessaoBeanImpl.class);
 	@EJB
 	private OrcamentoService orcamentoService;
+	 
+	@EJB
+	private OrcamentoFacade orcamentoFacade;
 
 	private Integer idContaSelecionada;
 	
@@ -98,7 +102,7 @@ public class SessaoBeanImpl implements SessaoBean, Serializable{
 	
 	public void atualizaResumoOrcamento()  {
 	    this.sessao.setAttribute(ConfiguracaoWeb.RESUMO_ORCAMENTO.getDescricao(), 
-	    this.orcamentoService.getResumoOrcamento());
+	    this.orcamentoFacade.getResumoOrcamento());
 	}
 
 

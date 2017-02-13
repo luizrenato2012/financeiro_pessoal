@@ -35,12 +35,12 @@ app.controller('gastoController',['$scope', '$http', 'PATH_APP', 'gastoService',
 		} else {
 			gastoService.paga($scope.gastoSel,$scope.data, $scope.valor, $scope.idOrcamento,$scope.descricao).
 				success(function(data, status, headers, config){
-					$scope.mensagem=response.mensagem;
-					logService.loga('Resultado ' + response.tipoMensagem+ ' '+ response.mensagem);
-					if (response.tipoMensagem=='OK') {
+					$scope.mensagem=data.mensagem;
+					logService.loga('Resultado ' + data.tipoMensagem+ ' '+ data.mensagem);
+					if (data.tipoMensagem=='OK') {
 						$scope.limpa();
-						$scope.mensagemInfo=response.mensagem;
-						orcamentoService.carregaResumo(response.resumo);
+						$scope.mensagemInfo=data.mensagem;
+						orcamentoService.carregaResumo(data.resumo);
 					} else {
 						$scope.mensagemInfo='';
 						$scope.mensagemErro=response.mensagem;
@@ -48,7 +48,7 @@ app.controller('gastoController',['$scope', '$http', 'PATH_APP', 'gastoService',
 					
 				}).
 				error(function(data, status, headers, config){
-					logService.loga('Erro ao pagar ' + error);
+					logService.loga('Erro ao pagar ' + data);
 					$scope.mensagemInfo='';
 					$scope.mensagemErro=response.mensagem;
 				});

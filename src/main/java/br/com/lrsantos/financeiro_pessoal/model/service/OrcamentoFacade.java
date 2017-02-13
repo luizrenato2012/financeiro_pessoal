@@ -122,6 +122,7 @@ public class OrcamentoFacade implements Serializable {
 		return gson.toJson(listaPendencia);
 	}
 	
+	/** retorna valores do orcamentos gastos e contas pendentes */
 	public JsonObject listaGastoContaResumo () {
 		String mensagem = "";
 		String tipo = "";
@@ -145,6 +146,29 @@ public class OrcamentoFacade implements Serializable {
 		//	obj.add("resumo",new JsonParser().parse(this.orcamentoService.getResumoOrcamento().toString())) ;
 	//		return obj;
 			
+		} catch (Exception e ) {
+			e.printStackTrace();
+			tipo = "ERRO";
+			mensagem = "Erro em listaGastoContaResumo: " + e.getMessage();
+		}
+		if (mensagem != null && !mensagem.trim().equals("")) {
+			obj.add("tipoMensagem", new JsonParser().parse(new Gson().toJson(tipo)));
+			obj.add("mensagem", new JsonParser().parse(new Gson().toJson(mensagem)));
+		}
+		return obj;
+	}
+	
+	/** retorna valores do orcamentos e contas pendentes -  */
+	public JsonObject listaContaResumo () {
+		String mensagem = "";
+		String tipo = "";
+
+		//Orcamento orcamento = null;
+		JsonObject obj = new JsonObject();
+		try {
+			obj.add("contas", new JsonParser().parse(this.listaContasPendentesOrcamentoAtivo()));
+			obj.add("resumo", new JsonParser().parse(new Gson().toJson(this.getResumoOrcamento())));
+
 		} catch (Exception e ) {
 			e.printStackTrace();
 			tipo = "ERRO";

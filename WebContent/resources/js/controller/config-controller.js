@@ -7,17 +7,24 @@ app.controller('configController',['$scope','orcamentoService','gastoService',fu
 	$scope.msgCarga='';
 //	console.log('criando configController');
 	
-	$scope.carregaResumo = function() {
+	$scope.carregaOrcamento = function() {
 		$scope.msgCarga='Carregando resumo...';
-		orcamentoService.carregaResumo();
-		$scope.msgCarga='Resumo carregado.';
+		orcamentoService.carregaResumo().then(
+			function(response) {
+				$scope.msgCarga='Resumo carregado.';
+			},
+			function(error) {
+				scope.msgCarga='Erro ao carregar dados...';
+				console.log('Erro ao carregar orcamento '+ error);
+			}
+		);
 	}
 	
-	$scope.carregaGastos = function() {
-		$scope.msgCarga = 'Carregando gastos...';
-		gastoService.carregaGastos();
-		$scope.msgCarga = 'Gastos carregados.';
-	}
+//	$scope.carregaGastos = function() {
+//		$scope.msgCarga = 'Carregando gastos...';
+//		gastoService.carregaGastos();
+//		$scope.msgCarga = 'Gastos carregados.';
+//	}
 	
 	$scope.logoff = function() {
 		$window.location.href='../autentica.do?acao=logoff';

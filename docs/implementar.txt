@@ -12,6 +12,6 @@ Erros
   - OK Erro ao excluir um gasto na tela de gastos (alteracao da forma exclusao em GastoService)
   - OK Duplicando valor no pagamento de conta 
   - OK Nao atualiza os dados do gasto pago na tela de pagamento  quando � cadastrado um pagamento (alteracao atualizacao dialog de inclusao pagamento)
-  
+  - ao recarregar tela de pagamento de contas nao carrega contas pendentes
   Implementar
   26/01/2017 - pesquisa de orcamento ativo colocar left join p/ que busque mesmo q nao tenha gastos
