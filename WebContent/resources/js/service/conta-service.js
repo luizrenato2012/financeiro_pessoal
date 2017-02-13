@@ -34,7 +34,6 @@ app.service('contaService', ['$http','$q','PATH_APP', function($http, $q,PATH_AP
 		};
 		
 		return $http.get(PATH_APP + 'orcamento',{params: params});
-		
 	}
 	
 	// lista de contas a serem pagas

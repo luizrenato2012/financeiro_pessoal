@@ -4,17 +4,17 @@ var app = angular.module('ContaControllerMdl',['ConstantsServiceMdl','ContaServi
 
 app.controller('contaController',['$scope', 'contaService','orcamentoService', 'dateService','logService','$window',
                                   function($scope, contaService, orcamentoService,dateService, logService,$window) {
-	
+
 	//console.log('Criando conta controller');
 	$scope.contaSel={};
 	$scope.contaSel.valor=0;
-	
+
 	$scope.init =  function () {
 		try {
 			var infOrcamento = orcamentoService.getIdDescricaoOrcamento();
 			$scope.descOrcamento = infOrcamento.descOrcamento;
 			$scope.idOrcamento = infOrcamento.idOrcamento
-			$scope.contas =	   orcamentoService.getListaContas($scope.idOrcamento);
+			$scope.contas =	   orcamentoService.getListaContas();
 			$scope.data = dateService.getDataFormatada();
 		} catch (err) {
 			logService.loga('Erro ao iniciar conta: ' + err.message);
@@ -27,31 +27,31 @@ app.controller('contaController',['$scope', 'contaService','orcamentoService', '
 		$scope.mensagemInfo='Enviando...';
 		$scope.mensagemErro='';
 		var resValidacao = $scope.validaCampos($scope.idOrcamento, $scope.contaSel, $scope.data, $scope.contaSel.valor);
-		
+
 		if (resValidacao!='') {
 			logService.loga('erro validacao '+ resValidacao);
 			$scope.mensagemInfo='';
 			$scope.mensagemErro=resValidacao;
-
-		} else {
-			contaService.paga($scope.contaSel,$scope.data, $scope.contaSel.valor, $scope.idOrcamento).
-				success (function(data,status,headers,config,params) {
-					$scope.mensagem=data.mensagem;
-					logService.loga('Resultado paga conta:' + data.tipoMensagem+ ' '+ data.mensagem);
-					if (data.tipoMensagem=='OK') {
-						$scope.limpa();
-						$scope.mensagemInfo=data.mensagem;
-						orcamentoService.atualizaResumoConta(data.orcamento.resumo, data.orcamento.contas);
-					} else {
-						$scope.mensagemInfo='';
-						$scope.mensagemErro=data.mensagem;
-					}}).
-				error(function(data,status,headers,config,params) {
-					logService.loga('Erro ao pagar ' + data);
-					$scope.mensagemInfo='';
-					$scope.mensagemErro=data.mensagem;
-				});
+			return;
 		}
+
+		contaService.paga($scope.contaSel,$scope.data, $scope.contaSel.valor, $scope.idOrcamento).
+		success (function(data,status,headers,config,params) {
+			$scope.mensagem=data.mensagem;
+			logService.loga('Resultado paga conta:' + data.tipoMensagem+ ' '+ data.mensagem);
+			if (data.tipoMensagem=='OK') {
+				$scope.limpa();
+				$scope.mensagemInfo=data.mensagem;
+				orcamentoService.atualizaResumoConta(data.orcamento.resumo, data.orcamento.contas);
+			} else {
+				$scope.mensagemInfo='';
+				$scope.mensagemErro=data.mensagem;
+			}}).
+			error(function(data,status,headers,config,params) {
+				logService.loga('Erro ao pagar ' + data);
+				$scope.mensagemInfo='';
+				$scope.mensagemErro=data.mensagem;
+			});
 	}
 
 	$scope.limpa = function() {

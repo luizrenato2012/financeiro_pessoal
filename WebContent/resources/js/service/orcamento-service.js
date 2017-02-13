@@ -135,7 +135,6 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP',  '$q','logService','$ca
 	this.atualizaResumoConta = function (resumo, contas) {
 		cache.put('resumo', resumo);
 		cache.put('listaContas',contas);
-		
 	}
 
 /*	this.carregaResumo = function () {
