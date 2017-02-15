@@ -168,6 +168,29 @@ public class OrcamentoFacade implements Serializable {
 		}
 		return obj;
 	}
+	
+	/** retorna valores do orcamentos e contas pendentes -  */
+	public JsonObject listaGastoResumo () {
+		String mensagem = "";
+		String tipo = "";
+
+		//Orcamento orcamento = null;
+		JsonObject obj = new JsonObject();
+		try {
+			obj.add("resumo", new JsonParser().parse(new Gson().toJson(this.getResumoOrcamento())));
+			obj.add("gastos", new JsonParser().parse(this.listaGastosPendentesOrcamentoAtivo()));
+
+		} catch (Exception e ) {
+			e.printStackTrace();
+			tipo = "ERRO";
+			mensagem = "Erro em listaGastoContaResumo: " + e.getMessage();
+		}
+		if (mensagem != null && !mensagem.trim().equals("")) {
+			obj.add("tipoMensagem", new JsonParser().parse(new Gson().toJson(tipo)));
+			obj.add("mensagem", new JsonParser().parse(new Gson().toJson(mensagem)));
+		}
+		return obj;
+	}
 
 
 }

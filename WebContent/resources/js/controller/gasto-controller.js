@@ -40,7 +40,8 @@ app.controller('gastoController',['$scope', '$http', 'PATH_APP', 'gastoService',
 					if (data.tipoMensagem=='OK') {
 						$scope.limpa();
 						$scope.mensagemInfo=data.mensagem;
-						orcamentoService.carregaResumo(data.resumo);
+						//orcamentoService.carregaResumo(data.resumo);
+						orcamentoService.atualizaResumoConta(data.orcamento.resumo, data.orcamento.gastos.listaPendencias);
 					} else {
 						$scope.mensagemInfo='';
 						$scope.mensagemErro=response.mensagem;
@@ -50,7 +51,7 @@ app.controller('gastoController',['$scope', '$http', 'PATH_APP', 'gastoService',
 				error(function(data, status, headers, config){
 					logService.loga('Erro ao pagar ' + data);
 					$scope.mensagemInfo='';
-					$scope.mensagemErro=response.mensagem;
+					$scope.mensagemErro=data.mensagem;
 				});
 
 //			gastoService.paga($scope.gastoSel,$scope.data, $scope.valor, $scope.idOrcamento, 
@@ -77,6 +78,7 @@ app.controller('gastoController',['$scope', '$http', 'PATH_APP', 'gastoService',
 	}
 
 	$scope.limpa = function() {
+		$scope.gastoSel = {};
 		$scope.data='';
 		$scope.valor='';
 		$scope.descricao='';

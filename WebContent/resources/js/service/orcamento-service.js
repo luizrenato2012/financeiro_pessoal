@@ -7,31 +7,29 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP',  '$q','logService','$ca
 
 	/** lista de Gastos e Contas pendentes p/ preecnhimento de combo */
 	this.carregaOrcamento = function() {
-	//	logService.loga('Carregando orcamento');
-		this.buscaGastosContasResumo().then(
-				function(response) {
-					cache.put('listaGastos',response.gastos.listaPendencias);
-					cache.put('listaContas',response.contas.listaPendencias);
-					cache.put('resumo',response.resumo);
-				}, 
-				function(error) {
-					console.error(error);
-				}
-		);
+		this.buscaGastosContasResumo()
+			.success(function(data,status,headers,config,params){
+				cache.put('listaGastos',data.gastos.listaPendencias);
+				cache.put('listaContas',data.contas.listaPendencias);
+				cache.put('resumo',data.resumo);
+			}).error(function(data,status,headers,config,params) {
+				console.error('Erro ao buscar gastos ' + data);
+			});
+//		this.buscaGastosContasResumo().then(
+//				function(response) {
+//					cache.put('listaGastos',response.gastos.listaPendencias);
+//					cache.put('listaContas',response.contas.listaPendencias);
+//					cache.put('resumo',response.resumo);
+//				}, 
+//				function(error) {
+//					console.error(error);
+//				}
+//		);
 	}
 
 	this.buscaGastosContasResumo = function () {
-		var defer = $q.defer();
-		$http({
-			method: 'GET',
-			url: PATH_APP + 'orcamento?acao=orcamento'
-		}).success(function(data,status,headers,config,params){
-			defer.resolve(data);
-		}).error(function(data,status,headers,config,params) {
-			console.error('Erro ao buscar gastos ' + data);
-			defer.reject(data);
-		});
-		return defer.promise;
+		var params = {acao: 'orcamento'};
+		return $http.get(PATH_APP + 'orcamento' , {params: params});
 	};
 
 	this.getListaGastos = function() {
@@ -110,6 +108,7 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP',  '$q','logService','$ca
 		return defer.promise;
 	}
 	
+	/** verificar se ainda usa */
 	this.carregaResumo = function () {
 		var defer = $q.defer();
 		var params = {acao: 'resumeOrcamento'}; 
@@ -135,6 +134,11 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP',  '$q','logService','$ca
 	this.atualizaResumoConta = function (resumo, contas) {
 		cache.put('resumo', resumo);
 		cache.put('listaContas',contas);
+	}
+	
+	this.atualizaResumoGasto = function (resumo, gastos) {
+		cache.put('resumo', resumo);
+		cache.put('listaGastos',gastos);
 	}
 
 /*	this.carregaResumo = function () {
