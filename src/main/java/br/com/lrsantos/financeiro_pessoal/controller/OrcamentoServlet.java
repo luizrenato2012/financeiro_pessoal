@@ -22,6 +22,7 @@ import br.com.lrsantos.financeiro_pessoal.model.bean.Conta;
 import br.com.lrsantos.financeiro_pessoal.model.bean.Gasto;
 import br.com.lrsantos.financeiro_pessoal.model.bean.Orcamento;
 import br.com.lrsantos.financeiro_pessoal.model.bean.Pagamento;
+import br.com.lrsantos.financeiro_pessoal.model.bean.SituacaoDespesa;
 import br.com.lrsantos.financeiro_pessoal.model.service.ContaService;
 import br.com.lrsantos.financeiro_pessoal.model.service.GastoService;
 import br.com.lrsantos.financeiro_pessoal.model.service.OrcamentoFacade;
@@ -182,6 +183,9 @@ public class OrcamentoServlet extends HttpServlet {
 			}
 
 			Conta conta = (Conta)this.contaService.encontra(idConta, Conta.class);
+			if (conta.getSituacao().equals(SituacaoDespesa.PAGA)) {
+				throw new RuntimeException("Conta ja paga");
+			}
 			conta.setValorPago(Double.valueOf(strValor));
 			orcamento = (Orcamento)this.orcamentoService.encontra(Integer.valueOf(Integer.parseInt(strIdOrcamento)), 
 					Orcamento.class);
@@ -202,9 +206,6 @@ public class OrcamentoServlet extends HttpServlet {
 		JsonObject obj = new JsonObject();
 		obj.add("tipoMensagem", new JsonParser().parse(new Gson().toJson(tipo)));
 		obj.add("mensagem", new JsonParser().parse(new Gson().toJson(mensagem)));
-	//	JsonObject objResumo = (JsonObject)request.getSession().getAttribute(
-	//			ConfiguracaoWeb.RESUMO_ORCAMENTO.getDescricao());
-		obj.add("resumo", this.orcamentoFacade.listaContaResumo());
 		obj.add("orcamento",this.orcamentoFacade.listaContaResumo());
 
 		response.getWriter().println(obj);

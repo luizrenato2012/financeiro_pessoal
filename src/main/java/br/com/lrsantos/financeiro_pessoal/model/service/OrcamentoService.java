@@ -340,16 +340,6 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 	}
 	
 	
-	/** usado pra retornar DTO de conta pendentes*/
-/*	public String listaContasDTOPendentesOrcamentoAtivo()   {
-		Query query = this.entityManager.createQuery(QRY_CONTA_PENDENTE);
-		
-		List<ContaDTO> listaPendencias = query.getResultList();
-
-		Gson gson = new Gson();
-		return gson.toJson(listaPendencias);
-	}*/
-	
 	/** TODO mudar implementacao similar gasto */
 	public  List<Object[]> listaContasPendentesOrcamentoAtivo()   {
 		return this.listaPendenciasOrcamentoAtivo("Conta");

@@ -130,21 +130,9 @@ public class OrcamentoFacade implements Serializable {
 		//Orcamento orcamento = null;
 		JsonObject obj = new JsonObject();
 		try {
-	//		Collection listaGastos = new ArrayList();
-	//		List<Gasto> gastos = this.listaGastosPendentesOrcamentoAtivo();
-		//	for (Gasto gasto : gastos) {
-		//		listaGastos.add(new LabelValueDTO(gasto.getId(), gasto.getDescricao() + ": R$ " + 
-		//				this.numberFormat.format(gasto.getValor())));
-		//	}
 			obj.add("gastos", new JsonParser().parse(this.listaGastosPendentesOrcamentoAtivo()));
 			obj.add("contas", new JsonParser().parse(this.listaContasPendentesOrcamentoAtivo()));
 			obj.add("resumo", new JsonParser().parse(new Gson().toJson(this.getResumoOrcamento())));
-//			List<Conta> contas = this.contaService.listaPendentesPorOrcamento(orcamento.getId());
-//			String strContas = this.orcamentoService.listaContasPendentesOrcamentoAtivo();
-//			obj.add("contas", new JsonParser().parse(new Gson().toJson(strContas)));
-
-		//	obj.add("resumo",new JsonParser().parse(this.orcamentoService.getResumoOrcamento().toString())) ;
-	//		return obj;
 			
 		} catch (Exception e ) {
 			e.printStackTrace();
