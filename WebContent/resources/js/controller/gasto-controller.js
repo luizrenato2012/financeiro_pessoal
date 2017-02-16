@@ -7,10 +7,8 @@ app.controller('gastoController',['$scope', '$http', 'PATH_APP', 'gastoService',
                                   function($scope, $http, PATH_APP, gastoService,
                                 		  orcamentoService,dateService, logService,$window) {
 	
-//	console.log('Criando gasto controller');
 	$scope.init =  function () {
 		try {
-			//console.log('Criando gasto controller');
 			var infOrcamento = orcamentoService.getIdDescricaoOrcamento();
 			$scope.descOrcamento = infOrcamento.descOrcamento;
 			$scope.idOrcamento = infOrcamento.idOrcamento
@@ -41,7 +39,8 @@ app.controller('gastoController',['$scope', '$http', 'PATH_APP', 'gastoService',
 						$scope.limpa();
 						$scope.mensagemInfo=data.mensagem;
 						//orcamentoService.carregaResumo(data.resumo);
-						orcamentoService.atualizaResumoConta(data.orcamento.resumo, data.orcamento.gastos.listaPendencias);
+						orcamentoService.atualizaResumoGasto(data.orcamento.resumo, data.orcamento.gastos.listaPendencias);
+						$scope.gastos =	orcamentoService.getListaGastos();
 					} else {
 						$scope.mensagemInfo='';
 						$scope.mensagemErro=response.mensagem;
