@@ -1,15 +1,7 @@
 var app  =angular.module('GastoServiceMdl',['ServiceUtilMdl','ConstantsServiceMdl']);
 
-app.service('gastoService', ['$http', 'PATH_APP' , '$q','logService','$cacheFactory',
-                             function($http, PATH_APP, $q, logService, $cacheFactory) {
-//	logService.loga('criando gastoService ');
-	var cache = $cacheFactory('cacheGasto');
-	
-	
-	this.init = function() {
-		//resumoService.carregaResumo();
-		//this.carregaGastos();
-	}
+app.service('gastoService', ['$http', 'PATH_APP' , '$q','logService',
+                             function($http, PATH_APP, $q, logService) {
 	
 	this.listaPagamento = function(dataInicial, dataFinal, tipoPagamento) {
 		var params = {
@@ -34,7 +26,5 @@ app.service('gastoService', ['$http', 'PATH_APP' , '$q','logService','$cacheFact
 		return $http.put(PATH_APP + 'orcamento',{}, {params:params});
 
 	}
-	
-	this.init();
 	
 }]);

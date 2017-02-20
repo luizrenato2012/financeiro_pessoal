@@ -8,10 +8,11 @@ app.controller('pendenciaController',['$scope','logService','contaService', func
 	$scope.tipoPendencia = {}; 
 	
 	$scope.listaPendencia = function(tipo) {
-		contaService.listaPendencia(tipo).success( function(data,status,headers, config, params) {
-			$scope.msg='Pesquisando pendencias';
-			$scope.listaContasPendentes = data.listaPendencias;
-			$scope.msg='';
+		contaService.listaPendencia(tipo)
+		  .success( function(data,status,headers, config, params) {
+				$scope.msg='Pesquisando pendencias';
+				$scope.listaContasPendentes = data.listaPendencias;
+				$scope.msg='';
 		}).error( function(data, status, headers, config, params) {
 			logService.loga('Erro ao lista pendencia conta ' + error);
 			$scope.msg='Erro ao pesquisar';

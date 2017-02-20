@@ -17,11 +17,11 @@ public class PagamentoService extends ServiceGeneric<Pagamento, Integer> {
 	    StringBuilder strb = new StringBuilder();
 	    
 	    strb.append("select pag.id_gasto, pag.data,pag.observacao as descricao,pag.valor, 'Gasto' ")
-	      .append("from financ.pagamento pag ")
-	      .append("inner join financ.conta ct on pag.id_gasto = ct.id ")
-	      .append("inner join financ.orcamento orc on orc.id = ct.id_orcamento ")
-	      .append("where orc.id = :id_orcamento ")
-	      .append("and pag.data between :data_inicial and :data_final ");
+		      .append("from financ.pagamento pag ")
+		      .append("inner join financ.conta ct on pag.id_gasto = ct.id ")
+		      .append("inner join financ.orcamento orc on orc.id = ct.id_orcamento ")
+		      .append("where orc.id = :id_orcamento ")
+		      .append("and pag.data between :data_inicial and :data_final ");
 	    if (!tipo.equals("")) {
 	      strb.append("and ct.tipo_conta like :tipo ");
 	    }

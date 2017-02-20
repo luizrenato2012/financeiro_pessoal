@@ -20,7 +20,7 @@ public class OrcamentoNewBean implements Serializable{
 	
 	@PostConstruct
 	private void psotInit(){
-		log.info(">>> criando OrcamentoNewBean");
+		//log.info(">>> criando OrcamentoNewBean");
 	}
 
 	@Inject @SessaoQualifier

@@ -10,7 +10,6 @@ app.controller('pagamentoController',['$scope','gastoService','dateService','log
 
 	$scope.listaPagamento = function() {
 		$scope.mensagemPesquisaPag='Pesquisando...';
-		//logService.loga("Listando pagamentos")
 		if($scope.tipoPagamento==undefined || $scope.tipoPagamento==null || $scope.tipoPagamento=='Todos') {
 			$scope.tipoPagamento='';
 		}

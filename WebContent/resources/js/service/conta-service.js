@@ -4,7 +4,8 @@ app.service('contaService', ['$http','$q','PATH_APP', function($http, $q,PATH_AP
 
 	this.listaPendencia = function(tipoPendencia) {
 		var params = {
-			acao: 'listaPendencia'+tipoPendencia
+			acao: 'listaPendencia'+tipoPendencia,
+			tipoGasto: 'FIXO'
 		};
 		return $http.get(PATH_APP + 'orcamento',{params: params});
 	};

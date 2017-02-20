@@ -36,8 +36,6 @@ public class OrcamentoFacade implements Serializable {
 	}
 
 	public JsonObject getResumoOrcamento() 	{
-		String mensagem = "";
-		String tipo = "";
 
 		JsonObject jsObj = new JsonObject();
 		int count = 1;
@@ -50,52 +48,42 @@ public class OrcamentoFacade implements Serializable {
 		Double gastoPendente = null;
 		List<Object[]> lista = null;
 
-		try{
-			lista = this.orcamentoService.getResumoOrcamento(); 
-			for (Object[] ar : lista) {
-				if (count == 1)
-				{
-					jsObj.add("idOrcamento", new JsonParser().parse(new Gson().toJson(ar[0])));
-					d1 = new java.util.Date(((java.sql.Date)ar[1]).getTime());
-					d2 = new java.util.Date(((java.sql.Date)ar[2]).getTime());
-					jsObj.add("descOrcamento", new JsonParser().parse(new Gson().toJson(ar[0] + 
-							" - " + this.dtFormat.format(d1) + " a " + 
-							this.dtFormat.format(d2))));
+		lista = this.orcamentoService.getResumoOrcamento(); 
+		for (Object[] ar : lista) {
+			if (count == 1)
+			{
+				jsObj.add("idOrcamento", new JsonParser().parse(new Gson().toJson(ar[0])));
+				d1 = new java.util.Date(((java.sql.Date)ar[1]).getTime());
+				d2 = new java.util.Date(((java.sql.Date)ar[2]).getTime());
+				jsObj.add("descOrcamento", new JsonParser().parse(new Gson().toJson(ar[0] + 
+						" - " + this.dtFormat.format(d1) + " a " + 
+						this.dtFormat.format(d2))));
 
-					valorDisponivel = Double.valueOf((Double)ar[3] == null ? 0.0D : ((Double)ar[3]).doubleValue());
-					valorPendente = Double.valueOf((Double)ar[4] == null ? 0.0D : ((Double)ar[4]).doubleValue());
-					valorSobrante = Double.valueOf((Double)ar[5] == null ? 0.0D : ((Double)ar[5]).doubleValue());
-					contaPendente = Double.valueOf((Double)ar[6] == null ? 0.0D : ((Double)ar[6]).doubleValue());
-					gastoPendente = Double.valueOf((Double)ar[7] == null ? 0.0D : ((Double)ar[7]).doubleValue());
+				valorDisponivel = Double.valueOf((Double)ar[3] == null ? 0.0D : ((Double)ar[3]).doubleValue());
+				valorPendente = Double.valueOf((Double)ar[4] == null ? 0.0D : ((Double)ar[4]).doubleValue());
+				valorSobrante = Double.valueOf((Double)ar[5] == null ? 0.0D : ((Double)ar[5]).doubleValue());
+				contaPendente = Double.valueOf((Double)ar[6] == null ? 0.0D : ((Double)ar[6]).doubleValue());
+				gastoPendente = Double.valueOf((Double)ar[7] == null ? 0.0D : ((Double)ar[7]).doubleValue());
 
-					jsObj.add("valorDisponivel", new JsonParser().parse(new Gson().toJson(valorDisponivel)));
-					jsObj.add("valorPendente", new JsonParser().parse(new Gson().toJson(valorPendente)));
-					jsObj.add("valorSobrante", new JsonParser().parse(new Gson().toJson(valorSobrante)));
-					jsObj.add("contaPendente", new JsonParser().parse(new Gson().toJson(contaPendente)));
-					jsObj.add("gastoPendente", new JsonParser().parse(new Gson().toJson(gastoPendente)));
-					count++;
-				}
+				jsObj.add("valorDisponivel", new JsonParser().parse(new Gson().toJson(valorDisponivel)));
+				jsObj.add("valorPendente", new JsonParser().parse(new Gson().toJson(valorPendente)));
+				jsObj.add("valorSobrante", new JsonParser().parse(new Gson().toJson(valorSobrante)));
+				jsObj.add("contaPendente", new JsonParser().parse(new Gson().toJson(contaPendente)));
+				jsObj.add("gastoPendente", new JsonParser().parse(new Gson().toJson(gastoPendente)));
+				count++;
 			}
-			JsonObject objResumo = new JsonObject();
-			objResumo.add("resumo", new JsonParser().parse(new Gson().toJson(jsObj)));
-		} catch (Exception e ) {
-			e.printStackTrace();
-			tipo = "ERRO";
-			mensagem = "Erro ao listar: " + e.getMessage();
 		}
-		if (mensagem != null && !mensagem.trim().equals("")) {
-			jsObj.add("tipoMensagem", new JsonParser().parse(new Gson().toJson(tipo)));
-			jsObj.add("mensagem", new JsonParser().parse(new Gson().toJson(mensagem)));
-		}
+		JsonObject objResumo = new JsonObject();
+		objResumo.add("resumo", new JsonParser().parse(new Gson().toJson(jsObj)));
 		return jsObj;
 	}
 
-	public String listaGastosPendentesOrcamentoAtivo () {
-		List<Object[]>listaPendencias = this.orcamentoService.listaGastosPendentesOrcamentoAtivo();
+	public String listaGastosPendentesOrcamentoAtivo (String tipoGasto) {
+		List<Object[]>listaPendencias = this.orcamentoService.listaGastosPendentesOrcamentoAtivo(tipoGasto);
 		return this.getJsonFromList(listaPendencias);
-		
+
 	}
-	
+
 	public String listaContasPendentesOrcamentoAtivo() {
 		List<Object[]>listaPendencias = this.orcamentoService.listaContasPendentesOrcamentoAtivo();
 		return this.getJsonFromList(listaPendencias);
@@ -105,7 +93,7 @@ public class OrcamentoFacade implements Serializable {
 		List<Object[]>listaPendencias = this.orcamentoService.listaGastosContasPendentesOrcamentoAtivo();
 		return this.getJsonFromList(listaPendencias);
 	}
-	
+
 	private String getJsonFromList(List<Object[]> listaPendencias) {
 		Gson gson = new Gson();
 		ListaPendenciasJSon listaPendencia = new ListaPendenciasJSon();
@@ -121,74 +109,34 @@ public class OrcamentoFacade implements Serializable {
 		}
 		return gson.toJson(listaPendencia);
 	}
-	
+
 	/** retorna valores do orcamentos gastos e contas pendentes */
 	public JsonObject listaGastoContaResumo () {
-		String mensagem = "";
-		String tipo = "";
 
 		//Orcamento orcamento = null;
 		JsonObject obj = new JsonObject();
-		try {
-			obj.add("gastos", new JsonParser().parse(this.listaGastosPendentesOrcamentoAtivo()));
-			obj.add("contas", new JsonParser().parse(this.listaContasPendentesOrcamentoAtivo()));
-			obj.add("resumo", new JsonParser().parse(new Gson().toJson(this.getResumoOrcamento())));
-			
-		} catch (Exception e ) {
-			e.printStackTrace();
-			tipo = "ERRO";
-			mensagem = "Erro em listaGastoContaResumo: " + e.getMessage();
-		}
-		if (mensagem != null && !mensagem.trim().equals("")) {
-			obj.add("tipoMensagem", new JsonParser().parse(new Gson().toJson(tipo)));
-			obj.add("mensagem", new JsonParser().parse(new Gson().toJson(mensagem)));
-		}
+		obj.add("gastos", new JsonParser().parse(this.listaGastosPendentesOrcamentoAtivo("FIXO_VARIAVEL")));
+		obj.add("contas", new JsonParser().parse(this.listaContasPendentesOrcamentoAtivo()));
+		obj.add("resumo", new JsonParser().parse(new Gson().toJson(this.getResumoOrcamento())));
 		return obj;
 	}
-	
+
 	/** retorna valores do orcamentos e contas pendentes -  */
 	public JsonObject listaContaResumo () {
-		String mensagem = "";
-		String tipo = "";
 
 		//Orcamento orcamento = null;
 		JsonObject obj = new JsonObject();
-		try {
-			obj.add("contas", new JsonParser().parse(this.listaContasPendentesOrcamentoAtivo()));
-			obj.add("resumo", new JsonParser().parse(new Gson().toJson(this.getResumoOrcamento())));
-
-		} catch (Exception e ) {
-			e.printStackTrace();
-			tipo = "ERRO";
-			mensagem = "Erro em listaGastoContaResumo: " + e.getMessage();
-		}
-		if (mensagem != null && !mensagem.trim().equals("")) {
-			obj.add("tipoMensagem", new JsonParser().parse(new Gson().toJson(tipo)));
-			obj.add("mensagem", new JsonParser().parse(new Gson().toJson(mensagem)));
-		}
+		obj.add("contas", new JsonParser().parse(this.listaContasPendentesOrcamentoAtivo()));
+		obj.add("resumo", new JsonParser().parse(new Gson().toJson(this.getResumoOrcamento())));
 		return obj;
 	}
-	
+
 	/** retorna valores do orcamentos e contas pendentes -  */
 	public JsonObject listaGastoResumo () {
-		String mensagem = "";
-		String tipo = "";
-
-		//Orcamento orcamento = null;
 		JsonObject obj = new JsonObject();
-		try {
-			obj.add("resumo", new JsonParser().parse(new Gson().toJson(this.getResumoOrcamento())));
-			obj.add("gastos", new JsonParser().parse(this.listaGastosPendentesOrcamentoAtivo()));
+		obj.add("resumo", new JsonParser().parse(new Gson().toJson(this.getResumoOrcamento())));
+		obj.add("gastos", new JsonParser().parse(this.listaGastosPendentesOrcamentoAtivo("FIXO_VARIAVEL")));
 
-		} catch (Exception e ) {
-			e.printStackTrace();
-			tipo = "ERRO";
-			mensagem = "Erro em listaGastoContaResumo: " + e.getMessage();
-		}
-		if (mensagem != null && !mensagem.trim().equals("")) {
-			obj.add("tipoMensagem", new JsonParser().parse(new Gson().toJson(tipo)));
-			obj.add("mensagem", new JsonParser().parse(new Gson().toJson(mensagem)));
-		}
 		return obj;
 	}
 

@@ -35,7 +35,7 @@ public class SessaoBeanImpl implements SessaoBean, Serializable{
 	
 	@SuppressWarnings("unused")
 	public SessaoBeanImpl() {
-		log.info(">>> Criando sessao");
+		//log.info(">>> Criando sessao");
 		 sessao = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true); 
 
 	}
@@ -57,7 +57,7 @@ public class SessaoBeanImpl implements SessaoBean, Serializable{
 	}
 
 	public void setIdOrcamentoAtual(Integer id) {
-		log.info("setando idOrcamentoAtual " + id);
+	//	log.info("setando idOrcamentoAtual " + id);
 		sessao.setAttribute("idOrcamentoAtual", id);
 	}
 

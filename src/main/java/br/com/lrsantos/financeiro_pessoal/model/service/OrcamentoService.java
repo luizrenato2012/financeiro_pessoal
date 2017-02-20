@@ -3,14 +3,9 @@ package br.com.lrsantos.financeiro_pessoal.model.service;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -20,23 +15,16 @@ import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.jdbc.Work;
 import org.jboss.logging.Logger;
 
 import br.com.lrsantos.financeiro_pessoal.controller.ConfiguracaoWeb;
-import br.com.lrsantos.financeiro_pessoal.controller.LabelValueDTO;
 import br.com.lrsantos.financeiro_pessoal.model.bean.Conta;
 import br.com.lrsantos.financeiro_pessoal.model.bean.FinanceiroException;
 import br.com.lrsantos.financeiro_pessoal.model.bean.Gasto;
 import br.com.lrsantos.financeiro_pessoal.model.bean.Orcamento;
 import br.com.lrsantos.financeiro_pessoal.model.bean.Recebimento;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 @Stateless
 public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
@@ -55,13 +43,16 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 	
 	private static String QRY_DESPESAS_PENDENTES_TIPO;
 	private static String QRY_DESPESAS_PENDENTES_TODOS;
-	private static String QRY_CONTA_PENDENTE;
+//	private static String QRY_CONTA_PENDENTE;
 	
 	@PostConstruct
 	private void init() {
 		this.initSQL();
 	}
 	
+	/**
+	 * 
+	 */
 	private void initSQL() {
 		StringBuilder strb = new StringBuilder();
 		strb.append("select gt.id, ")
@@ -72,7 +63,7 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 			.append("from financ.conta gt ")
 			.append("inner join financ.orcamento orc on gt.id_orcamento = orc.id  ")
 			.append("where gt.situacao in ('ABERTO','PENDENTE') and ")
-			.append("gt.tipo_conta = ?  and ")
+			.append("gt.tipo_conta like ?  and ")
 			.append("orc.ativo=true " )
 			.append("order by gt.tipo_conta, gt.data_vencimento desc");
 		QRY_DESPESAS_PENDENTES_TIPO = strb.toString();
@@ -91,11 +82,11 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 			.append("order by gt.tipo_conta, gt.data_vencimento desc");
 		QRY_DESPESAS_PENDENTES_TODOS = strb.toString();
 		
-		strb = new StringBuilder();
+	/*	strb = new StringBuilder();
 		strb.append("select new br.com.lrsantos.financeiro_pessoal.model.service.ContaDTO(ct.id,ct.descricao, ct.valor,ct.dataVencimento) from Conta ct ")
 			.append("where ct.situacao = br.com.lrsantos.financeiro_pessoal.model.bean.SituacaoDespesa.PENDENTE and ")
 			.append("ct.orcamento.ativo=true");
-		QRY_CONTA_PENDENTE = strb.toString();
+		QRY_CONTA_PENDENTE = strb.toString();*/
 	}
 
 
@@ -318,21 +309,21 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 	public List<Object[]>  getResumoOrcamento() 	{
 		StringBuilder strb = new StringBuilder();
 		strb.append("select orc.id as idOrcamento,")
-		.append("orc.data_inicial \t\t\tas dataInicial,")
-		.append("orc.data_final  \t\t\tas dataFinal,")
-		.append("orc.valor_disponivel\t    as valorDisponivel, ")
-		.append("orc.valor_total_pendente \tas valorPendente, ")
-		.append("(orc.valor_disponivel - orc.valor_total_pendente) as valorSobrante, ")
-		.append("(select sum(ct2.valor_Pendente)  from financ.conta ct2 ")
-		.append("where  ct2.tipo_conta = 'Conta' and ct2.situacao = 'PENDENTE' and ct2.id_orcamento = orc.id ")
-		.append("group by  ct2.tipo_conta ) as conta_pendente, ")
-		.append("(select sum(ct3.valor_Pendente) from financ.conta ct3  ")
-		.append("where  ct3.tipo_conta like 'Gasto%' and ct3.situacao = 'PENDENTE' and ct3.id_orcamento = orc.id  ")
-		.append("group by  ct3.tipo_conta) as gasto_pendente ")
-		.append("from financ.orcamento  orc ")
-		.append("left join financ.conta ct on ct.id_orcamento = orc.id and ct.tipo_conta in ('Gasto','GastoVariavel') ")
-		.append("where orc.ativo = true ")
-		.append("order by ct.descricao");
+			.append("orc.data_inicial \t\t\tas dataInicial,")
+			.append("orc.data_final  \t\t\tas dataFinal,")
+			.append("orc.valor_disponivel\t    as valorDisponivel, ")
+			.append("orc.valor_total_pendente \tas valorPendente, ")
+			.append("(orc.valor_disponivel - orc.valor_total_pendente) as valorSobrante, ")
+			.append("(select sum(ct2.valor_Pendente)  from financ.conta ct2 ")
+			.append("where  ct2.tipo_conta = 'Conta' and ct2.situacao = 'PENDENTE' and ct2.id_orcamento = orc.id ")
+			.append("group by  ct2.tipo_conta ) as conta_pendente, ")
+			.append("(select sum(ct3.valor_Pendente) from financ.conta ct3  ")
+			.append("where  ct3.tipo_conta like 'Gasto%' and ct3.situacao = 'PENDENTE' and ct3.id_orcamento = orc.id  ")
+			.append("group by  ct3.tipo_conta) as gasto_pendente ")
+			.append("from financ.orcamento  orc ")
+			.append("left join financ.conta ct on ct.id_orcamento = orc.id and ct.tipo_conta in ('Gasto','GastoVariavel') ")
+			.append("where orc.ativo = true ")
+			.append("order by ct.descricao");
 		Query query = this.entityManager.createNativeQuery(strb.toString());
 
 		return query.getResultList();
@@ -345,8 +336,12 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 		return this.listaPendenciasOrcamentoAtivo("Conta");
 	}
 	
-	public List<Object[]> listaGastosPendentesOrcamentoAtivo()   {
-		return this.listaPendenciasOrcamentoAtivo("Gasto");
+	public List<Object[]> listaGastosPendentesOrcamentoAtivo(String tipo)   {
+		Map<String,String> tiposGasto = new HashMap<String,String>();
+		tiposGasto.put("FIXO", "Gasto");
+		tiposGasto.put("FIXO_VARIAVEL", "Gasto%");
+		tiposGasto.put("CONTA", "Conta%");
+		return this.listaPendenciasOrcamentoAtivo(tiposGasto.get(tipo));
 	}
 	
 	public List<Object[]> listaGastosContasPendentesOrcamentoAtivo() {
@@ -354,26 +349,12 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 	}
 
 	public List<Object[]> listaPendenciasOrcamentoAtivo(String tipo) {
-		Query query = this.entityManager.createNativeQuery(tipo.equals("todos")? QRY_DESPESAS_PENDENTES_TODOS  : QRY_DESPESAS_PENDENTES_TIPO);
-		if (!tipo.equals("todos")) {
-			query.setParameter(1, tipo);
-		}
+		Query query = this.entityManager.createNativeQuery(tipo.equals("todos")? 
+					  QRY_DESPESAS_PENDENTES_TODOS  : 
+					  QRY_DESPESAS_PENDENTES_TIPO);
+		query.setParameter(1, tipo);
 		List<Object[]> listaPendencias = query.getResultList();
 		return listaPendencias;
-	//	List<LabelValueDTO> listaDTO = new ArrayList();
-
-	//	Gson gson = new Gson();
-	//	ListaPendenciasJSon lista = new ListaPendenciasJSon();
-	//	Map<String,Object> map = null;
-	//	for (Object[] ar : listaPendencias)    {
-	//		map =new LinkedHashMap<String, Object>();
-	//		map.put("descricao", (String)ar[0]);
-	//		map.put("tipo", (String)ar[1]);
-	//		map.put("vencimento", JSonUtil.parseDateToString(ar[2]));
-	//		map.put("valor", ar[3]);
-	//		lista.add(map);
-	//	}
-	//	return gson.toJson(lista);
 	}
 
 

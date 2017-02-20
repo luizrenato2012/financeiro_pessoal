@@ -48,7 +48,7 @@ public class OrcamentoBean implements Serializable{
 	private void init() {
 		orcamentoEdicao = new Orcamento();
 		orcamentos = service.listaTodos(Orcamento.class);
-		log.info("post construct");
+	//	log.info("post construct");
 	}
 
 	public void inclui() {
@@ -164,6 +164,5 @@ public class OrcamentoBean implements Serializable{
 	public void setIdAtivacao(Integer idAtivacao) {
 		this.idAtivacao = idAtivacao;
 	}
-	
 
 }

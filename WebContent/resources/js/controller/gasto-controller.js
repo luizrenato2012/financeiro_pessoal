@@ -16,6 +16,8 @@ app.controller('gastoController',['$scope', '$http', 'PATH_APP', 'gastoService',
 			$scope.data = dateService.getDataFormatada();
 		} catch (err) {
 			console.log('Erro ao iniciar gasto: ' + err.message);
+			$scope.mensagemInfo='';
+			$scope.mensagemErro='Erro ao iniciar tela';
 		}
 	}
 	//executa init() ao criar o controller 
@@ -43,7 +45,7 @@ app.controller('gastoController',['$scope', '$http', 'PATH_APP', 'gastoService',
 						$scope.gastos =	orcamentoService.getListaGastos();
 					} else {
 						$scope.mensagemInfo='';
-						$scope.mensagemErro=response.mensagem;
+						$scope.mensagemErro=data.mensagem;
 					}
 					
 				}).
@@ -52,27 +54,6 @@ app.controller('gastoController',['$scope', '$http', 'PATH_APP', 'gastoService',
 					$scope.mensagemInfo='';
 					$scope.mensagemErro=data.mensagem;
 				});
-
-//			gastoService.paga($scope.gastoSel,$scope.data, $scope.valor, $scope.idOrcamento, 
-//				$scope.descricao).then(
-//					function(response) {
-//						$scope.mensagem=response.mensagem;
-//						logService.loga('Resultado ' + response.tipoMensagem+ ' '+ response.mensagem);
-//						if (response.tipoMensagem=='OK') {
-//							$scope.limpa();
-//							$scope.mensagemInfo=response.mensagem;
-//							orcamentoService.carregaResumo(response.resumo);
-//						} else {
-//							$scope.mensagemInfo='';
-//							$scope.mensagemErro=response.mensagem;
-//						}
-//					},
-//					function(error) {
-//						logService.loga('Erro ao pagar ' + error);
-//						$scope.mensagemInfo='';
-//						$scope.mensagemErro=response.mensagem;
-//					}
-//				);
 		}
 	}
 

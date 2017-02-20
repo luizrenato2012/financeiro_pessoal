@@ -15,16 +15,6 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP',  '$q','logService','$ca
 			}).error(function(data,status,headers,config,params) {
 				console.error('Erro ao buscar gastos ' + data);
 			});
-//		this.buscaGastosContasResumo().then(
-//				function(response) {
-//					cache.put('listaGastos',response.gastos.listaPendencias);
-//					cache.put('listaContas',response.contas.listaPendencias);
-//					cache.put('resumo',response.resumo);
-//				}, 
-//				function(error) {
-//					console.error(error);
-//				}
-//		);
 	}
 
 	this.buscaGastosContasResumo = function () {

@@ -47,7 +47,7 @@ public class ContaBean implements Serializable {
 
 	@PostConstruct
 	private void init() {
-		log.info("criando contaBean");
+		//log.info("criando contaBean");
 		conta = new Conta();
 		try {
 			orcamentoAtual = sessaoBean.getOrcamentoAtual();
@@ -73,18 +73,18 @@ public class ContaBean implements Serializable {
 
 		if (conta.getDataVencimento()==null) {
 			context.addMessage("frm_tab_conta:msg_conta", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", 
-					"Data de vecnimento inv�lida"));
+					"Data de vencimento invalida"));
 			return;
 		}
 
 		if (conta.getValor()==0d) {
 			context.addMessage("frm_tab_conta:msg_conta", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", 
-					"Valor inv�lido"));
+					"Valor invalido"));
 			return;
 		}
 
 		try {
-			log.info("inserindo conta " + conta );
+			//log.info("inserindo conta " + conta );
 			conta.setValorPendente(conta.getValor());
 			orcamentoService.adicionaConta(conta, orcamentoAtual);
 			atualizaContas();

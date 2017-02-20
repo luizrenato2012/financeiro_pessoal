@@ -100,8 +100,6 @@ public class OrcamentoServlet extends HttpServlet {
 		case "listaPendenciaContaGasto":
 			this.listaContasGastosPendentes(request, response);
 			break;	
-			//	case "listaContasPagamento" : //usado no combo de contas
-			//		this.listaContasPagamento(request, response);
 		case "reinicia":
 			this.reinicia(request);
 			break;
@@ -140,7 +138,7 @@ public class OrcamentoServlet extends HttpServlet {
 			HttpServletResponse response) {
 		try  {
 			response.setCharacterEncoding("UTF-8");
-			response.getWriter().println(this.orcamentoFacade.listaGastosPendentesOrcamentoAtivo());
+			response.getWriter().println(this.orcamentoFacade.listaGastosPendentesOrcamentoAtivo(request.getParameter("tipoGasto")));
 		}  catch (Exception e)   {
 			e.printStackTrace();
 		}
@@ -301,6 +299,7 @@ public class OrcamentoServlet extends HttpServlet {
 		String mensagem = "";
 		String tipo = "";
 		Orcamento orcamento = null;
+		JsonObject obj = new JsonObject();
 		try {
 			Integer idGasto = Integer.valueOf(Integer.parseInt(strIdGasto));
 
@@ -331,26 +330,22 @@ public class OrcamentoServlet extends HttpServlet {
 			this.orcamentoService.efetuaPagamentoGasto(gasto, valor.doubleValue(), data);
 			request.getSession().setAttribute(ConfiguracaoWeb.RESUMO_ORCAMENTO.getDescricao(), 
 					this.orcamentoFacade.getResumoOrcamento());
-
+			
+			obj.add("orcamento",this.orcamentoFacade.listaGastoResumo());
+			JsonObject objResumo = (JsonObject)request.getSession().getAttribute(
+					ConfiguracaoWeb.RESUMO_ORCAMENTO.getDescricao());
 			tipo = "OK";
 			mensagem = "Pagamento registrado com sucesso!";
+			obj.add("resumo", objResumo);
 		}	catch (Exception e) {
 			e.printStackTrace();
 			tipo = "ERRO";
 			mensagem = "Erro ao pagar: " + e.getMessage();
 		}
-		JsonObject obj = new JsonObject();
+		
 		obj.add("tipoMensagem", new JsonParser().parse(new Gson().toJson(tipo)));
 		obj.add("mensagem", new JsonParser().parse(new Gson().toJson(mensagem)));
 		
-		obj.add("orcamento",this.orcamentoFacade.listaGastoResumo());
-		JsonObject objResumo = (JsonObject)request.getSession().getAttribute(
-				ConfiguracaoWeb.RESUMO_ORCAMENTO.getDescricao());
-		
-		
-		
-		obj.add("resumo", objResumo);
-
 		response.getWriter().println(obj);
 	}
 
@@ -374,11 +369,11 @@ public class OrcamentoServlet extends HttpServlet {
 				throw new RuntimeException("Data obrigatoria");
 			}
 
-			if (strIdOrcamento ==null || strIdOrcamento.trim().equals("")) {
+			if (strIdOrcamento == null || strIdOrcamento.trim().equals("")) {
 				throw new RuntimeException("Id orcamento obrigatorio");
 			}
 
-			if (strValor ==null || strValor.trim().equals("")) {
+			if (strValor == null || strValor.trim().equals("")) {
 				throw new RuntimeException("Valor obrigatorio");
 			}
 
@@ -386,6 +381,7 @@ public class OrcamentoServlet extends HttpServlet {
 			if (conta.getSituacao().equals(SituacaoDespesa.PAGA)) {
 				throw new RuntimeException("Conta ja paga");
 			}
+			conta.setDataPagamento(new SimpleDateFormat("dd/MM/yyyy").parse(strData));
 			conta.setValorPago(Double.valueOf(strValor));
 			orcamento = (Orcamento)this.orcamentoService.encontra(Integer.valueOf(Integer.parseInt(strIdOrcamento)), 
 					Orcamento.class);
