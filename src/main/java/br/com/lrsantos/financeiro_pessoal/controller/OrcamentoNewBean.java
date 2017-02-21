@@ -19,7 +19,7 @@ public class OrcamentoNewBean implements Serializable{
 	private static Logger log = Logger.getLogger(OrcamentoNewBean.class);
 	
 	@PostConstruct
-	private void psotInit(){
+	private void postInit(){
 		//log.info(">>> criando OrcamentoNewBean");
 	}
 

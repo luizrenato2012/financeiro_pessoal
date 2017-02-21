@@ -40,7 +40,7 @@ public class GastoService extends ServiceGeneric<Gasto, Integer>{
 	}
 
 	public Gasto carregaPagamentos(Integer idGasto) {
-		log.info("carregaPagamentos " + idGasto);
+		//log.info("carregaPagamentos " + idGasto);
 		Query query = entityManager.createNamedQuery("Gasto.loadPagamentos");
 		query.setParameter("idGasto", idGasto);
 		return (Gasto) query.getSingleResult();

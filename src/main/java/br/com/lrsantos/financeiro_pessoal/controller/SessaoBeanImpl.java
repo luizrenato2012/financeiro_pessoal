@@ -15,7 +15,7 @@ import br.com.lrsantos.financeiro_pessoal.model.bean.Orcamento;
 import br.com.lrsantos.financeiro_pessoal.model.service.OrcamentoFacade;
 import br.com.lrsantos.financeiro_pessoal.model.service.OrcamentoService;
 
-@Named
+@Named("sessaoBean")
 @SessionScoped
 @SessaoQualifier
 public class SessaoBeanImpl implements SessaoBean, Serializable{
@@ -35,14 +35,14 @@ public class SessaoBeanImpl implements SessaoBean, Serializable{
 	
 	@SuppressWarnings("unused")
 	public SessaoBeanImpl() {
-		//log.info(">>> Criando sessao");
-		 sessao = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true); 
-
+		log.info(">>> Criando sessao");
+		// sessao = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false); 
 	}
 
 	@PostConstruct
 	private void init() {
-		//HttpSession sessao = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false); 
+		log.info(">>> Criando sessao");
+		this.sessao = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false); 
 	}
 
 	public Orcamento getOrcamentoAtual() {

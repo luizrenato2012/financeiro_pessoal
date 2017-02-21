@@ -42,12 +42,12 @@ public class PagamentoBean implements Serializable {
 	private OrcamentoService orcamentoService;
 	
 	public PagamentoBean() {
-		log.info("instanciando pagamento bean");
+//		log.info("instanciando pagamento bean");
 	}
 
 	@PostConstruct
 	private void init() {
-		log.info("Criando pagamentoBean Gasto id - " + gasto);
+		//log.info("Criando pagamentoBean Gasto id - " + gasto);
 		gasto = new Gasto();
 		pagamentos = new ArrayList<Pagamento>();
 		pagamento = new Pagamento();
@@ -77,26 +77,26 @@ public class PagamentoBean implements Serializable {
 	}
 	
 	public void paga() {
-		log.info("paga " + gasto);
+	//	log.info("paga " + gasto);
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (this.pagamento==null) {
 			context.addMessage(this.COMPONENTE_MENSAGEM, 
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", 
-							"Pagamento inv�lido"));
+							"Pagamento invalido"));
 			return;
 		}
 
 		if (this.pagamento.getData()==null) {
 			context.addMessage(this.COMPONENTE_MENSAGEM, 
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", 
-							"Data inv�lida"));
+							"Data invalida"));
 			return;
 		}
 
 		if (this.pagamento.getValor()==0.d) {
 			context.addMessage(this.COMPONENTE_MENSAGEM, 
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", 
-							"Valor inv�lido"));
+							"Valor invalido"));
 			return;
 		}
 
@@ -154,7 +154,7 @@ public class PagamentoBean implements Serializable {
 	}
 
 	public void setGasto(Gasto gasto) {
-		log.info("set gasto " + gasto);
+//		log.info("set gasto " + gasto);
 		this.gasto = gasto;
 	}
 
