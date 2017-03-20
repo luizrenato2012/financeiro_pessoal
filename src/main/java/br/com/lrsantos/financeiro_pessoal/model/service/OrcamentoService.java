@@ -352,7 +352,10 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 		Query query = this.entityManager.createNativeQuery(tipo.equals("todos")? 
 					  QRY_DESPESAS_PENDENTES_TODOS  : 
 					  QRY_DESPESAS_PENDENTES_TIPO);
-		query.setParameter(1, tipo);
+
+		if (!tipo.equals("todos")){
+			query.setParameter(1, tipo);
+		}
 		List<Object[]> listaPendencias = query.getResultList();
 		return listaPendencias;
 	}
