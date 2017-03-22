@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -109,7 +110,10 @@ public class OrcamentoServlet extends HttpServlet {
 		case "listaPagamento":
 			this.listaPagamentos(request, response);
 			break;
-		}
+		case "ativaOrcamento":
+			this.ativaOrcamento(request, response);
+			break;
+		}	
 
 	}
 
@@ -405,6 +409,66 @@ public class OrcamentoServlet extends HttpServlet {
 		obj.add("orcamento",this.orcamentoFacade.listaContaResumo());
 
 		response.getWriter().println(obj);
+	}
+	
+	private void ativaOrcamento(HttpServletRequest request,HttpServletResponse response) throws IOException {
+		String mensagem = "";
+		String tipo = "";
+		try {
+
+			String strIdOrcamento = request.getParameter("idOrcamento");
+			if (strIdOrcamento == null || strIdOrcamento.trim().equals("")) {
+				throw new RuntimeException("Id orcamento obrigatorio");
+			}
+			this.orcamentoFacade.ativaOrcamento(Integer.parseInt(strIdOrcamento));
+			tipo = "OK";
+			mensagem = "Pagamento registrado com sucesso!";
+		} catch (Exception e) {
+			e.printStackTrace();
+			tipo = "OK";
+			mensagem = "Pagamento registrado com sucesso!";
+		}
+		response.getWriter().println(this.criaMensagemRetorno(tipo, mensagem));
+	}
+	
+	private JsonObject criaMensagemRetorno(String tipo, String mensagem) {
+		JsonObject obj = new JsonObject();
+		obj.add("tipoMensagem", new JsonParser().parse(new Gson().toJson(tipo)));
+		obj.add("mensagem", new JsonParser().parse(new Gson().toJson(mensagem)));
+		return obj;
+	}
+	
+	private void listaOrcamentos(HttpServletRequest request,HttpServletResponse response) {
+		String mensagem = "";
+		String tipo = "";
+		try {
+
+//			String strIdOrcamento = request.getParameter("idOrcamento");
+//			if (strIdOrcamento == null || strIdOrcamento.trim().equals("")) {
+//				throw new RuntimeException("Id orcamento obrigatorio");
+//			}
+			this.orcamentoFacade.ativaOrcamento(Integer.parseInt(strIdOrcamento));
+			tipo = "OK";
+			mensagem = "Pagamento registrado com sucesso!";
+		} catch (Exception e) {
+			e.printStackTrace();
+			tipo = "OK";
+			mensagem = "Pagamento registrado com sucesso!";
+		}
+		response.getWriter().println(this.criaMensagemRetorno(tipo, mensagem));
+	}
+	
+	private JsonObject criaMensagemRetorno(String tipo, String mensagem, Map<String,Object> mapObjetos) {
+		JsonObject obj = new JsonObject();
+		obj.add("tipoMensagem", new JsonParser().parse(new Gson().toJson(tipo)));
+		obj.add("mensagem", new JsonParser().parse(new Gson().toJson(mensagem)));
+		Object objeto = null;
+		
+		for(String key: mapObjetos.keySet()){
+			objeto = mapObjetos.get(key);
+			obj.add("mensagem", new JsonParser().parse(new Gson().toJson(objeto)));
+		}
+		return obj;
 	}
 
 

@@ -139,6 +139,14 @@ public class OrcamentoFacade implements Serializable {
 
 		return obj;
 	}
+	
+	public void ativaOrcamento (int id) {
+		this.orcamentoService.ativaOrcamento(id);
+	}
+	
+	public JsonObject listaOrcamentos() {
+		
+	}
 
 
 }

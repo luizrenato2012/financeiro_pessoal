@@ -65,7 +65,7 @@ public class Orcamento implements Serializable {
 	@Column(name="valor_total_recebido", precision=2)
 	private Double valorTotalRecebido=0d;
 	
-	/** diferent�a entre todos o recebimentos e a soma do que foi pago e o que est� pago */
+	/** diferentca entre todos o recebimentos e a soma do que foi pago */
 	@Column(name="valor_disponivel", precision=2)
 	private Double valorDisponivel=0d;
 	

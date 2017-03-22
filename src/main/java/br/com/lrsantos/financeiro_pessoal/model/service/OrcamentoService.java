@@ -43,6 +43,7 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 	
 	private static String QRY_DESPESAS_PENDENTES_TIPO;
 	private static String QRY_DESPESAS_PENDENTES_TODOS;
+	private static String QRY_ORCAMENTOS;
 //	private static String QRY_CONTA_PENDENTE;
 	
 	@PostConstruct
@@ -81,6 +82,18 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 			.append("orc.ativo=true " )
 			.append("order by gt.tipo_conta, gt.data_vencimento desc");
 		QRY_DESPESAS_PENDENTES_TODOS = strb.toString();
+		
+		strb = new StringBuilder();
+		strb.append("select o.id, ")
+			.append("o.descricao, ")
+			.append("o.data_inicial, o.data_final, ")
+			.append("o.valor_disponivel, ")
+			.append("o.valor_total_pendente ")
+			.append("o.ativo ")
+			.append("from financ.orcamento o ")
+			.append("order by o.id");
+		QRY_ORCAMENTOS = strb.toString();
+			
 		
 	/*	strb = new StringBuilder();
 		strb.append("select new br.com.lrsantos.financeiro_pessoal.model.service.ContaDTO(ct.id,ct.descricao, ct.valor,ct.dataVencimento) from Conta ct ")
@@ -358,6 +371,10 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 		}
 		List<Object[]> listaPendencias = query.getResultList();
 		return listaPendencias;
+	}
+	
+	public List<Object> listaOrcamentos() {
+		return this.entityManager.createNativeQuery(QRY_ORCAMENTOS).getResultList();
 	}
 
 
