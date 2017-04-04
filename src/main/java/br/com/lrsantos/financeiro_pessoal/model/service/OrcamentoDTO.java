@@ -16,6 +16,9 @@ public class OrcamentoDTO {
 	
 	private boolean ativo;
 	
+	public OrcamentoDTO() {
+		super();
+	}
 
 	public OrcamentoDTO(int id, String descricao, String dataInicial, String dataFinal, Double valorDisponivel,
 			Double valorTotalPendente, boolean ativo) {

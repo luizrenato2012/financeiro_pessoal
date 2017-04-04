@@ -3,6 +3,7 @@ package br.com.lrsantos.financeiro_pessoal.model.service;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -374,9 +375,30 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 		return listaPendencias;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<OrcamentoDTO> listaOrcamentos() {
-		List<OrcamentoDTO> lista =  this.entityManager.createNativeQuery(QRY_ORCAMENTOS, "OrcamentoDTOMapping").getResultList();
+		List lista = this.entityManager.createNativeQuery(QRY_ORCAMENTOS, "OrcamentoDTOMapping").getResultList();
+		return this.converte(lista);
+	}
+	
+	private List<OrcamentoDTO> converte(List listaOrcamento) {
+		List<OrcamentoDTO> lista = new ArrayList<OrcamentoDTO>();
+		Object[] ar =null; 
+		OrcamentoDTO orcamentoDTO = null;
+		for (Object objeto : listaOrcamento) {
+			ar = (Object[])objeto;
+			orcamentoDTO = new OrcamentoDTO();
+			orcamentoDTO.setId((Integer) ar[0]);
+			orcamentoDTO.setDescricao((String) ar[1]);
+			orcamentoDTO.setDataInicial((String) ar[2]);
+			orcamentoDTO.setDataFinal((String) ar[3]);
+			orcamentoDTO.setValorDisponivel((Double) ar[4]);
+			orcamentoDTO.setValorTotalPendente((Double) ar[5]);
+			orcamentoDTO.setAtivo((Boolean) ar[6]);
+			lista.add(orcamentoDTO);
+		}
 		return lista;
+			
 	}
 
 
