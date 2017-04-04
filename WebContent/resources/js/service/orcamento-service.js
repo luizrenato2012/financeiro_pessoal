@@ -130,40 +130,11 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP',  '$q','logService','$ca
 		cache.put('resumo', resumo);
 		cache.put('listaGastos',gastos);
 	}
-
-/*	this.carregaResumo = function () {
-		this.findResumo().then(
-				function(response) {
-					var cchResumo = {};
-					cchResumo.valorDisponivel = response.valorDisponivel;
-					cchResumo.valorPendente   = response.valorPendente;
-					cchResumo.valorSobrante   = response.valorSobrante;
-					cchResumo.idOrcamento     = response.idOrcamento;
-					cchResumo.descOrcamento   = response.descOrcamento;
-					cchResumo.contaPendente   = response.contaPendente;
-					cchResumo.gastoPendente   = response.gastoPendente;
-					cache.put('resumo', cchResumo);
-				},
-				function (error) {
-					console.error ('Erro ao resumir ' + error);
-				}
-		);
-	} */
-
-/*	this.findResumo = function(){
-		var defer = $q.defer();
-
-		$http({
-			method: 'GET',
-			url: PATH_APP + 'orcamento?acao=resumeOrcamento',
-			headers: {'Content-type': 'application/json'}
-		}).success ( function(data, status, headers, config, params) {
-			defer.resolve(data);
-		}).error (function (data, status, headers, config, params){
-			defer.reject(data);
-		});
-
-		return defer.promise;
-	}; */
 	
+	this.listaOrcamento = function() {
+		var params = {
+				acao: 'listaOrcamento'
+			};
+		return $http.get(PATH_APP + 'orcamento', {params: params});
+	}
 }]);

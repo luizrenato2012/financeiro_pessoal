@@ -1,0 +1,41 @@
+<div class="panel panel-danger">
+	<div class="panel-heading">Or&ccedil;amentos</div>
+	<span class="text-success">{{msg}}</span>
+	<form role="form">
+		
+	</form>
+	
+	<table class="table">
+		<thead>
+			<tr>
+			    <th>id</th>	
+				<th>Descri&ccedil;&atilde;o</th>
+				<th>Data Inicial</th>
+				<th>Data Final</th>
+				<th>Valor Disponivel</th>
+				<th>Valor Total Pendente</th>
+				<th>Ativo</th>
+			</tr>
+		<thead>
+		<tbody>
+			<tr ng-repeat="orcamento in listaOrcamento ">
+				<td>{{orcamento.id}}</td>
+				<td>{{orcamento.descricao}}</td>
+				<td>{{orcamento.dataInicial | date:'dd/MM/yyyy'}}</td>
+				<td>{{orcamento.dataFinal | date:'dd/MM/yyyy' }}</td>
+				<td>{{orcamento.valorDisponivel | number:2}}</td>
+				<td>{{orcamento.valorTotalPendente | number:2}}</td>
+				<td>{{orcamento.ativo}}</td>
+			</tr>
+		<tbody>
+		<tfoot>
+			<tr>
+				<td></td>
+				<td></td>
+				<td style="font-weight: bold;">Total</td>
+				<td style="font-weight: bold;">{{listaOrcamentos.length}}</td>
+			</tr>
+		<tfoot>
+	</table>
+	<button ng_click="lista()">Lista</button>
+</div>

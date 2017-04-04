@@ -95,13 +95,6 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 			.append("from financ.orcamento orc ")
 			.append("order by orc.id");
 		QRY_ORCAMENTOS = strb.toString();
-			
-		
-	/*	strb = new StringBuilder();
-		strb.append("select new br.com.lrsantos.financeiro_pessoal.model.service.ContaDTO(ct.id,ct.descricao, ct.valor,ct.dataVencimento) from Conta ct ")
-			.append("where ct.situacao = br.com.lrsantos.financeiro_pessoal.model.bean.SituacaoDespesa.PENDENTE and ")
-			.append("ct.orcamento.ativo=true");
-		QRY_CONTA_PENDENTE = strb.toString();*/
 	}
 
 
