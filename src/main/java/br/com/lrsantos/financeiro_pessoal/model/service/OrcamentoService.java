@@ -375,7 +375,8 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 	}
 	
 	public List<OrcamentoDTO> listaOrcamentos() {
-		return this.entityManager.createNativeQuery(QRY_ORCAMENTOS, "OrcamentoDTOMapping").getResultList();
+		List<OrcamentoDTO> lista =  this.entityManager.createNativeQuery(QRY_ORCAMENTOS, "OrcamentoDTOMapping").getResultList();
+		return lista;
 	}
 
 
