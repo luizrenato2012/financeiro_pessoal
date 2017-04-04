@@ -80,21 +80,21 @@ public class OrcamentoFacade implements Serializable {
 
 	public String listaGastosPendentesOrcamentoAtivo (String tipoGasto) {
 		List<Object[]>listaPendencias = this.orcamentoService.listaGastosPendentesOrcamentoAtivo(tipoGasto);
-		return this.getJsonFromList(listaPendencias);
+		return this.getJsonContaFromList(listaPendencias);
 
 	}
 
 	public String listaContasPendentesOrcamentoAtivo() {
 		List<Object[]>listaPendencias = this.orcamentoService.listaContasPendentesOrcamentoAtivo();
-		return this.getJsonFromList(listaPendencias);
+		return this.getJsonContaFromList(listaPendencias);
 	}
 
 	public String listaGastosContasPendentesOrcamentoAtivo() {
 		List<Object[]>listaPendencias = this.orcamentoService.listaGastosContasPendentesOrcamentoAtivo();
-		return this.getJsonFromList(listaPendencias);
+		return this.getJsonContaFromList(listaPendencias);
 	}
 
-	private String getJsonFromList(List<Object[]> listaPendencias) {
+	private String getJsonContaFromList(List<Object[]> listaPendencias) {
 		Gson gson = new Gson();
 		ListaPendenciasJSon listaPendencia = new ListaPendenciasJSon();
 		Map<String,Object> map = null;
@@ -144,9 +144,32 @@ public class OrcamentoFacade implements Serializable {
 		this.orcamentoService.ativaOrcamento(id);
 	}
 	
-	public JsonObject listaOrcamentos() {
-		
+	public List<OrcamentoDTO> listaOrcamentos() {
+		return this.orcamentoService.listaOrcamentos();
 	}
+	
+	public JsonObject criaMensagemRetorno(Map<String,Object> mapObjetos) {
+		JSonUtilRetorno retorno = new JSonUtilRetorno();
+		
+		Object objeto = null;
+		
+		for(String key: mapObjetos.keySet()){
+			objeto = mapObjetos.get(key);
+			retorno.adicionaRetorno(key,objeto);
+		}
+		return retorno.getObjJson();
+	}
+	
+	public JsonObject criaMensagemRetorno(String tipo, String mensagem) {
+		//objJson.add("tipoMensagem", new JsonParser().parse(new Gson().toJson(tipo)));
+		//objJson.add("mensagem", new JsonParser().parse(new Gson().toJson(mensagem)));
+		JSonUtilRetorno retorno = new JSonUtilRetorno();
+		retorno.adicionaRetorno("tipoMensagem", tipo)
+			   .adicionaRetorno("mensagem", mensagem);
+		return retorno.getObjJson();
+	}
+	
+	
 
 
 }

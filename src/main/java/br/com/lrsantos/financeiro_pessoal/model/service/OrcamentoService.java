@@ -84,14 +84,15 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 		QRY_DESPESAS_PENDENTES_TODOS = strb.toString();
 		
 		strb = new StringBuilder();
-		strb.append("select o.id, ")
-			.append("o.descricao, ")
-			.append("o.data_inicial, o.data_final, ")
-			.append("o.valor_disponivel, ")
-			.append("o.valor_total_pendente ")
-			.append("o.ativo ")
-			.append("from financ.orcamento o ")
-			.append("order by o.id");
+		strb.append("select orc.id, ")
+			.append("orc.descricao, ")
+			.append("to_char(orc.data_inicial, \'DD/MM/YYYY\') as data_inicial, ")
+			.append("to_char(orc.data_final, \'DD/MM/YYYY\') as data_final, ")
+			.append("orc.valor_disponivel, ")
+			.append("orc.valor_total_pendente, ")
+			.append("orc.ativo ")
+			.append("from financ.orcamento orc ")
+			.append("order by orc.id");
 		QRY_ORCAMENTOS = strb.toString();
 			
 		
@@ -373,8 +374,8 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 		return listaPendencias;
 	}
 	
-	public List<Object> listaOrcamentos() {
-		return this.entityManager.createNativeQuery(QRY_ORCAMENTOS).getResultList();
+	public List<OrcamentoDTO> listaOrcamentos() {
+		return this.entityManager.createNativeQuery(QRY_ORCAMENTOS, "OrcamentoDTOMapping").getResultList();
 	}
 
 

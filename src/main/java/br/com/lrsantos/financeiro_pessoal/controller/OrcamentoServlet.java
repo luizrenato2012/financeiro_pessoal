@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -113,6 +114,9 @@ public class OrcamentoServlet extends HttpServlet {
 		case "ativaOrcamento":
 			this.ativaOrcamento(request, response);
 			break;
+		case "listaOrcamento":
+			this.listaOrcamento(request, response);
+			break;	
 		}	
 
 	}
@@ -403,6 +407,7 @@ public class OrcamentoServlet extends HttpServlet {
 			tipo = "ERRO";
 			mensagem = "Erro ao pagar: " + e.getMessage();
 		}
+		
 		JsonObject obj = new JsonObject();
 		obj.add("tipoMensagem", new JsonParser().parse(new Gson().toJson(tipo)));
 		obj.add("mensagem", new JsonParser().parse(new Gson().toJson(mensagem)));
@@ -425,51 +430,35 @@ public class OrcamentoServlet extends HttpServlet {
 			mensagem = "Pagamento registrado com sucesso!";
 		} catch (Exception e) {
 			e.printStackTrace();
-			tipo = "OK";
-			mensagem = "Pagamento registrado com sucesso!";
+			tipo = "ERRO";
+			mensagem = "Erro ao ativar orçamento!";
 		}
-		response.getWriter().println(this.criaMensagemRetorno(tipo, mensagem));
+		response.getWriter().println(this.orcamentoFacade.criaMensagemRetorno(tipo, mensagem));
 	}
 	
-	private JsonObject criaMensagemRetorno(String tipo, String mensagem) {
-		JsonObject obj = new JsonObject();
-		obj.add("tipoMensagem", new JsonParser().parse(new Gson().toJson(tipo)));
-		obj.add("mensagem", new JsonParser().parse(new Gson().toJson(mensagem)));
-		return obj;
-	}
 	
-	private void listaOrcamentos(HttpServletRequest request,HttpServletResponse response) {
+	
+	private void listaOrcamento(HttpServletRequest request,HttpServletResponse response) throws IOException {
 		String mensagem = "";
 		String tipo = "";
+		Map<String,Object> mapJson = new HashMap<String,Object>();
+		
 		try {
-
-//			String strIdOrcamento = request.getParameter("idOrcamento");
-//			if (strIdOrcamento == null || strIdOrcamento.trim().equals("")) {
-//				throw new RuntimeException("Id orcamento obrigatorio");
-//			}
-			this.orcamentoFacade.ativaOrcamento(Integer.parseInt(strIdOrcamento));
+			mapJson.put("orcamentos",this.orcamentoFacade.listaOrcamentos());
+			
 			tipo = "OK";
-			mensagem = "Pagamento registrado com sucesso!";
+			mensagem = "Listagem de orcamentos ok!";
 		} catch (Exception e) {
 			e.printStackTrace();
-			tipo = "OK";
-			mensagem = "Pagamento registrado com sucesso!";
+			tipo = "ERRO";
+			mensagem = "Erro ao listar orcamento ";
 		}
-		response.getWriter().println(this.criaMensagemRetorno(tipo, mensagem));
+		
+		mapJson.put("tipo", tipo);
+		mapJson.put("mensagem", mensagem);
+		
+		response.getWriter().println(this.orcamentoFacade.criaMensagemRetorno(mapJson));
 	}
 	
-	private JsonObject criaMensagemRetorno(String tipo, String mensagem, Map<String,Object> mapObjetos) {
-		JsonObject obj = new JsonObject();
-		obj.add("tipoMensagem", new JsonParser().parse(new Gson().toJson(tipo)));
-		obj.add("mensagem", new JsonParser().parse(new Gson().toJson(mensagem)));
-		Object objeto = null;
-		
-		for(String key: mapObjetos.keySet()){
-			objeto = mapObjetos.get(key);
-			obj.add("mensagem", new JsonParser().parse(new Gson().toJson(objeto)));
-		}
-		return obj;
-	}
-
 
 }

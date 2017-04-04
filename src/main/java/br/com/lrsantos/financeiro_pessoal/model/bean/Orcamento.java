@@ -8,6 +8,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ColumnResult;
+import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -19,10 +20,13 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.SqlResultSetMapping;
+import javax.persistence.SqlResultSetMappings;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+
+import br.com.lrsantos.financeiro_pessoal.model.service.OrcamentoDTO;
 
 
 @Entity
@@ -34,7 +38,18 @@ import javax.persistence.Transient;
 	@NamedQuery(name="Orcamento.loadGastos",query="select o from Orcamento o join fetch o.gastos where o.id= :id"),
 	@NamedQuery(name="Orcamento.findOrcamentoAtivo",query="select o from Orcamento o join fetch o.gastos where o.ativo = true")
 })
-@SqlResultSetMapping(name="scalar",columns={ @ColumnResult(name="id")})
+@SqlResultSetMappings({
+	@SqlResultSetMapping(name="scalar",columns={ @ColumnResult(name="id")}),
+	@SqlResultSetMapping(name="OrcamentoDTOMapping", classes=@ConstructorResult(
+			targetClass=OrcamentoDTO.class,
+			columns = {
+					@ColumnResult(name="id", type=Integer.class),
+					@ColumnResult(name="descricao", type=String.class),
+					@ColumnResult(name="dataInicial", type=String.class),
+					@ColumnResult(name="dataFinal", type=String.class),
+					@ColumnResult(name="ativo", type=Boolean.class)
+			}))
+})
 public class Orcamento implements Serializable {
 	
 	private static final long serialVersionUID = 4845673316790597578L;
