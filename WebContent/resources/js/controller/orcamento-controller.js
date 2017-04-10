@@ -12,4 +12,14 @@ modulo.controller('orcamentoController', ['$scope','orcamentoService', function(
 				console.log('Erro ' + data.mensagem);
 			});
 	}
+	
+	$scope.lista();
+	
+	$scope.selecionaAtivo = function() {
+		var orcamento ={};
+		for(orcamento in $scope.listaOrcamento) {
+			
+		}
+	}
+	
 }]);

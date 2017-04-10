@@ -25,7 +25,7 @@
 				<td>{{orcamento.dataFinal | date:'dd/MM/yyyy' }}</td>
 				<td>{{orcamento.valorDisponivel | number:2}}</td>
 				<td>{{orcamento.valorTotalPendente | number:2}}</td>
-				<td>{{orcamento.ativo}}</td>
+				<td><input type="radio" ng-model="orcamento.ativo" ng-value="true" ng-click="selecionaAtivo()"/></td>
 			</tr>
 		<tbody>
 		<tfoot>
