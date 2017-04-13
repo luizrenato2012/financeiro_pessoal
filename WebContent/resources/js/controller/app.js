@@ -2,7 +2,7 @@
 var app = angular.module('financApp',['ngRoute','ServiceUtilMdl','ContaControllerMdl','GastoControllerMdl',
                                      'ConfigControllerMdl','PagamentoControllerMdl','PendenciaControllerMdl',
                                      'RedirectControllerMdl','ResumoControllerMdl','ConstantsServiceMdl',
-                                     'OrcamentoServiceMdl','OrcamentoControllerMdl']);
+                                     'OrcamentoServiceMdl','OrcamentoControllerMdl','TesteServiceMdl']);
 
 app.run(function($rootScope,orcamentoService,orcamentoService){
 	console.log('Iniciando a aplicacao');
@@ -91,9 +91,10 @@ app.config(['$routeProvider','$locationProvider', function($routeProvider,$locat
 	})
 	.when('/redirect', {
 		templateUrl: 'redirect.html', controller: 'redirectController' 
-	});
-//	.otherwise({
-//		redirectTo: '/'
-//	});		
+	})
+	.otherwise({
+		//redirectTo: '/'
+		templateUrl: 'teste.html', controller: 'testeController' 
+	});		
 }]);
 

@@ -62,24 +62,6 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP',  '$q','logService','$ca
 		return orcamento;
 	}
 
-
-	//verificar necessidade
-/*	this.listaPagamento = function(dataInicial, dataFinal, tipoPagamento) {
-		var defer = $q.defer();
-		$http({
-			method: 'GET',
-			url: PATH_APP + 'orcamento?acao=listaPagamento&dataInicial='+ dataInicial +
-			'&dataFinal='+ dataFinal + '&tipo='+ tipoPagamento,
-			headers: {'Content-type': 'application/json'}	
-		}).success(function(data,status,headers,config,params) {
-			defer.resolve(data);
-		}).error(function(data,status,headers,config,params) {
-			defer.reject(data);
-		});
-
-		return defer.promise;
-	}*/
-
 	this.paga = function(gastoSel,data, valor, idOrcamento, descricao) {
 		var defer = $q.defer();
 		$http({
@@ -136,5 +118,14 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP',  '$q','logService','$ca
 				acao: 'listaOrcamento'
 			};
 		return $http.get(PATH_APP + 'orcamento', {params: params});
+	}
+	
+	this.ativaOrcamento = function(idOrcamento) {
+		var params = {
+			acao: 'ativaOrcamento',
+			idOrcamento: idOrcamento
+		};
+		
+		return $http.put(PATH_APP + 'orcamento',{},{params:params});
 	}
 }]);

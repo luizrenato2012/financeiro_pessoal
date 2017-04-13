@@ -111,9 +111,6 @@ public class OrcamentoServlet extends HttpServlet {
 		case "listaPagamento":
 			this.listaPagamentos(request, response);
 			break;
-		case "ativaOrcamento":
-			this.ativaOrcamento(request, response);
-			break;
 		case "listaOrcamento":
 			this.listaOrcamento(request, response);
 			break;	
@@ -284,6 +281,8 @@ public class OrcamentoServlet extends HttpServlet {
 			case "pagaConta":
 				pagaConta(request,response);
 				break;	
+			case "ativaOrcamento":
+				this.ativaOrcamento(request, response);
 			}
 		} catch (Exception e ) {
 			retornaRespostaErro(response,"Erro " + e.getMessage());
@@ -427,7 +426,7 @@ public class OrcamentoServlet extends HttpServlet {
 			}
 			this.orcamentoFacade.ativaOrcamento(Integer.parseInt(strIdOrcamento));
 			tipo = "OK";
-			mensagem = "Pagamento registrado com sucesso!";
+			mensagem = "Orcamento ativado com sucesso!";
 		} catch (Exception e) {
 			e.printStackTrace();
 			tipo = "ERRO";
