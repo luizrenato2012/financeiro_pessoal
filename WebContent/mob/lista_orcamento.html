@@ -25,7 +25,7 @@
 				<td>{{orcamento.dataFinal | date:'dd/MM/yyyy' }}</td>
 				<td>{{orcamento.valorDisponivel | number:2}}</td>
 				<td>{{orcamento.valorTotalPendente | number:2}}</td>
-				<td><input type="radio" ng-model="orcamento.ativo" ng-value="true" ng-click="selecionaAtivo()"/></td>
+				<td><input type="radio" ng-model="orcamento.ativo" ng-value="true" ng-change="selecionaAtivo(orcamento)"/></td>
 			</tr>
 		<tbody>
 		<tfoot>
@@ -37,5 +37,5 @@
 			</tr>
 		<tfoot>
 	</table>
-	<button ng_click="lista()">Lista</button>
+	<button  type="button" class="btn btn-primary"  ng_click="gravaAtivacao()">Grava</button>
 </div>
