@@ -1,4 +1,4 @@
-var testeApp = angular.module('testeApp',['TesteServiceMdl']);
+var testeApp = angular.module('TesteControllerMdl',['TesteServiceMdl']);
 
 testeApp.controller('testeController',['$scope', function($scope){
 	
