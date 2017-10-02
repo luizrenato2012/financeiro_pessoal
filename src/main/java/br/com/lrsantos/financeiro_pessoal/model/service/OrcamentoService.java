@@ -280,7 +280,7 @@ public class OrcamentoService extends ServiceGeneric<Orcamento, Integer> {
 		List<Orcamento> orcamentos = query.getResultList();
 		//		this.log.info("Total de orcamentos "+ orcamentos.size());
 		if (orcamentos==null || orcamentos.size()==0) {
-			throw new RuntimeException("Nao foi encontrado oramento ativo");
+			throw new RuntimeException("Nao foi encontrado orcamento ativo");
 		}
 		//		this.log.info("Orcamento ativo "+ orcamentos.get(0));
 		return orcamentos.get(0);

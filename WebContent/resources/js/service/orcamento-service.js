@@ -1,12 +1,11 @@
 var modulo = angular.module('OrcamentoServiceMdl',['ServiceUtilMdl','ConstantsServiceMdl']);
 
-modulo.service('orcamentoService', ['$http', 'PATH_APP',  '$q','logService','$cacheFactory',
-                                    function($http, PATH_APP, $q, logService, $cacheFactory) {
-//	logService.loga('criando orcamento service ');
+modulo.factory('orcamentoService', function($http, PATH_APP, $q, logService, $cacheFactory){
+	logService.loga('criando orcamento service ');
 	var cache = $cacheFactory('cacheOrcamento');
-
+	
 	/** lista de Gastos e Contas pendentes p/ preecnhimento de combo */
-	this.carregaOrcamento = function() {
+	var _carregaOrcamento = function() {
 		this.buscaGastosContasResumo()
 			.success(function(data,status,headers,config,params){
 				cache.put('listaGastos',data.gastos.listaPendencias);
@@ -17,26 +16,25 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP',  '$q','logService','$ca
 			});
 	}
 
-	this.buscaGastosContasResumo = function () {
-		var params = {acao: 'orcamento'};
-		return $http.get(PATH_APP + 'orcamento' , {params: params});
+	var _buscaGastosContasResumo = function () {
+		return $http.get(PATH_APP + 'orcamento' , {params: {acao: 'orcamento'} });
 	};
 
-	this.getListaGastos = function() {
+	var _getListaGastos = function() {
 		if (cache.get('listaGastos') == null || cache.get('listaGastos') == undefined) {
 			return "";
 		}
 		return cache.get('listaGastos');
 	}
 
-	this.getListaContas = function() {
+	var _getListaContas = function() {
 		if (cache.get('listaContas') == null || cache.get('listaContas') == undefined) {
 			return "";
 		}
 		return cache.get('listaContas');
 	}
 
-	this.getResumoOrcamento = function() {
+	var _getResumoOrcamento = function() {
 		var resumo = cache.get('resumo');
 		if (resumo   == undefined || resumo ==null ||
 				resumo.valorPendente == undefined ||
@@ -49,20 +47,20 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP',  '$q','logService','$ca
 		return resumo;
 	}
 
-	this.getIdDescricaoOrcamento = function() {
+	var _getIdDescricaoOrcamento = function() {
 		var resumo = cache.get('resumo');
 		if (resumo == undefined || resumo ==null ||
 				resumo.idOrcamento == undefined || resumo.idOrcamento == null) {
 			return {};
 		}
 
-		var orcamento={};
-		orcamento.idOrcamento =   resumo.idOrcamento;
-		orcamento.descOrcamento = resumo.descOrcamento;
+		var orcamento={
+			idOrcamento :resumo.idOrcamento,
+			descOrcamento :resumo.descOrcamento };
 		return orcamento;
 	}
 
-	this.paga = function(gastoSel,data, valor, idOrcamento, descricao) {
+	var _paga = function(gastoSel,data, valor, idOrcamento, descricao) {
 		var defer = $q.defer();
 		$http({
 			method: 'GET',
@@ -81,11 +79,10 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP',  '$q','logService','$ca
 	}
 	
 	/** verificar se ainda usa */
-	this.carregaResumo = function () {
+	var _carregaResumo = function () {
 		var defer = $q.defer();
-		var params = {acao: 'resumeOrcamento'}; 
 		
-		$http.get(PATH_APP + 'orcamento?', {params: params})
+		$http.get(PATH_APP + 'orcamento?', {params: {acao: 'resumeOrcamento'}})
 			.success ( function(data, status, headers, config, params) {
 				var cchResumo = {};
 				cchResumo.valorDisponivel = data.valorDisponivel;
@@ -103,29 +100,37 @@ modulo.service('orcamentoService', ['$http', 'PATH_APP',  '$q','logService','$ca
 		return defer.promise;
 	}
 	
-	this.atualizaResumoConta = function (resumo, contas) {
+	var _atualizaResumoConta = function (resumo, contas) {
 		cache.put('resumo', resumo);
 		cache.put('listaContas',contas);
 	}
 	
-	this.atualizaResumoGasto = function (resumo, gastos) {
+	var _atualizaResumoGasto = function (resumo, gastos) {
 		cache.put('resumo', resumo);
 		cache.put('listaGastos',gastos);
 	}
 	
-	this.listaOrcamento = function() {
-		var params = {
-				acao: 'listaOrcamento'
-			};
-		return $http.get(PATH_APP + 'orcamento', {params: params});
+	var _listaOrcamento = function() {
+		return $http.get(PATH_APP + 'orcamento', {params: {acao: 'listaOrcamento'}} );
 	}
 	
-	this.ativaOrcamento = function(idOrcamento) {
-		var params = {
-			acao: 'ativaOrcamento',
-			idOrcamento: idOrcamento
-		};
-		
-		return $http.put(PATH_APP + 'orcamento',{},{params:params});
+	var _ativaOrcamento = function(idOrcamento) {
+		return $http.put(PATH_APP + 'orcamento',{},{params:{ acao: 'ativaOrcamento',
+			idOrcamento: idOrcamento}} );
 	}
-}]);
+	
+	return {
+		carregaOrcamento : _carregaOrcamento,
+		buscaGastosContasResumo : _buscaGastosContasResumo,
+		getListaGastos : _getListaGastos,
+		getListaContas : _getListaContas, 
+		getResumoOrcamento : _getResumoOrcamento,
+		getIdDescricaoOrcamento : _getIdDescricaoOrcamento,
+		paga : _paga,
+		carregaResumo : _carregaResumo,
+		atualizaResumoConta : _atualizaResumoConta,
+		atualizaResumoGasto : _atualizaResumoGasto,
+		listaOrcamento : _listaOrcamento, 
+		ativaOrcamento : _ativaOrcamento
+	}
+});
